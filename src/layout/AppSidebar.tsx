@@ -38,7 +38,12 @@ const navItems: NavItem[] = [
   },
     {
     icon: <GridIcon />,
-    name: "Quotation",
+    name: "Quote",
+    path: "/quotation",
+  },
+   {
+    icon: <GridIcon />,
+    name: "Invoice",
     path: "/quotation",
   },
   // {
