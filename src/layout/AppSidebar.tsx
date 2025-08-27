@@ -36,6 +36,11 @@ const navItems: NavItem[] = [
     name: "File Tracker",
     path: "/file-tracker",
   },
+    {
+    icon: <GridIcon />,
+    name: "Quotation",
+    path: "/quotation",
+  },
   // {
   //   name: "Tables",
   //   icon: <TableIcon />,
