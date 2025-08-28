@@ -3,7 +3,7 @@ import PageMeta from "../components/common/PageMeta";
 import { CiCamera, CiCircleCheck } from "react-icons/ci";
 import { FaRegCircle } from "react-icons/fa";
 
-// Mock getToken (replace with your real implementation)
+
 const getToken = () => ({
   ID: "12345",
   UserName: "JohnDoe",
@@ -70,7 +70,7 @@ const FileTracker: React.FC = () => {
         const uploadedImageUrl = cloudinaryResult.secure_url;
         console.log("Image uploaded to Cloudinary:", uploadedImageUrl);
 
-        // Send to webhook
+
         const records = [
           {
             image: uploadedImageUrl,
@@ -93,7 +93,6 @@ const FileTracker: React.FC = () => {
         if (!webhookResponse.ok) throw new Error("Webhook failed");
         console.log("Data sent to webhook successfully");
 
-        // Fetch Airtable count
         const userName = getToken()?.UserName || "";
         const selectedType = selected || "";
 
@@ -148,18 +147,12 @@ const FileTracker: React.FC = () => {
         <div className="custom-calendars">
           <div className="min-h-screen flex flex-col items-center pt-12 ">
             <div className="absolute top-4 right-4">
-              {/* <button
-                onClick={handleLogout}
-                className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded"
-              >
-                Logout
-              </button> */}
+
             </div>
             <h1 className="text-5xl font-semibold text-blue-950 mb-4 dark:text-white/90">
               Welcome to Flyer Tracker App
             </h1>
 
-            {/* Selection Buttons */}
             <div className="flex gap-6 items-center mb-8">
               {options.map((opt) => (
                 <button
@@ -177,7 +170,6 @@ const FileTracker: React.FC = () => {
               ))}
             </div>
 
-            {/* Capture Box */}
             <div
               className="w-64 h-48 border mt-5 mb-10 border-blue-950 rounded-lg flex flex-col items-center justify-center  cursor-pointer hover:shadow-md transition dark:border-white"
               onClick={handleBoxClick}
@@ -188,7 +180,6 @@ const FileTracker: React.FC = () => {
 
             <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
 
-            {/* Result Preview */}
             {imageUrl && captureTime && (
               <div className="mt-10 w-full bg-indigo-100 p-8 rounded-xl shadow-md flex flex-col items-center">
                 <p className="text-lg text-blue-900 font-medium mb-4 text-center">

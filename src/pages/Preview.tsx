@@ -313,9 +313,6 @@ const [, setLoading] = useState<boolean>(false);
               />
             )}
           </td>
-          {/* <td className="border px-1 py-2 break-words text-sm">
-            {item.fields["Item Name"]}
-          </td> */}
           <td className="border px-1 py-2 break-words text-sm dark:text-white">
               <div>{item.fields["Item Name"]}</div>
               {item.fields["Description"] && (
@@ -324,7 +321,7 @@ const [, setLoading] = useState<boolean>(false);
             </td>
       <td className="border px-1 py-2 text-center">
   {(() => {
-    const attachment = item.fields.Attachments?.[0]; // could be undefined
+    const attachment = item.fields.Attachments?.[0]; 
     if (!attachment) {
       return <span className="text-sm dark:text-white">No Attachment</span>;
     }

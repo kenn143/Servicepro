@@ -122,9 +122,6 @@ const QuotationList: React.FC = () => {
     }
   };
 
-//   if (loading) {
-//     return <Loader />;
-//   }
 
   const filteredData = data.filter((item) =>
     item.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())

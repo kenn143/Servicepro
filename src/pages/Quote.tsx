@@ -264,10 +264,6 @@ const Quote: React.FC = () => {
 
       <div className="md:pl-4 pt-4 md:pt-0 w-full md:w-1/2">
         <div className='font-bold text-sm mb-1'>Quote Details:</div>
-        {/* <div className="mb-2">
-          <span className="text-sm font-semibold text-gray-600">Quote Number #:</span>
-          <span className="ml-2 text-gray-800"></span>
-        </div> */}
         <div>
           <span className="text-sm font-semibold text-gray-600 dark:text-white">Salesperson:</span>
           <span className="ml-2 text-gray-800"></span>
@@ -292,14 +288,6 @@ const Quote: React.FC = () => {
             onChange={(e) => updateLineItem(item.id, 'productprice', e.target.value)}
             disabled = {!selected}
           />
-          {/* <label className="block text-sm font-bold text-gray-700 mt-3">Description</label>
-          <input
-            type="text"
-            className="mt-1 w-full border rounded px-3 py-2"
-            placeholder="Details"
-            onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
-            disabled = {!selected}
-          /> */}
         </div>
         <div>
           <label className="block text-sm font-bold ">Description</label>
@@ -310,22 +298,7 @@ const Quote: React.FC = () => {
             onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
             disabled = {!selected}
           />
-          {/* <label className="block text-sm font-bold text-gray-700">Qty</label>
-          <input
-            type="number"
-            value={item.qty}
-            min="1"
-            className="mt-1 w-full border rounded px-3 py-2"
-            onChange={(e) => updateLineItem(item.id, 'qty', parseInt(e.target.value))}
-            disabled = {!selected}
-          /> */}
-          {/* <label className="block text-sm font-bold text-gray-700 mt-3">Attachment</label>
-          <input
-            type="file"
-            className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
-            onChange={(e) => updateLineItem(item.id, 'attachment', e.target.files[0])}
-            disabled = {!selected}
-          /> */}
+
         </div>
         <div>
           <label className="block text-sm font-bold ">Price</label>
@@ -362,18 +335,7 @@ const Quote: React.FC = () => {
           </div>
         </div>
         <div className="text-right">
-          {/* <label className="block text-sm font-bold text-gray-700">Total</label> */}
-          {/* <div className="mt-1 py-2 px-3 border rounded bg-gray-50 text-right">
-            ${(item.qty * item.price).toFixed(2)}
-          </div> */}
-          {/* {item.id !== 0 && (
-            <button
-              onClick={() => handleDeleteLineItem(item.id)}
-              className="mt-4 px-4 py-2 bg-red-400 text-white border border-red-400 rounded hover:bg-red-700 hover:border-[1px]"
-            >
-              Delete
-            </button>
-          )} */}
+
         </div>
       </div>
     ))}

@@ -18,6 +18,8 @@ import { FC, ReactNode } from "react";
 import QuotationList from "./pages/QuotationList";
 import Quote from "./pages/Quote";
 import Preview from "./pages/Preview";
+import EditPage from "./pages/EditPage";
+import ApprovedPage from "./pages/ApprovedPage";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -47,6 +49,14 @@ function AnimatedRoutes() {
            <Route
             path="/quotation"
             element={<PageWrapper><Preview /></PageWrapper>}
+          />
+          <Route
+            path="/edit/:id"
+            element={<PageWrapper><EditPage /></PageWrapper>}
+          />
+           <Route
+            path="/Approved"
+            element={<PageWrapper><ApprovedPage /></PageWrapper>}
           />
           <Route
             path="/calendar"
