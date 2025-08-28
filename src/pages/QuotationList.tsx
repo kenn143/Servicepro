@@ -279,7 +279,7 @@ const QuotationList: React.FC = () => {
                             colSpan={6}
                             className="px-4 py-4 text-center text-gray-500 h-20"
                             >
-                            loading...
+                            Loading...
                             </td>
                         </tr>
                         ) : filteredData.length === 0 ? (
