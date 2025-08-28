@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <GridIcon />,
-    name: "File Tracker",
+    name: "Flyer Tracker",
     path: "/file-tracker",
   },
     {
@@ -275,8 +275,8 @@ const AppSidebar: React.FC = () => {
           {isExpanded || isHovered || isMobileOpen ? (
             <>
                 <span className="text-2xl font-bold text-gray-900 dark:text-white">
-    ServicePro
-  </span>
+                  ServicePros
+                </span>
             </>
           ) : (
             <img
