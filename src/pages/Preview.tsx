@@ -47,10 +47,10 @@ const Preview: React.FC = () => {
   const [emailaddress, setEmailAddress] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [address, setAddress] = useState<string>("");
-  const [quoteNumber, setQuoteNumber] = useState<string>("");
+const [, setQuoteNumber] = useState<string>("");
   const [datecreated, setDateCreated] = useState<string>("");
   const [status, setStatus] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+const [, setLoading] = useState<boolean>(false);
 
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
