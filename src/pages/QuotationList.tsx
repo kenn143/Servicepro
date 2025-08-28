@@ -141,7 +141,7 @@ const QuotationList: React.FC = () => {
           <div className="min-h-screen  px-4 font-sans flex flex-col items-center">
             <div className="w-full max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-2 sm:space-y-0 text-center mt-[60px]">
               <img
-                src="/Image/Lights-Installer-Logo.webp"
+                src="/images/Lights-Installer-Logo.webp"
                 alt="Lights Installer Logo"
                 className="h-10 sm:h-12"
               />
