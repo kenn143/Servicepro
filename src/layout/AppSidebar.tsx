@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
+import QuoteIcon from "../icons/quote";
+import FlyerTracker from "../icons/flyertracker";
 
 // Assume these icons are imported from an icon library
 import {
@@ -32,19 +34,21 @@ const navItems: NavItem[] = [
     path: "/calendar",
   },
   {
-    icon: <GridIcon />,
+    icon: <FlyerTracker/>,
     name: "Flyer Tracker",
     path: "/file-tracker",
   },
     {
-    icon: <GridIcon />,
-    name: "Quote",
-    path: "/quotation",
+    icon: <QuoteIcon />,
+    name: "Light Installers Quote",
+    path: "/quotation-list",
   },
    {
     icon: <GridIcon />,
     name: "Invoice",
-    path: "/quotation",
+   subItems: [{ name: "Create Invoice", path: "/Create", pro: false },
+              { name: "Invoice List", path: "/List", pro:false  }
+   ],
   },
   // {
   //   name: "Tables",

@@ -136,9 +136,7 @@ const FileTracker: React.FC = () => {
     });
   };
 
-  const handleLogout = () => {
-    window.location.href = "/";
-  };
+
 
   return (
     <>
@@ -150,12 +148,12 @@ const FileTracker: React.FC = () => {
         <div className="custom-calendars">
           <div className="min-h-screen flex flex-col items-center pt-12 ">
             <div className="absolute top-4 right-4">
-              <button
+              {/* <button
                 onClick={handleLogout}
                 className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded"
               >
                 Logout
-              </button>
+              </button> */}
             </div>
             <h1 className="text-5xl font-semibold text-blue-950 mb-4 dark:text-white/90">
               Welcome to Flyer Tracker App

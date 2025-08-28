@@ -1,13 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router";
+import { AnimatePresence, motion } from "framer-motion";
+
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
-// import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
 import Images from "./pages/UiElements/Images";
-// import Alerts from "./pages/UiElements/Alerts";
-
-// import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
@@ -16,48 +14,96 @@ import FileTracker from "./pages/FileTracker";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import { FC, ReactNode } from "react";
+import QuotationList from "./pages/QuotationList";
+import Quote from "./pages/Quote";
+import Preview from "./pages/Preview";
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Dashboard Layout */}
+        <Route element={<AppLayout />}>
+          <Route
+            index
+            path="/"
+            element={<PageWrapper><Home /></PageWrapper>}
+          />
+          <Route
+            path="/file-tracker"
+            element={<PageWrapper><FileTracker /></PageWrapper>}
+          />
+          <Route
+            path="/quotation-list"
+            element={<PageWrapper><QuotationList /></PageWrapper>}
+          />
+         <Route
+            path="/quote-entry"
+            element={<PageWrapper><Quote /></PageWrapper>}
+          />
+           <Route
+            path="/quotation"
+            element={<PageWrapper><Preview /></PageWrapper>}
+          />
+          <Route
+            path="/calendar"
+            element={<PageWrapper><Calendar /></PageWrapper>}
+          />
+          <Route
+            path="/basic-tables"
+            element={<PageWrapper><BasicTables /></PageWrapper>}
+          />
+          <Route
+            path="/buttons"
+            element={<PageWrapper><Buttons /></PageWrapper>}
+          />
+          <Route
+            path="/images"
+            element={<PageWrapper><Images /></PageWrapper>}
+          />
+          <Route
+            path="/videos"
+            element={<PageWrapper><Videos /></PageWrapper>}
+          />
+          <Route
+            path="/bar-chart"
+            element={<PageWrapper><BarChart /></PageWrapper>}
+          />
+        </Route>
+
+        {/* Auth Layout */}
+        <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
+        <Route path="/signup" element={<PageWrapper><SignUp /></PageWrapper>} />
+
+        {/* Fallback */}
+        <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
+const PageWrapper: FC<{ children: ReactNode }> = ({ children }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      transition={{ duration: 0.3 }}
+      className="w-full h-full"
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 export default function App() {
   return (
-    <>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
-
-            {/* Others Page */}
-            <Route path="/file-tracker" element={<FileTracker />} />
-            <Route path="/calendar" element={<Calendar />} />
-       
-
-
-            {/* Tables */}
-            <Route path="/basic-tables" element={<BasicTables />} />
-
-            {/* Ui Elements */}
-            {/* <Route path="/alerts" element={<Alerts />} /> */}
-            {/* <Route path="/avatars" element={<Avatars />} /> */}
-   
-            <Route path="/buttons" element={<Buttons />} />
-            <Route path="/images" element={<Images />} />
-            <Route path="/videos" element={<Videos />} />
-
-            {/* Charts */}
-         
-            <Route path="/bar-chart" element={<BarChart />} />
-          </Route>
-
-          {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-
-          {/* Fallback Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </>
+    <Router>
+      <ScrollToTop />
+      <AnimatedRoutes />
+    </Router>
   );
 }
