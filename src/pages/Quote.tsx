@@ -335,7 +335,6 @@ const Quote: React.FC = () => {
           </div>
         </div>
         <div className="text-right">
-
         </div>
       </div>
     ))}
@@ -371,8 +370,7 @@ const Quote: React.FC = () => {
     <div className="text-left">
       <button
         onClick={addItem}
-        className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-sky-700"
-        
+        className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-sky-700"     
       >
         SAVE
       </button>
