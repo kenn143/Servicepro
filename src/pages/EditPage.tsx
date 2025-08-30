@@ -192,13 +192,13 @@ const handleInputChange = (
   return (
     <>
       <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="ServicePros"
+        description=""
       />
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="custom-calendars">
-             <div className="bg-gray-100 min-h-screen p-4 sm:p-6 font-sans">
-      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-4 sm:p-6">       
+             <div className=" min-h-screen p-4 sm:p-6 font-sans">
+      <div className="max-w-6xl mx-auto  rounded-xl shadow-md p-4 sm:p-6">       
       <div className="flex justify-start">
          <button className="flex items-center text-sm text-gray-700 hover:text-black mb-4" onClick={handleRedirect}>
             <svg className="h-5 w-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -210,9 +210,9 @@ const handleInputChange = (
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
           <div className="flex flex-col sm:flex-row items-start sm:items-center w-full">
-            <h2 className="text-xl sm:text-2xl font-bold mr-0 sm:mr-2">Quote for</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mr-0 sm:mr-2 dark:text-white">Quote for</h2>
             <select
-              className="w-full sm:w-auto font-semibold text-base px-2 py-2 mt-2 sm:mt-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full sm:w-auto font-semibold text-base px-2 py-2 mt-2 sm:mt-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:text-white"
               value={clientName || ""}
               disabled
             >
@@ -221,9 +221,9 @@ const handleInputChange = (
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-300">
-          <div className="md:pr-4 w-full md:w-1/2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+        <div className="flex flex-col md:flex-row gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-300 dark:text-white">
+          <div className="md:pr-4 w-full md:w-1/2 ">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Job Title</label>
             <input
               type="text"
               className="w-full border border-gray-300 rounded-md p-2"
@@ -234,13 +234,13 @@ const handleInputChange = (
           <div className="md:pl-4 pt-4 md:pt-0 w-full md:w-1/2">
             <div className="font-bold text-sm mb-1">Quote Details:</div>
             <div>
-              <span className="text-sm font-semibold text-gray-600">Salesperson:</span>
+              <span className="text-sm font-semibold text-gray-600 dark:text-white">Salesperson:</span>
               <span className="ml-2 text-gray-800">{item?.salesperson || "N/A"}</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-6 space-y-4 border-b-[2px] pb-4">
+        <div className="mt-6 space-y-4 border-b-[2px] pb-4 dark:text-white">
           {[...quoteData, ...newItems].map((record, idx) => {
             const fields = record.fields;
             const isOptional = fields?.IsOptional === 1;
@@ -250,14 +250,14 @@ const handleInputChange = (
               <div
                 key={record.id}
                 className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start p-4 rounded ${
-                  isOptional ? "bg-gray-100" : ""
+                  isOptional ? "bg-gray-100 dark:bg-gray-500 " : ""
                 }`}
               >
                 <div>
                   {isOptional && (
                     <div className="text-xs text-gray-500 font-semibold mb-1 mt-[-15px] italic">Optional</div>
                   )}
-                  <label className="block text-sm font-bold text-gray-700">Item Name</label>
+                  <label className="block text-sm font-bold ">Item Name</label>
                   <input
                     type="text"
                     className="mt-1 w-full border rounded px-3 py-2"
@@ -271,7 +271,7 @@ const handleInputChange = (
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700">Description</label>
+                  <label className="block text-sm font-bold ">Description</label>
                   <input
                     type="text"
                     className="mt-1 w-full border rounded px-3 py-2"
@@ -285,7 +285,7 @@ const handleInputChange = (
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700">Price</label>
+                  <label className="block text-sm font-bold ">Price</label>
                   <input
                     type="number"
                     className="mt-1 w-full border rounded px-3 py-2"
@@ -298,7 +298,7 @@ const handleInputChange = (
                   />
                 </div>
                 <div>
-                <label className="block text-sm font-bold text-gray-700">Attachment</label>
+                <label className="block text-sm font-bold ">Attachment</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -336,15 +336,15 @@ const handleInputChange = (
           </button>
         </div>
 
-        <div className="mt-6 text-right text-xl font-semibold">
+        <div className="mt-6 text-right text-xl font-semibold dark:text-white">
           Total: ${totalPrice}
         </div>
 
         <div className="mt-4 mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Client Message</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-white">Client Message</label>
           <textarea
             rows={4}
-            className="w-full border border-gray-300 rounded-md p-2"
+            className="w-full border border-gray-300 rounded-md p-2 dark:text-white"
             placeholder="Enter message"
           ></textarea>
         </div>
