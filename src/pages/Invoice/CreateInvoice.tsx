@@ -51,11 +51,11 @@ const handleSelect = (name: string) => {
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] min-h-[500px]">
         <div className="custom-calendars">
           <div className="max-w-md mx-auto mt-10">
-            <div className="rounded-2xl border bg-white shadow p-6 min-h-[150px] ">
-              <ReceiptText className="mx-auto mb-2 h-10 w-10 text-gray-600" />
+            <div className="rounded-2xl border  shadow p-6 min-h-[150px] ">
+              <ReceiptText className="mx-auto mb-2 h-10 w-10 text-gray-600 dark:text-white" />
 
-              <h2 className="mb-1 text-lg font-semibold text-center">Create New Invoice</h2>
-              <p className="mb-4 text-sm text-gray-600 text-center">
+              <h2 className="mb-1 text-lg font-semibold text-center dark:text-white">Create New Invoice</h2>
+              <p className="mb-4 text-sm text-gray-600 text-center dark:text-white">
                 Before we proceed, please select a customer
               </p>
 
@@ -64,7 +64,7 @@ const handleSelect = (name: string) => {
                 value={query}
                 onChange={(e) => handleChange(e.target.value)}
                 placeholder="Search customer..."
-                className="w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none"
+                className="w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white"
               />
 
               {loading && (
