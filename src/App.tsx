@@ -20,6 +20,7 @@ import Quote from "./pages/Quote";
 import Preview from "./pages/Preview";
 import EditPage from "./pages/EditPage";
 import ApprovedPage from "./pages/ApprovedPage";
+import CreateInvoice from "./pages/Invoice/CreateInvoice";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -57,6 +58,10 @@ function AnimatedRoutes() {
            <Route
             path="/Approved"
             element={<PageWrapper><ApprovedPage /></PageWrapper>}
+          />
+           <Route
+            path="/create-invoice"
+            element={<PageWrapper><CreateInvoice /></PageWrapper>}
           />
           <Route
             path="/calendar"
