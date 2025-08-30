@@ -52,7 +52,7 @@ export default function CreateInvoice() {
 
               <h2 className="mb-1 text-lg font-semibold text-center">Create New Invoice</h2>
               <p className="mb-4 text-sm text-gray-600 text-center">
-                Before we proceed, please select a client
+                Before we proceed, please select a customer
               </p>
 
               <input
