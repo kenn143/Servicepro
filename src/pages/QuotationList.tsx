@@ -186,7 +186,7 @@ const QuotationList: React.FC = () => {
                       {filteredData.map((item) => (
                         <tr
                           key={item.id}
-                          className="border-t border-gray-200 hover:bg-gray-50 dark:text-white"
+                          className="border-t border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700"
                         >
                           <td className="px-2 sm:px-4 py-2 whitespace-normal break-words ">
                             {item.jobTitle}
