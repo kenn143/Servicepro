@@ -16,30 +16,34 @@ export default function CreateInvoice() {
   const [filtered, setFiltered] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (value: string) => {
-    setQuery(value);
-    if (value.trim() === "") {
-      setFiltered([]);
-      setLoading(false);
-      return;
-    }
+  const [selected, setSelected] = useState(false);
 
-    setLoading(true);
-
-    setTimeout(() => {
-      const results = customers.filter((c) =>
-        c.toLowerCase().includes(value.toLowerCase())
-      );
-      setFiltered(results);
-      setLoading(false);
-    }, 600); 
-  };
-
-  const handleSelect = (name: string) => {
-    setQuery(name);
+const handleChange = (value: string) => {
+  setQuery(value);
+  setSelected(false); // reset when typing again
+  if (value.trim() === "") {
     setFiltered([]);
     setLoading(false);
-  };
+    return;
+  }
+
+  setLoading(true);
+  setTimeout(() => {
+    const results = customers.filter((c) =>
+      c.toLowerCase().includes(value.toLowerCase())
+    );
+    setFiltered(results);
+    setLoading(false);
+  }, 600);
+};
+
+const handleSelect = (name: string) => {
+  setQuery(name);
+  setFiltered([]);
+  setLoading(false);
+  setSelected(true); 
+};
+
 
   return (
     <>
@@ -89,25 +93,23 @@ export default function CreateInvoice() {
                 </div>
               )}
 
-              {!loading && query.trim() !== "" && (
+              {!loading && query.trim() !== "" && !selected && (
                 <ul className="mt-2 max-h-40 overflow-y-auto rounded-md border bg-white shadow">
-                  {filtered.length > 0 ? (
+                    {filtered.length > 0 ? (
                     filtered.map((name, idx) => (
-                      <li
+                        <li
                         key={idx}
                         className="cursor-pointer px-3 py-2 hover:bg-gray-100"
                         onClick={() => handleSelect(name)}
-                      >
+                        >
                         {name}
-                      </li>
+                        </li>
                     ))
-                  ) : (
-                    <li className="px-3 py-2 text-sm text-gray-500">
-                      No results found
-                    </li>
-                  )}
+                    ) : (
+                    <li className="px-3 py-2 text-sm text-gray-500">No results found</li>
+                    )}
                 </ul>
-              )}
+                )}
             </div>
           </div>
         </div>
