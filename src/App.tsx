@@ -1,13 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
-
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
-import Videos from "./pages/UiElements/Videos";
-import Images from "./pages/UiElements/Images";
-import Buttons from "./pages/UiElements/Buttons";
-import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import FileTracker from "./pages/FileTracker";
@@ -76,29 +71,12 @@ function AnimatedRoutes() {
             path="/basic-tables"
             element={<PageWrapper><BasicTables /></PageWrapper>}
           />
-          <Route
-            path="/buttons"
-            element={<PageWrapper><Buttons /></PageWrapper>}
-          />
-          <Route
-            path="/images"
-            element={<PageWrapper><Images /></PageWrapper>}
-          />
-          <Route
-            path="/videos"
-            element={<PageWrapper><Videos /></PageWrapper>}
-          />
-          <Route
-            path="/bar-chart"
-            element={<PageWrapper><BarChart /></PageWrapper>}
-          />
+
         </Route>
 
-        {/* Auth Layout */}
         <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
         <Route path="/signup" element={<PageWrapper><SignUp /></PageWrapper>} />
 
-        {/* Fallback */}
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
