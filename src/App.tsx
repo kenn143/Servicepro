@@ -28,7 +28,7 @@ function AnimatedRoutes() {
         <Route element={<AppLayout />}>
           <Route
             index
-            path="/"
+            path="/home"
             element={<PageWrapper><Home /></PageWrapper>}
           />
           <Route
@@ -76,6 +76,7 @@ function AnimatedRoutes() {
 
         <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
         <Route path="/signup" element={<PageWrapper><SignUp /></PageWrapper>} />
+        <Route path="/" element={<PageWrapper><SignIn /></PageWrapper>} />
 
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
