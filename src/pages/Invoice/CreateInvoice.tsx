@@ -1,60 +1,150 @@
 import { useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
-import { ReceiptText } from "lucide-react"; 
+import { ReceiptText, Check } from "lucide-react";
 
-const customers = [
-  "Rowel Tabiolo",
-  "Michael Jackson",
-  "Elon Musk",
-  "Steve Jobs",
-  "Mark Tuto",
+type Customer = {
+  CustomerId: string;
+  CustomerName: string;
+  Address: string;
+  Status: string;
+  PhoneNumber: string;
+  EmailAddress: string;
+  DateCreated: string;
+};
 
-];
+type Item = {
+  quantity: number;
+  price: number;
+  markup: number;
+  cost: number;
+};
+
+const steps = ["Add Item", "Notes", "Attachment"];
 
 export default function CreateInvoice() {
   const [query, setQuery] = useState("");
-  const [filtered, setFiltered] = useState<string[]>([]);
+  const [filtered, setFiltered] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const [items, setItems] = useState<Item[]>([
+    { quantity: 0, price: 0, markup: 0, cost: 0 },
+  ]);
+  // Inside your component, add this state for attachment preview
+const [attachment, setAttachment] = useState<File | null>(null);
+const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
 
-  const [selected, setSelected] = useState(false);
+  const AIRTABLE_ENDPOINT =
+    "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0";
+  const AIRTABLE_TOKEN =
+    "patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609";
 
-const handleChange = (value: string) => {
-  setQuery(value);
-  setSelected(false); // reset when typing again
-  if (value.trim() === "") {
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files[0]) {
+    const file = e.target.files[0];
+    setAttachment(file);
+
+    if (file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAttachmentPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setAttachmentPreview(null); 
+    }
+  }
+};
+
+  const handleChange = async (value: string) => {
+    setQuery(value);
+    setFiltered([]);
+    if (value.trim() === "") {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${AIRTABLE_ENDPOINT}?filterByFormula=SEARCH(LOWER("${value}"), LOWER({CustomerName}))`,
+        { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } }
+      );
+      if (!response.ok) throw new Error("Failed to fetch customers");
+      const data = await response.json();
+      const results: Customer[] = data.records.map((rec: any) => ({
+        CustomerId: rec.id,
+        CustomerName: rec.fields.CustomerName || "",
+        Address: rec.fields.Address || "",
+        Status: rec.fields.Status || "Unknown",
+        PhoneNumber: rec.fields.PhoneNumber || "",
+        EmailAddress: rec.fields.EmailAddress || "",
+        DateCreated: rec.createdTime,
+      }));
+      setFiltered(results);
+    } catch (error) {
+      console.error(error);
+      setFiltered([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelect = (customer: Customer) => {
+    setQuery("");
     setFiltered([]);
     setLoading(false);
-    return;
-  }
+    setSelectedCustomer(customer);
+  };
 
-  setLoading(true);
-  setTimeout(() => {
-    const results = customers.filter((c) =>
-      c.toLowerCase().includes(value.toLowerCase())
-    );
-    setFiltered(results);
-    setLoading(false);
-  }, 600);
-};
+  const nextStep = () => {
+    if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1);
+  };
 
-const handleSelect = (name: string) => {
-  setQuery(name);
-  setFiltered([]);
-  setLoading(false);
-  setSelected(true); 
-};
+  const prevStep = () => {
+    if (activeStep > 0) setActiveStep((prev) => prev - 1);
+  };
 
+  const handleRedirect = () => {
+    window.location.href = "/create-invoice";
+  };
+
+  const handleItemChange = (index: number, field: keyof Item, value: number) => {
+    const newItems = [...items];
+    newItems[index][field] = value;
+
+    if (field === "price" || field === "markup" || field === "quantity") {
+      newItems[index].cost = (newItems[index].price + newItems[index].markup) * newItems[index].quantity;
+    }
+
+    setItems(newItems);
+  };
+
+  const addItem = () => {
+    setItems([...items, { quantity: 0, price: 0, markup: 0, cost: 0 }]);
+  };
+
+  const totalCost = items.reduce((acc, item) => acc + item.cost, 0);
 
   return (
     <>
       <PageMeta title="ServicePros" description="" />
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] min-h-[500px]">
-        <div className="custom-calendars">
-          <div className="max-w-md mx-auto mt-10">
-            <div className="rounded-2xl border  shadow p-6 min-h-[150px] ">
-              <ReceiptText className="mx-auto mb-2 h-10 w-10 text-gray-600 dark:text-white" />
+      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] min-h-[600px]">
+        <div className="p-4">
+          <button className="flex items-center text-sm text-gray-700 hover:text-black dark:text-white mb-8" onClick={handleRedirect}>
+            <svg className="h-5 w-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
 
-              <h2 className="mb-1 text-lg font-semibold text-center dark:text-white">Create New Invoice</h2>
+          {!selectedCustomer ? (
+            <div className="rounded-2xl border shadow p-6 min-h-[150px] w-full max-w-lg mx-auto">
+              <ReceiptText className="mx-auto mb-2 h-10 w-10 text-gray-600 dark:text-white" />
+              <h2 className="mb-1 text-lg font-semibold text-center dark:text-white">
+                Create New Invoice
+              </h2>
               <p className="mb-4 text-sm text-gray-600 text-center dark:text-white">
                 Before we proceed, please select a customer
               </p>
@@ -75,43 +165,162 @@ const handleSelect = (name: string) => {
                     fill="none"
                     viewBox="0 0 24 24"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                    ></path>
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                   </svg>
                   Loading...
                 </div>
               )}
 
-              {!loading && query.trim() !== "" && !selected && (
+              {!loading && query.trim() !== "" && (
                 <ul className="mt-2 max-h-40 overflow-y-auto rounded-md border bg-white shadow">
-                    {filtered.length > 0 ? (
-                    filtered.map((name, idx) => (
-                        <li
-                        key={idx}
-                        className="cursor-pointer px-3 py-2 hover:bg-gray-100"
-                        onClick={() => handleSelect(name)}
-                        >
-                        {name}
-                        </li>
+                  {filtered.length > 0 ? (
+                    filtered.map((cust) => (
+                      <li key={cust.CustomerId} className="cursor-pointer px-3 py-2 hover:bg-gray-100" onClick={() => handleSelect(cust)}>
+                        {cust.CustomerName}
+                      </li>
                     ))
-                    ) : (
+                  ) : (
                     <li className="px-3 py-2 text-sm text-gray-500">No results found</li>
-                    )}
+                  )}
                 </ul>
-                )}
+              )}
             </div>
-          </div>
+          ) : (
+            <div>
+              <div className="p-6 rounded-2xl border bg-white shadow">
+                <h2 className="text-lg font-semibold mb-3">Customer Information</h2>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <p><span className="font-medium">Name:</span> {selectedCustomer.CustomerName}</p>
+                  <p><span className="font-medium">Address:</span> {selectedCustomer.Address}</p>
+                  <p><span className="font-medium">Phone:</span> {selectedCustomer.PhoneNumber}</p>
+                  <p><span className="font-medium">Email:</span> {selectedCustomer.EmailAddress}</p>
+                  <p><span className="font-medium">Status:</span> {selectedCustomer.Status}</p>
+                  <p><span className="font-medium">Created:</span> {new Date(selectedCustomer.DateCreated).toLocaleDateString()}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between mt-6 mb-6">
+                {steps.map((step, idx) => (
+                  <div key={idx} className="flex items-center w-full">
+                    <div className="flex flex-col items-center relative">
+                      <div
+                        className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors duration-300
+                          ${idx < activeStep ? "bg-green-500 border-green-500 text-white" : idx === activeStep ? "bg-blue-500 border-blue-500 text-white" : "bg-white border-gray-300 text-gray-500"}`}
+                      >
+                        {idx < activeStep ? <Check className="w-5 h-5" /> : idx + 1}
+                      </div>
+                      <span className={`mt-2 text-sm ${idx === activeStep ? "font-semibold text-blue-600" : "text-gray-600"}`}>
+                        {step}
+                      </span>
+                    </div>
+                    {idx < steps.length - 1 && (
+                      <div className={`flex-1 h-1 mx-2 transition-colors duration-300 ${idx < activeStep ? "bg-blue-500" : "bg-gray-300"}`}></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+                <div className="p-6 border rounded-xl bg-white shadow-sm min-h-[200px]">
+                  {activeStep === 0 && (
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Item Name"
+                        className="w-1/2 rounded-md border px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white mb-4"
+                      />
+
+                      <table className="w-full text-sm mb-4">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="p-2 text-left">Quantity</th>
+                            <th className="p-2 text-left">Price</th>
+                            <th className="p-2 text-left">Mark Up</th>
+                            <th className="p-2 text-left">Cost</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items.map((item, idx) => (
+                            <tr key={idx} className="border-b">
+                              <td className="p-2">
+                                <input type="number" value={item.quantity} onChange={(e) => handleItemChange(idx, "quantity", Number(e.target.value))} className="w-full border rounded px-2 py-1 text-sm" />
+                              </td>
+                              <td className="p-2">
+                                <input type="number" value={item.price} onChange={(e) => handleItemChange(idx, "price", Number(e.target.value))} className="w-full border rounded px-2 py-1 text-sm" />
+                              </td>
+                              <td className="p-2">
+                                <input type="number" value={item.markup} onChange={(e) => handleItemChange(idx, "markup", Number(e.target.value))} className="w-full border rounded px-2 py-1 text-sm" />
+                              </td>
+                              <td className="p-2">{item.cost.toFixed(2)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      <div className="flex justify-between items-center">
+                        <button onClick={addItem} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
+                          Add Item
+                        </button>
+                        <div className="text-right font-semibold text-lg">
+                          Total: {totalCost.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeStep === 1 && (
+                    <div>
+                      <textarea
+                        placeholder="Enter your notes here"
+                        className="w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white min-h-[120px]"
+                      ></textarea>
+                    </div>
+                  )}
+
+                {activeStep === 2 && (
+                  <div className="flex flex-col items-center justify-center">
+                    <label className="cursor-pointer flex flex-col items-center px-4 py-6 bg-gray-100 rounded-lg hover:bg-gray-200">
+                      <svg className="w-10 h-10 mb-2 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v6m0 0l-3-3m3 3l3-3M12 3v9" />
+                      </svg>
+                      <span className="text-sm text-gray-600">Click to upload file</span>
+                      <input type="file" className="hidden" onChange={handleFileChange} />
+                    </label>
+
+                    {attachmentPreview && (
+                      <div className="mt-4">
+                        <img src={attachmentPreview} alt="Preview" className="max-h-60 rounded shadow" />
+                      </div>
+                    )}
+
+                    {attachment && !attachmentPreview && (
+                      <p className="mt-2 text-sm text-gray-600">{attachment.name}</p>
+                    )}
+                  </div>
+                )}
+                </div>
+
+
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={prevStep}
+                  disabled={activeStep === 0}
+                  className={`px-4 py-2 rounded-lg transition-colors ${activeStep === 0 ? "bg-gray-300 text-gray-600 cursor-not-allowed" : "bg-gray-500 text-white hover:bg-gray-600"}`}
+                >
+                  Back
+                </button>
+
+                {activeStep < steps.length - 1 ? (
+                  <button onClick={nextStep} className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600">
+                    Next
+                  </button>
+                ) : (
+                  <button onClick={() => alert("Invoice setup completed!")} className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600">
+                    SAVE
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
