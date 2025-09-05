@@ -169,7 +169,7 @@ const QuotationList: React.FC = () => {
                 <div className="overflow-y-auto h-[400px]">
                   <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm ">
                     <thead>
-                      <tr className=" text-gray-800 dark:text-white/90">
+                      <tr className=" text-gray-800 dark:text-white/90 text-sm">
                         <th className="px-2 sm:px-4 py-2 text-left">
                           Job Title
                         </th>
@@ -186,9 +186,9 @@ const QuotationList: React.FC = () => {
                       {filteredData.map((item) => (
                         <tr
                           key={item.id}
-                          className="border-t border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700"
+                          className="border-t border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
                         >
-                          <td className="px-2 sm:px-4 py-2 whitespace-normal break-words ">
+                          <td className="px-2 sm:px-4 py-2 whitespace-normal break-words text-sm">
                             {item.jobTitle}
                           </td>
                           <td className="px-2 sm:px-4 py-2 whitespace-normal break-words ">

@@ -149,16 +149,16 @@ const FileTracker: React.FC = () => {
             <div className="absolute top-4 right-4">
 
             </div>
-            <h1 className="text-5xl font-semibold text-blue-950 mb-4 dark:text-white/90">
+            <h1 className="text-5xl font-semibold text-blue-950 mb-8 dark:text-white/90">
               Welcome to Flyer Tracker App
             </h1>
 
-            <div className="flex gap-6 items-center mb-8">
+            <div className="flex gap-6 items-center mb-6">
               {options.map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => setSelected(opt.value)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all duration-150 ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-md font-medium transition-all duration-150 text-sm ${
                     selected === opt.value
                       ? "bg-blue-600 text-white"
                       : "bg-transparent text-blue-900 border border-blue-600"
@@ -171,18 +171,18 @@ const FileTracker: React.FC = () => {
             </div>
 
             <div
-              className="w-64 h-48 border mt-5 mb-10 border-blue-950 rounded-lg flex flex-col items-center justify-center  cursor-pointer hover:shadow-md transition dark:border-white"
+              className="w-45 h-38 border mt-5 mb-10 border-blue-950 rounded-lg flex flex-col items-center justify-center  cursor-pointer hover:shadow-md transition dark:border-white"
               onClick={handleBoxClick}
             >
               <CiCamera className="text-blue-400 text-6xl mb-2" />
-              <p className="text-blue-950 font-semibold text-lg dark:text-white/90">Click here to capture!</p>
+              <p className="text-blue-950 font-semibold text-md dark:text-white/90">Click here to capture!</p>
             </div>
 
             <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
 
             {imageUrl && captureTime && (
               <div className="mt-10 w-full bg-indigo-100 p-8 rounded-xl shadow-md flex flex-col items-center">
-                <p className="text-lg text-blue-900 font-medium mb-4 text-center">
+                <p className="text-md text-blue-900 font-medium mb-4 text-center">
                   Congratulations, you've captured{" "}
                   <span className="font-bold text-blue-700">{totalCount}</span> {selected.toLowerCase()} today.
                   <br />

@@ -17,11 +17,14 @@ import EditPage from "./pages/EditPage";
 import ApprovedPage from "./pages/ApprovedPage";
 import CreateInvoice from "./pages/Invoice/CreateInvoice";
 import InvoiceList from "./pages/Invoice/InvoiceList";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AnimatedRoutes() {
   const location = useLocation();
 
   return (
+    
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Dashboard Layout */}
@@ -80,6 +83,8 @@ function AnimatedRoutes() {
 
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
+      {/* <ToastContainer/> */}
+      <ToastContainer className="!z-[100000]" />
     </AnimatePresence>
   );
 }
