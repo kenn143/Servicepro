@@ -111,7 +111,8 @@ const openPDF = async (record: any) => {
 };
 
   return (
-    <div className="max-w-7xl mx-auto mt-10 p-6 rounded-2xl shadow">
+    // <div className="max-w-7xl mx-auto mt-10 p-6 rounded-2xl shadow">
+    <div className="max-w-7xl mx-auto mt-10 p-6 ">
       <div className="mb-6 flex flex-col gap-3">
         <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow self-start">
           <Send size={18} /> Send Invoice
@@ -126,59 +127,61 @@ const openPDF = async (record: any) => {
         />
       </div>
 
-      <div className="w-full">
-        <table className="w-full border border-gray-200 text-xs sm:text-sm table-fixed">
-          <thead className="bg-gray-100 dark:bg-black dark:text-white">
-            <tr>
-              <th className="w-1/12 px-1 py-1 border text-center">Select</th>
-              <th className="w-2/12 px-1 py-1 border">Invoice #</th>
-              <th className="w-3/12 px-1 py-1 border">Invoice Name</th>
-              <th className="w-3/12 px-1 py-1 border">Customer</th>
-              <th className="w-2/12 px-1 py-1 border">Status</th>
-              <th className="w-1/12 px-1 py-1 border text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((record) => (
-                <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
-                  <td className="px-1 py-1 border text-center">
-                    <input type="checkbox" />
-                  </td>
-                  <td className="px-1 py-1 border break-words">{record.fields.InvoiceNumber}</td>
-                  <td className="px-1 py-1 border break-words">{record.fields.Item || "N/A"}</td>
-                  <td className="px-1 py-1 border break-words">{record.fields.CustomerName?.[0]}</td>
-                  <td className="px-1 py-1 border text-center">
-                        {record.fields.Status === "Active" ? (
-                          <span className="inline-flex items-center gap-1 text-green-600 ">
-                            <span className="w-3 h-3 rounded-full bg-green-600"></span> Active
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
-                            <span className="w-3 h-3 rounded-full bg-red-600"></span> Inactive
-                          </span>
-                        )}
-                 </td>
-                  <td className="px-1 py-1 border text-center">
-                    <button
-                      onClick={() => setPreviewRecord(record)}
-                      className="text-blue-600 underline text-xs"
-                    >
-                      Preview
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center py-2 text-gray-500">
-                  No Record Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+<div className="w-full">
+  <table className="w-full border border-gray-200 text-xs sm:text-sm table-auto">
+    <thead className="bg-gray-100 dark:bg-black dark:text-white">
+      <tr>
+        <th className="px-2 py-1 border text-center">Select</th>
+        <th className="px-2 py-1 border">Invoice #</th>
+        <th className="px-2 py-1 border">Invoice Name</th>
+        <th className="px-2 py-1 border">Customer</th>
+        <th className="px-2 py-1 border text-center">Status</th>
+        <th className="px-2 py-1 border text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filtered.length > 0 ? (
+        filtered.map((record) => (
+          <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
+            <td className="px-2 py-1 border text-center">
+              <input type="checkbox" />
+            </td>
+            <td className="px-2 py-1 border break-words">{record.fields.InvoiceNumber}</td>
+            <td className="px-2 py-1 border break-words">{record.fields.Item || "N/A"}</td>
+            <td className="px-2 py-1 border break-words">{record.fields.CustomerName?.[0]}</td>
+            <td className="px-2 py-1 border text-center">
+              {record.fields.Status === "Active" ? (
+                <span className="inline-flex items-center gap-1 text-green-600">
+                  <span className="w-3 h-3 rounded-full bg-green-600"></span> Active
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
+                  <span className="w-3 h-3 rounded-full bg-red-600"></span> Inactive
+                </span>
+              )}
+            </td>
+            <td className="px-2 py-1 border text-center">
+              <button
+                onClick={() => setPreviewRecord(record)}
+                className="text-blue-600 underline text-xs"
+              >
+                Preview
+              </button>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan={6} className="text-center py-2 text-gray-500">
+            No Record Found
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
       {previewRecord && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 ">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl h-[80vh] flex flex-col">
