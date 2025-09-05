@@ -53,7 +53,7 @@ export default function SignInForm() {
     }
 
 
-    if (data.ID && data.ID !== "") {
+    if (data.ID && data.ID !== "Not Found") {
       console.log("Login success:", data);
       navigate("/home");
     } else {
