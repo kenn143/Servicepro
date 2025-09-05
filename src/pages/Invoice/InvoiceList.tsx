@@ -112,7 +112,7 @@ const openPDF = async (record: any) => {
 
   return (
     // <div className="max-w-7xl mx-auto mt-10 p-6 rounded-2xl shadow">
-    <div className="max-w-7xl mx-auto mt-10 p-6 ">
+    <div className="max-w-7xl mx-auto mt-10  ">
       <div className="mb-6 flex flex-col gap-3">
         <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow self-start">
           <Send size={18} /> Send Invoice
