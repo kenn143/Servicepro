@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const [name,setName] = useState("")
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -12,6 +14,36 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  const handleSignOut = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("accessibleApps");
+    navigate("/signin");
+  };
+
+const getToken = () => {
+  // Read from localStorage using the key "data"
+  const storedData = localStorage.getItem("data");
+
+  if (!storedData) return null; // nothing stored
+
+  try {
+    const parsed = JSON.parse(storedData);
+
+    return {
+      ID: parsed.ID,
+      UserName: parsed.UserName,
+      FullName: parsed.FullName,
+      UserType: parsed.UserType,
+      Status: parsed.Status,
+   
+    };
+  } catch (e) {
+    console.error("Invalid JSON in localStorage for data", e);
+    return null;
+  }
+};
+
   return (
     <div className="relative">
       <button
@@ -22,7 +54,11 @@ export default function UserDropdown() {
           <img src="/images/user/user-01.jpg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Test</span>
+        <span className="block mr-1 font-medium text-theme-sm">
+        {getToken()?.FullName}
+          
+        </span>
+
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -50,24 +86,22 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {/* Musharof Chowdhury */}
+            {getToken()?.FullName || "Guest User"}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            {/* randomuser@pimjo.com */}
+            {getToken()?.UserName || "guest@example.com"}
           </span>
         </div>
 
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-   
-          <li>
-      
-          </li>
-          <li>
-            
-          </li>
         </ul>
+
         <Link
           to="/signin"
+          onClick={(e) => {
+            e.preventDefault();
+            handleSignOut();
+          }}
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg

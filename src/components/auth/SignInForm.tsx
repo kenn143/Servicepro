@@ -1,72 +1,130 @@
 import { useState } from "react";
-import {  useNavigate } from "react-router-dom"; // ✅ useNavigate for redirect
+import { useNavigate } from "react-router-dom"; 
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
-// import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  // const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate(); 
 
-  const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
 
-  try {
-    const payload = {
-      UserName: email,
-      Password: password,
-    };
+  function convertFullRawResponse(raw: string) {
+  const obj: Record<string, any> = {};
 
-    const response = await fetch(
-      "https://hook.us2.make.com/xmqkh031o2wu4o7n181k2c2xt7doqf0c",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
+  // Remove outer braces and trim
+  const content = raw.replace(/^{|}$/g, "").trim();
 
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
+  // Split by commas that precede a key (basic property split)
+  const parts = content.split(/,(?=\s*"?\w+"?:)/);
 
-    const raw = await response.text();
-    console.log("Raw response:", raw);
+  parts.forEach((part) => {
+    const [keyPart, ...rest] = part.split(":");
+    if (!keyPart || rest.length === 0) return;
 
-    let data;
-    try {
-      data = JSON.parse(raw);
-    } catch {
-      data = { ID: raw };
-    }
+    const key = keyPart.replace(/"/g, "").trim();
+    let value = rest.join(":").trim();
 
+    // Remove surrounding quotes if present
+    value = value.replace(/^"(.*)"$/, "$1");
 
-    if (data.ID && data.ID !== "Not Found") {
-      console.log("Login success:", data);
-      navigate("/home");
+    // Convert multi-value fields into arrays
+    if (key === "ApplicationAccessCode" || key === "AppName") {
+      obj[key] = value.split(/,\s*/).map((s) => s.trim());
     } else {
-      throw new Error("Invalid credentials");
+      obj[key] = value;
     }
-  } catch (err: any) {
-    console.error(err);
-    setError(err.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
+  });
 
+  return obj;
+}
+
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const payload = {
+        UserName: email,
+        Password: password,
+      };
+
+      const response = await fetch(
+        "https://hook.us2.make.com/xmqkh031o2wu4o7n181k2c2xt7doqf0c",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+      const raw = await response.text();
+      console.log("Raw response:", raw);
+
+    let obj = convertFullRawResponse(raw);
+
+   localStorage.setItem("data", JSON.stringify(obj)); 
+
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        data = { ID: raw };
+      }
+
+      if (data.ID && data.ID !== "Not Found") {
+        // ✅ Convert "AppName" string into array
+    let raw = data.ID; // big string with everything
+
+// Find the AppName value
+const match = raw.match(/AppName":\s*([^}]+)/);
+
+
+
+let accessibleApps: string[] = [];
+
+if (match) {
+  const appNameValue = match[1].trim(); // e.g. Light Installers Quote, Invoice
+
+  accessibleApps = appNameValue
+    .split(",")
+    .map((app: string) => app.trim());
+}
+
+console.log("accessible apps", accessibleApps);
+localStorage.setItem("accessibleApps", JSON.stringify(accessibleApps));
+
+        // (Optional: store other user info too if needed)
+        localStorage.setItem("userId", data.ID);
+        localStorage.setItem("username", data.UserName || email);
+          localStorage.setItem("users", JSON.stringify(raw));
+        
+
+        navigate("/home");
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col flex-1">
@@ -120,20 +178,6 @@ export default function SignInForm() {
                     </span>
                   </div>
                 </div>
-                {/* <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Checkbox checked={isChecked} onChange={setIsChecked} />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Keep me logged in
-                    </span>
-                  </div>
-                  <Link
-                    to="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                  >
-                    Forgot password?
-                  </Link>
-                </div> */}
                 {error && (
                   <p className="text-sm text-red-500 text-center">{error}</p>
                 )}

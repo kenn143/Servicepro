@@ -19,12 +19,12 @@ import CreateInvoice from "./pages/Invoice/CreateInvoice";
 import InvoiceList from "./pages/Invoice/InvoiceList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProtectedRoute from "./components/common/ProtectedRoute"; // ✅ new
 
 function AnimatedRoutes() {
   const location = useLocation();
 
   return (
-    
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Dashboard Layout */}
@@ -32,49 +32,92 @@ function AnimatedRoutes() {
           <Route
             index
             path="/home"
-            element={<PageWrapper><Home /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="">
+                <PageWrapper><Home /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/file-tracker"
-            element={<PageWrapper><FileTracker /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Flyer Tracker">
+                <PageWrapper><FileTracker /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/quotation-list"
-            element={<PageWrapper><QuotationList /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Light Installers Quote">
+                <PageWrapper><QuotationList /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
-         <Route
+          <Route
             path="/quote-entry"
-            element={<PageWrapper><Quote /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Light Installers Quote">
+                <PageWrapper><Quote /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
-           <Route
+          <Route
             path="/quotation"
-            element={<PageWrapper><Preview /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Light Installers Quote">
+                <PageWrapper><Preview /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/edit/:id"
-            element={<PageWrapper><EditPage /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Light Installers Quote">
+                <PageWrapper><EditPage /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
-           <Route
+          <Route
             path="/Approved"
-            element={<PageWrapper><ApprovedPage /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Light Installers Quote">
+                <PageWrapper><ApprovedPage /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
-           <Route
+          <Route
             path="/create-invoice"
-            element={<PageWrapper><CreateInvoice /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Invoice">
+                <PageWrapper><CreateInvoice /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/invoice-list"
-            element={<PageWrapper><InvoiceList /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Invoice">
+                <PageWrapper><InvoiceList /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/calendar"
-            element={<PageWrapper><Calendar /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Calendar">
+                <PageWrapper><Calendar /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/basic-tables"
-            element={<PageWrapper><BasicTables /></PageWrapper>}
+            element={
+              <ProtectedRoute requiredRight="Dashboard">
+                <PageWrapper><BasicTables /></PageWrapper>
+              </ProtectedRoute>
+            }
           />
-
         </Route>
 
         <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
@@ -83,7 +126,7 @@ function AnimatedRoutes() {
 
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
-      {/* <ToastContainer/> */}
+
       <ToastContainer className="!z-[100000]" />
     </AnimatePresence>
   );

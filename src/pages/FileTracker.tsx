@@ -4,10 +4,30 @@ import { CiCamera, CiCircleCheck } from "react-icons/ci";
 import { FaRegCircle } from "react-icons/fa";
 
 
-const getToken = () => ({
-  ID: "12345",
-  UserName: "JohnDoe",
-});
+const getToken = () => {
+ 
+  const storedData = localStorage.getItem("data");
+
+  if (!storedData) return null; 
+
+  try {
+    const parsed = JSON.parse(storedData);
+
+    return {
+      ID: parsed.ID,
+      UserName: parsed.UserName,
+      FullName: parsed.FullName,
+      UserType: parsed.UserType,
+      Status: parsed.Status,
+   
+    };
+  } catch (e) {
+    console.error("Invalid JSON in localStorage for data", e);
+    return null;
+  }
+};
+
+
 
 const FileTracker: React.FC = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -77,7 +97,7 @@ const FileTracker: React.FC = () => {
             type: selected,
             latitude,
             longitude,
-            recordId: getToken().ID,
+            recordId: getToken()?.ID,
           },
         ];
 
