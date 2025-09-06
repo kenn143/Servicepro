@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router";
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const [name,setName] = useState("")
+
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
