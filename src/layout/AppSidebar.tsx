@@ -12,7 +12,7 @@ import { useSidebar } from "../context/SidebarContext";
 
 type NavItem = {
   name: string;
-  appKey: string; // 🔑 matches AppName from login
+  appKey: string; 
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
@@ -66,7 +66,6 @@ const AppSidebar: React.FC = () => {
   } | null>(null);
   const [accessibleApps, setAccessibleApps] = useState<string[]>([]);
 
-  // ✅ Load accessible apps from login response
   useEffect(() => {
     const apps = localStorage.getItem("accessibleApps");
     if (apps) {
@@ -74,9 +73,8 @@ const AppSidebar: React.FC = () => {
     }
   }, []);
 
-  // ✅ Filter nav items based on AppName response
   const filteredNavItems = navItems.filter((item) => {
-    if (item.appKey === "Dashboard") return true; // always show dashboard
+    if (item.appKey === "Dashboard") return true; 
     return accessibleApps.includes(item.appKey);
   });
 
@@ -89,9 +87,9 @@ const AppSidebar: React.FC = () => {
 const handleSubmenuToggle = (index: number, menuType: "main" | "others") => {
   setOpenSubmenu((prev) => {
     if (prev && prev.type === menuType && prev.index === index) {
-      return null; // collapse only if arrow clicked again
+      return null; 
     }
-    return { type: menuType, index }; // expand
+    return { type: menuType, index }; 
   });
 };
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (

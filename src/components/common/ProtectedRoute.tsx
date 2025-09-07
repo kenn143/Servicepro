@@ -3,28 +3,30 @@ import { Navigate, useLocation } from "react-router";
 
 type ProtectedRouteProps = {
   children: ReactNode;
-  requiredRight?: string; // the permission or appKey needed for this page
+  requiredRight?: string; 
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRight }) => {
-  const token = localStorage.getItem("userId"); // auth check
+  const token = localStorage.getItem("userId"); 
   const location = useLocation();
 
   if (!token) {
-    // Not authenticated → redirect to signin
     return <Navigate to="/signin" replace state={{ from: location }} />;
   }
 
-  if (requiredRight) {
-  const accessibleAppsRaw = localStorage.getItem("accessibleApps");
-  const accessibleApps: string[] = accessibleAppsRaw ? JSON.parse(accessibleAppsRaw) : [];
-
-  if (!accessibleApps.includes(requiredRight)) {
+  if (location.pathname === "/") {
     return <Navigate to="/home" replace />;
   }
-}
 
-  // Authenticated and authorized
+  if (requiredRight) {
+    const accessibleAppsRaw = localStorage.getItem("accessibleApps");
+    const accessibleApps: string[] = accessibleAppsRaw ? JSON.parse(accessibleAppsRaw) : [];
+
+    if (!accessibleApps.includes(requiredRight)) {
+      return <Navigate to="/home" replace />;
+    }
+  }
+
   return <>{children}</>;
 };
 

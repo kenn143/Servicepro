@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
@@ -19,21 +19,20 @@ import CreateInvoice from "./pages/Invoice/CreateInvoice";
 import InvoiceList from "./pages/Invoice/InvoiceList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ProtectedRoute from "./components/common/ProtectedRoute"; // ✅ new
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const isAuthenticated = !!localStorage.getItem("userId");
 
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Dashboard Layout */}
         <Route element={<AppLayout />}>
           <Route
-            index
             path="/home"
             element={
-              <ProtectedRoute requiredRight="">
+              <ProtectedRoute>
                 <PageWrapper><Home /></PageWrapper>
               </ProtectedRoute>
             }
@@ -79,7 +78,7 @@ function AnimatedRoutes() {
             }
           />
           <Route
-            path="/Approved"
+            path="/approved"
             element={
               <ProtectedRoute requiredRight="Light Installers Quote">
                 <PageWrapper><ApprovedPage /></PageWrapper>
@@ -120,10 +119,21 @@ function AnimatedRoutes() {
           />
         </Route>
 
+        {/* Auth pages */}
         <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
         <Route path="/signup" element={<PageWrapper><SignUp /></PageWrapper>} />
-        <Route path="/" element={<PageWrapper><SignIn /></PageWrapper>} />
 
+        {/* Root route → redirect depending on auth */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated
+              ? <Navigate to="/home" replace />
+              : <PageWrapper><SignIn /></PageWrapper>
+          }
+        />
+
+        {/* Not Found */}
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
 
