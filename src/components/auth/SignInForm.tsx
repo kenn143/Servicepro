@@ -4,6 +4,7 @@ import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
+import { toast } from "react-toastify";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -86,19 +87,21 @@ export default function SignInForm() {
         data = { ID: raw };
       }
 
+      if(email =="" && password == "")
+      {
+       setError("Invalid Credentials")
+        return;
+      }
+
       if (data.ID && data.ID !== "Not Found") {
-        // ✅ Convert "AppName" string into array
-    let raw = data.ID; // big string with everything
+    let raw = data.ID; 
 
-// Find the AppName value
 const match = raw.match(/AppName":\s*([^}]+)/);
-
-
 
 let accessibleApps: string[] = [];
 
 if (match) {
-  const appNameValue = match[1].trim(); // e.g. Light Installers Quote, Invoice
+  const appNameValue = match[1].trim(); 
 
   accessibleApps = appNameValue
     .split(",")
@@ -108,7 +111,6 @@ if (match) {
 console.log("accessible apps", accessibleApps);
 localStorage.setItem("accessibleApps", JSON.stringify(accessibleApps));
 
-        // (Optional: store other user info too if needed)
         localStorage.setItem("userId", data.ID);
         localStorage.setItem("username", data.UserName || email);
           localStorage.setItem("users", JSON.stringify(raw));
