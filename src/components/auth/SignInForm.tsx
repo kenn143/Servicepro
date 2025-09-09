@@ -136,7 +136,7 @@ localStorage.setItem("accessibleApps", JSON.stringify(accessibleApps));
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
               Sign In
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-md text-gray-500 dark:text-gray-400">
               Enter your email and password to sign in!
             </p>
           </div>
@@ -145,7 +145,7 @@ localStorage.setItem("accessibleApps", JSON.stringify(accessibleApps));
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>
+                    Email <span className="text-error-500 text-md">*</span>
                   </Label>
                   <Input
                     placeholder="info@gmail.com"
@@ -153,11 +153,12 @@ localStorage.setItem("accessibleApps", JSON.stringify(accessibleApps));
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setEmail(e.target.value)
                     }
+                    className="text-md"
                   />
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>
+                    Password <span className="text-error-500 text-md">*</span>
                   </Label>
                   <div className="relative">
                     <Input
@@ -184,7 +185,7 @@ localStorage.setItem("accessibleApps", JSON.stringify(accessibleApps));
                   <p className="text-sm text-red-500 text-center">{error}</p>
                 )}
                 <div>
-                  <Button className="w-full" size="sm" disabled={loading}>
+                  <Button className="w-full text-md" size="sm" disabled={loading}>
                     {loading ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>

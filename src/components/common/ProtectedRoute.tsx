@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Navigate, useLocation } from "react-router";
+import { Navigate, useLocation } from "react-router-dom";
 
 type ProtectedRouteProps = {
   children: ReactNode;

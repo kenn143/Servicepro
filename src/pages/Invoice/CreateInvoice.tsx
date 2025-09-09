@@ -238,7 +238,7 @@ export default function CreateInvoice() {
               <h2 className="mb-1 text-lg font-semibold text-center dark:text-white text-md">
                 Create New Invoice
               </h2>
-              <p className="mb-4 text-sm text-gray-600 text-center dark:text-white ">
+              <p className="mb-4 text-md text-gray-600 text-center dark:text-white ">
                 Before we proceed, please select a customer
               </p>
 
@@ -247,7 +247,7 @@ export default function CreateInvoice() {
                 value={query}
                 onChange={(e) => handleChange(e.target.value)}
                 placeholder="Search customer..."
-                className="w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white"
+                className="w-full rounded-md border px-3 py-2 text-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white"
               />
 
               {loading && (
@@ -302,7 +302,7 @@ export default function CreateInvoice() {
                 <h2 className="text-md font-semibold mb-3">
                   Customer Information
                 </h2>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-2 gap-4 text-md">
                   <p>
                     <span className="font-medium text-sm">Name:</span>{" "}
                     {selectedCustomer.CustomerName}
@@ -383,7 +383,7 @@ export default function CreateInvoice() {
                       placeholder="Item Name"
                       value={itemName}
                       onChange={(e) => setItemName(e.target.value)}
-                      className="w-1/2 rounded-md border px-3 py-2 text-sm shadow-sm 
+                      className="w-1/2 rounded-md border px-3 py-2 text-md shadow-sm 
                         focus:border-blue-500 focus:ring focus:ring-blue-200 
                         focus:outline-none dark:text-white mb-4"
                     />
