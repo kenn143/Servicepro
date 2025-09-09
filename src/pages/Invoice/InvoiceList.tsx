@@ -115,6 +115,9 @@ export default function InvoiceList() {
   return (
     <div className="max-w-7xl mx-auto mt-10">
     <div className="mb-6 flex flex-col gap-2">
+    <h1 className="text-3xl font-semibold text-blue-950 mb-8 dark:text-white/90 text-center">
+              Invoice List
+            </h1>
       <div className="flex justify-end">
         <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow text-md">
           <Send size={18} /> Send Invoice
@@ -136,7 +139,7 @@ export default function InvoiceList() {
             <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
               <tr>
                 <th className="px-2 py-1 border text-center">Select</th>
-                <th className="px-2 py-1 border">Invoice #</th>
+                <th className="px-2 py-1 border">Invoice Number</th>
                 <th className="px-2 py-1 border">Invoice Name</th>
                 <th className="px-2 py-1 border">Customer</th>
                 <th className="px-2 py-1 border text-center">Status</th>
@@ -151,7 +154,8 @@ export default function InvoiceList() {
                       <input type="checkbox" />
                     </td>
                     <td className="px-2 py-1 border break-words">{record.fields.InvoiceNumber}</td>
-                    <td className="px-2 py-1 border break-words">{record.fields.Item || "N/A"}</td>
+                    {/* <td className="px-2 py-1 border break-words">{record.fields.Item || "N/A"}</td> */}
+                    <td className="px-2 py-1 border break-words"></td>
                     <td className="px-2 py-1 border break-words">{record.fields.CustomerName?.[0]}</td>
                     <td className="px-2 py-1 border text-center">
                       {record.fields.Status === "Active" ? (
