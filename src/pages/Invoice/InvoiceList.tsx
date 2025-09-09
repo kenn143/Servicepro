@@ -114,20 +114,20 @@ export default function InvoiceList() {
 
   return (
     <div className="max-w-7xl mx-auto mt-10">
-      <div className="mb-6 flex flex-col gap-3">
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow self-start text-md">
+    <div className="mb-6 flex flex-col gap-2">
+      <div className="flex justify-end">
+        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow text-md">
           <Send size={18} /> Send Invoice
         </button>
-
-        <input
-          type="text"
-          placeholder="Search invoice..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full max-w-md border rounded-md px-3 py-2 text-sm shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
-        />
       </div>
-
+      <input
+        type="text"
+        placeholder="Search invoice..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="w-full max-w-md border rounded-md px-3 py-2 text-sm shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
+      />
+    </div>
       {loading ? (
         <div className="text-center py-6 text-gray-500">Loading invoices...</div>
       ) : (

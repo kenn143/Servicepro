@@ -125,7 +125,7 @@ const FileTracker: React.FC = () => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer YOUR_AIRTABLE_API_KEY_HERE`,
+              Authorization: `Bearer patOqbvQBRYKN0N9t.ad5d76ed48b85d7a6ba0d090b6e3cfbe27df9e12d40d7cbcc0995c9b3d51a86b`,
             },
           }
         );
@@ -169,7 +169,7 @@ const FileTracker: React.FC = () => {
             <div className="absolute top-4 right-4">
 
             </div>
-            <h1 className="text-5xl font-semibold text-blue-950 mb-8 dark:text-white/90">
+            <h1 className="text-3xl font-semibold text-blue-950 mb-8 dark:text-white/90">
               Welcome to Flyer Tracker App
             </h1>
 

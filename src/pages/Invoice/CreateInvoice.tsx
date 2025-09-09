@@ -2,6 +2,7 @@ import { useState } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import { ReceiptText, Check } from "lucide-react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 type Customer = {
   CustomerId: string;
@@ -32,6 +33,7 @@ export default function CreateInvoice() {
   const [notes, setNotes] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const AIRTABLE_ENDPOINT =
     "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0";
@@ -200,7 +202,11 @@ export default function CreateInvoice() {
       );
 
       if (!response.ok) throw new Error("Failed to send data to webhook");
+      // toast.success("Invoice Successfully Created");
       toast.success("Invoice Successfully Created");
+      setTimeout(() => {
+        navigate("/invoice-list"); 
+      }, 2000); 
     } catch (err) {
       console.error(err);
       toast.error("Error sending invoice data.");
@@ -323,12 +329,12 @@ export default function CreateInvoice() {
                     <span className="font-medium text-sm">Status:</span>{" "}
                     {selectedCustomer.Status}
                   </p>
-                  <p>
+                  {/* <p>
                     <span className="font-medium text-sm">Created:</span>{" "}
                     {new Date(
                       selectedCustomer.DateCreated
                     ).toLocaleDateString()}
-                  </p>
+                  </p> */}
                 </div>
               </div>
 
