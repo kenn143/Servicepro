@@ -45,6 +45,7 @@ const Quote: React.FC = () => {
   const [options, setOptions] = useState<AirtableRecord[]>([]);
   const [selected, setSelected] = useState<string>("");
   const [clientMessage, setClientMessage] = useState("");
+  const [loading,setLoading]= useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setJobTitle(e.target.value);
@@ -53,7 +54,7 @@ const Quote: React.FC = () => {
   const addItem = async () => {
     const cloudName = "doj0vye62";
     const uploadPreset = "Qoute_FileName";
-
+    setLoading(true);
     if (!selected) {
       toast.error("Client selection is required");
       return;
@@ -111,11 +112,15 @@ const Quote: React.FC = () => {
     );
 
     if (response.ok) {
+     
       toast.success("Quote Saved Successfully!");
-      navigate("/");
+      setTimeout(() => {
+        navigate("/quotation-list"); 
+      }, 1000); 
     } else {
       toast.error("Error sending quote");
     }
+    setLoading(false);
   };
 
   const handleAddLineItem = (isOptional = false) => {
@@ -368,11 +373,13 @@ const Quote: React.FC = () => {
       ></textarea>
     </div>
     <div className="text-left">
-      <button
+    <button
         onClick={addItem}
-        className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-sky-700"     
+        disabled={loading}
+        className={`px-4 py-2 text-white rounded 
+          ${loading ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-700"}`}
       >
-        SAVE
+        {loading ? "SAVING..." : "SAVE"}
       </button>
     </div>
   </div>

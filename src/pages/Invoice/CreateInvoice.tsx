@@ -34,6 +34,7 @@ export default function CreateInvoice() {
   const [attachment, setAttachment] = useState<File | null>(null);
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [saving,setSaving] = useState(false);
 
   const AIRTABLE_ENDPOINT =
     "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0";
@@ -101,8 +102,14 @@ export default function CreateInvoice() {
   };
 
   const nextStep = () => {
+    if (!itemName.trim()) {
+      toast.error("Item name is required")
+      return;
+    }
     if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1);
   };
+
+
 
   const prevStep = () => {
     if (activeStep > 0) setActiveStep((prev) => prev - 1);
@@ -156,6 +163,7 @@ export default function CreateInvoice() {
   };
 
   const handleSave = async () => {
+    setSaving(true);
     if (!selectedCustomer) {
       alert("Please select a customer before saving.");
       return;
@@ -206,11 +214,12 @@ export default function CreateInvoice() {
       toast.success("Invoice Successfully Created");
       setTimeout(() => {
         navigate("/invoice-list"); 
-      }, 2000); 
+      }, 1000); 
     } catch (err) {
       console.error(err);
       toast.error("Error sending invoice data.");
     }
+    setSaving(false);
   };
 
   return (
@@ -392,6 +401,7 @@ export default function CreateInvoice() {
                       className="w-1/2 rounded-md border px-3 py-2 text-md shadow-sm 
                         focus:border-blue-500 focus:ring focus:ring-blue-200 
                         focus:outline-none dark:text-white mb-4"
+                      
                     />
 
                     <table className="w-full text-sm mb-4">
@@ -532,11 +542,13 @@ export default function CreateInvoice() {
                   </button>
                 ) : (
                   <button
-                    onClick={handleSave}
-                    className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600"
-                  >
-                    SAVE
-                  </button>
+                      onClick={handleSave}
+                      disabled={saving}
+                      className={`px-4 py-2 rounded-lg text-white 
+                        ${saving ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"}`}
+                    >
+                      {saving? "SAVING..." : "SAVE"}
+                    </button>
                 )}
               </div>
             </div>

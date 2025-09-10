@@ -3,7 +3,7 @@ import PageMeta from "../components/common/PageMeta";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// Types
+
 interface QuoteFields {
   "Item Name": string;
   Description: string;
@@ -12,7 +12,7 @@ interface QuoteFields {
   IsOptional: number;
   Attachments?: { url: string }[];
 
-  // 👇 this tells TS "any key of QuoteFields can be string | number | object"
+
   [key: string]: any;
 }
 
@@ -43,6 +43,7 @@ const EditPage: React.FC = () => {
   const [newItems, setNewItems] = useState<QuoteRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const [updating,setUpdating] = useState(false);
 
   const cloudName = "doj0vye62";
   const uploadPreset = "Qoute_FileName";
@@ -52,10 +53,13 @@ const EditPage: React.FC = () => {
       try {
         if (!item?.quoteId) return;
 
+        console.log("the qouteId",item)
+
         const formula = `{QuoteID} = '${item.quoteId}'`;
         const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblYVFWQZUwxenmiw?filterByFormula=${encodeURIComponent(
           formula
         )}`;
+        console.log("the url",url)
 
         const response = await fetch(url, {
           method: "GET",
@@ -125,7 +129,7 @@ const handleInputChange = (
   const handleUpdate = async () => {
     try {
       const lineItems = [...quoteData, ...newItems];
-
+      setUpdating(true);
       const uploadedItems = await Promise.all(
         lineItems.map(async (item) => {
           if (item.attachment) {
@@ -174,12 +178,16 @@ const handleInputChange = (
 
       if (response.ok) {
         toast.success("Quote Updated Successfully!");
+        setTimeout(() => {
+          navigate("/quotation-list"); 
+        }, 1000); 
       } else {
         toast.error("Update Error");
       }
     } catch (err) {
       console.error("Update error:", err);
     }
+    setUpdating(false);
   };
 
   const handleRedirect = () => {
@@ -350,12 +358,14 @@ const handleInputChange = (
         </div>
 
         <div className="text-left">
-          <button
-            className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-sky-700"
-            onClick={handleUpdate}
-          >
-            UPDATE
-          </button>
+        <button
+        onClick={handleUpdate}
+        disabled={updating}
+        className={`px-4 py-2 text-white rounded 
+          ${updating ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-700"}`}
+      >
+        {updating ? "UPDATING..." : "UPDATE"}
+        </button>
         </div>
       </div>
     </div>
