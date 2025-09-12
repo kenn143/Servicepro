@@ -170,45 +170,96 @@ export default function InvoiceList() {
     }
   };
 
+  // const handleSendInvoices = async () => {
+  //   if (selectedIds.length === 0) {
+  //     toast.error("Please select at least one invoice.");
+  //     return;
+  //   }
+   
+  
+  //   const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
+  
+  //   const payload = selectedRecords.map((r) => ({
+  //     id: r.id,
+  //     item: r.fields.Item,
+  //     quantity: r.fields.Quantity || 1,
+  //     totalPrice: (r.fields.Price || 0) * (r.fields.Quantity || 1),
+  //     notes: r.fields.Notes || "No notes",
+  //     attachment: r.fields.Attachment || null, 
+  //     price: r.fields.Price || 0,
+  //     action: "send"
+  //   }));
+
+  
+  //   try {
+  //     await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json",
+  //                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+  //        },
+  //       body: JSON.stringify({
+  //         action: "send",
+  //         invoices: payload,
+  //       }),
+  //     });
+  
+  //     toast.success("Invoices sent successfully!");
+  //     setSelectedIds([]); 
+  //   } catch (err) {
+  //     console.error("Error sending invoices:", err);
+  //     toast.error("Failed to send invoices.");
+  //   }
+  // };
+
   const handleSendInvoices = async () => {
     if (selectedIds.length === 0) {
       toast.error("Please select at least one invoice.");
       return;
     }
-   
   
     const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
   
-    const payload = selectedRecords.map((r) => ({
-      id: r.id,
-      item: r.fields.Item,
-      quantity: r.fields.Quantity || 1,
-      totalPrice: (r.fields.Price || 0) * (r.fields.Quantity || 1),
-      notes: r.fields.Notes || "No notes",
-      attachment: r.fields.Attachment || null, 
-      price: r.fields.Price || 0,
-      action: "send"
-    }));
-
-  
     try {
+  
+      const invoicesWithPdf = await Promise.all(
+        selectedRecords.map(async (r) => {
+          const pdfBase64 = await generatePdfBase64(r);
+          return {
+            item: r.fields.Item || "",
+            price: r.fields.Price || 0,
+            quantity: r.fields.Quantity || 1,
+            pdf: pdfBase64, 
+          };
+        })
+      );
+      console.log("the data",invoicesWithPdf)
+  
       await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-                  "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-         },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "send",
-          invoices: payload,
+          invoices: invoicesWithPdf,
         }),
       });
   
-      toast.success("Invoices sent successfully!");
-      setSelectedIds([]); 
+      toast.success("Invoices with PDFs sent successfully!");
+      setSelectedIds([]);
+      await fetchData(); // reload table
     } catch (err) {
       console.error("Error sending invoices:", err);
       toast.error("Failed to send invoices.");
     }
+  };
+  
+  const generatePdfBase64 = async (record: any) => {
+    const blob = await pdf(<InvoicePDF record={record} />).toBlob();
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob); 
+    });
   };
   
 
