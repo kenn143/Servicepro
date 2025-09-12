@@ -349,7 +349,6 @@ export default function InvoiceList() {
         })
       );
   
-      console.log("Invoices with Cloudinary URLs:", invoicesWithPdf);
   
       await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
         method: "POST",
@@ -363,7 +362,7 @@ export default function InvoiceList() {
         }),
       });
   
-      toast.success("Invoices with Cloudinary URLs sent successfully!");
+      toast.success("Invoices sent successfully!");
       setSelectedIds([]);
       await fetchData(); 
     } catch (err) {
