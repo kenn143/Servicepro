@@ -194,6 +194,7 @@ export default function CreateInvoice() {
               size: attachment.size,
             }
           : null,
+      action:"new"
     };
 
     try {
@@ -416,32 +417,43 @@ export default function CreateInvoice() {
                         {items.map((item, idx) => (
                           <tr key={idx} className="border-b">
                             <td className="p-2">
-                              <input
+                            <input
                                 type="number"
-                                value={item.quantity}
+                                value={item.quantity === 0 ? "0" : item.quantity} // show empty if 0
+                                onFocus={(e) => {
+                                  if (e.target.value === "0") e.target.value = ""; // clear when focused
+                                }}
+                                onBlur={(e) => {
+                                  if (e.target.value === "") {
+                                    handleItemChange(idx, "quantity", 0); // reset to 0 if left blank
+                                  }
+                                }}
                                 onChange={(e) =>
-                                  handleItemChange(
-                                    idx,
-                                    "quantity",
-                                    Number(e.target.value)
-                                  )
+                                  handleItemChange(idx, "quantity", Number(e.target.value) || 0)
                                 }
                                 className="w-full border rounded px-2 py-1 text-sm"
                               />
+
+
                             </td>
                             <td className="p-2">
-                              <input
-                                type="number"
-                                value={item.price}
-                                onChange={(e) =>
-                                  handleItemChange(
-                                    idx,
-                                    "price",
-                                    Number(e.target.value)
-                                  )
+                            <input
+                              type="number"
+                              value={item.price === 0 ? "0" : item.price}
+                              onFocus={(e) => {
+                                if (e.target.value === "0") e.target.value = "";
+                              }}
+                              onBlur={(e) => {
+                                if (e.target.value === "") {
+                                  handleItemChange(idx, "price", 0); // reset to 0 if left empty
                                 }
-                                className="w-full border rounded px-2 py-1 text-sm"
-                              />
+                              }}
+                              onChange={(e) =>
+                                handleItemChange(idx, "price", Number(e.target.value) || 0)
+                              }
+                              className="w-full border rounded px-2 py-1 text-sm"
+                            />
+
                             </td>
                             <td className="p-2">{item.total.toFixed(2)}</td>
                           </tr>

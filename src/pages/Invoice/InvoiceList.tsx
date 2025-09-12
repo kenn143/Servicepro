@@ -10,6 +10,7 @@ import {
   PDFViewer,
   pdf,
 } from "@react-pdf/renderer";
+import { toast } from "react-toastify";
 
 const styles = StyleSheet.create({
   page: { padding: 30, fontSize: 12, fontFamily: "Helvetica" },
@@ -49,9 +50,9 @@ const InvoicePDF = ({ record }: { record: any }) => (
 
         <View style={styles.tableRow}>
           <View style={styles.tableCol}><Text>{record.fields.Item}</Text></View>
-          <View style={styles.tableCol}><Text>1</Text></View>
+          <View style={styles.tableCol}><Text>{record.fields.Quantity || 1}</Text></View>
           <View style={styles.tableCol}><Text>{record.fields.Price}</Text></View>
-          <View style={styles.tableCol}><Text>{record.fields.Price}</Text></View>
+          <View style={styles.tableCol}><Text>{(record.fields.Price || 0) * (record.fields.Quantity || 1)}</Text></View>
         </View>
       </View>
 
@@ -74,31 +75,57 @@ export default function InvoiceList() {
   const [query, setQuery] = useState("");
   const [records, setRecords] = useState<any[]>([]);
   const [previewRecord, setPreviewRecord] = useState<any | null>(null);
+  const [editRecord, setEditRecord] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await fetch(
+  //         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+  //           },
+  //         }
+  //       );
+  //       const data = await res.json();
+  //       setRecords(data.records || []);
+  //     } catch (err) {
+  //       console.error("Error fetching data:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
+        {
+          headers: {
+            Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+          },
+        }
+      );
+      const data = await res.json();
+      setRecords(data.records || []);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(
-          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
-          {
-            headers: {
-              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
-            },
-          }
-        );
-        const data = await res.json();
-        setRecords(data.records || []);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
+  
 
   const filtered = records.filter((r) =>
     r.fields.InvoiceNumber?.toLowerCase().includes(query.toLowerCase())
@@ -112,25 +139,104 @@ export default function InvoiceList() {
     setPdfLoading(false);
   };
 
+  const handleEditSave = async () => {
+    if (!editRecord) return;
+
+    try {
+
+      await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" ,
+                    "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+        },
+        body: JSON.stringify({
+          id: editRecord.id,
+          item: editRecord.fields.Item,
+          price: editRecord.fields.Price,
+          quantity: editRecord.fields.Quantity,
+          action:"update"
+        }),
+      });
+
+      setRecords((prev) =>
+        prev.map((r) => (r.id === editRecord.id ? { ...r, fields: editRecord.fields } : r))
+      );
+      await fetchData();
+      toast.success("Sucessfully Updated!")
+    } catch (error) {
+      console.error("Error sending data to webhook:", error);
+    } finally {
+      setEditRecord(null); 
+    }
+  };
+
+  const handleSendInvoices = async () => {
+    if (selectedIds.length === 0) {
+      toast.error("Please select at least one invoice.");
+      return;
+    }
+   
+  
+    const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
+  
+    const payload = selectedRecords.map((r) => ({
+      id: r.id,
+      item: r.fields.Item,
+      quantity: r.fields.Quantity || 1,
+      totalPrice: (r.fields.Price || 0) * (r.fields.Quantity || 1),
+      notes: r.fields.Notes || "No notes",
+      attachment: r.fields.Attachment || null, 
+      price: r.fields.Price || 0,
+      action: "send"
+    }));
+
+  
+    try {
+      await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json",
+                  "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+         },
+        body: JSON.stringify({
+          action: "send",
+          invoices: payload,
+        }),
+      });
+  
+      toast.success("Invoices sent successfully!");
+      setSelectedIds([]); 
+    } catch (err) {
+      console.error("Error sending invoices:", err);
+      toast.error("Failed to send invoices.");
+    }
+  };
+  
+
+
   return (
     <div className="max-w-7xl mx-auto mt-10">
-    <div className="mb-6 flex flex-col gap-2">
-    <h1 className="text-3xl font-semibold text-blue-950 mb-8 dark:text-white/90 text-center">
-              Invoice List
-            </h1>
-      <div className="flex justify-end">
-        <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow text-md">
+      <div className="mb-6 flex flex-col gap-2">
+        <h1 className="text-3xl font-semibold text-blue-950 mb-8 dark:text-white/90 text-center">
+          Invoice List
+        </h1>
+        <div className="flex justify-end">
+        <button
+          onClick={handleSendInvoices}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 rounded-lg shadow text-md"
+        >
           <Send size={18} /> Send Invoice
         </button>
+
+        </div>
+        <input
+          type="text"
+          placeholder="Search invoice..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full max-w-md border rounded-md px-3 py-2 text-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
+        />
       </div>
-      <input
-        type="text"
-        placeholder="Search invoice..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full max-w-md border rounded-md px-3 py-2 text-sm shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
-      />
-    </div>
+
       {loading ? (
         <div className="text-center py-6 text-gray-500">Loading invoices...</div>
       ) : (
@@ -138,12 +244,13 @@ export default function InvoiceList() {
           <table className="w-full border border-gray-200 text-xs sm:text-sm table-auto">
             <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
               <tr>
-                <th className="px-2 py-1 border text-center">Select</th>
+                <th className="px-2 py-1 border text-center w-20">Select</th>
                 <th className="px-2 py-1 border">Invoice Number</th>
-                <th className="px-2 py-1 border">Invoice Name</th>
+                {/* <th className="px-2 py-1 border">Invoice Name</th> */}
                 <th className="px-2 py-1 border">Customer</th>
                 <th className="px-2 py-1 border text-center">Status</th>
                 <th className="px-2 py-1 border text-center">Actions</th>
+                <th className="px-2 py-1 border text-center">Edit</th>
               </tr>
             </thead>
             <tbody className="text-md">
@@ -151,13 +258,23 @@ export default function InvoiceList() {
                 filtered.map((record) => (
                   <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
                     <td className="px-2 py-1 border text-center">
-                      <input type="checkbox" />
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(record.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds((prev) => [...prev, record.id]);
+                        } else {
+                          setSelectedIds((prev) => prev.filter((id) => id !== record.id));
+                        }
+                      }}
+                    />
+
                     </td>
-                    <td className="px-2 py-1 border break-words">{record.fields.InvoiceNumber}</td>
-                    {/* <td className="px-2 py-1 border break-words">{record.fields.Item || "N/A"}</td> */}
-                    <td className="px-2 py-1 border break-words"></td>
-                    <td className="px-2 py-1 border break-words">{record.fields.CustomerName?.[0]}</td>
-                    <td className="px-2 py-1 border text-center">
+                    <td className="px-2 py-1 border break-words w-50">{record.fields.InvoiceNumber}</td>
+                    {/* <td className="px-2 py-1 border break-words"></td> */}
+                    <td className="px-2 py-1 border break-words w-50">{record.fields.CustomerName?.[0]}</td>
+                    <td className="px-2 py-1 border text-center w-50">
                       {record.fields.Status === "Active" ? (
                         <span className="inline-flex items-center gap-1 text-green-600">
                           <span className="w-3 h-3 rounded-full bg-green-600"></span> Active
@@ -168,19 +285,27 @@ export default function InvoiceList() {
                         </span>
                       )}
                     </td>
-                    <td className="px-2 py-1 border text-center">
+                    <td className="px-2 py-1 border text-center w-50">
                       <button
                         onClick={() => setPreviewRecord(record)}
-                        className="text-blue-600 underline text-xs"
+                        className="text-blue-600 underline text-md"
                       >
                         Preview
                       </button>
                     </td>
+                    <td className="px-2 py-1 border text-center w-40">
+                      <button
+                        onClick={() => setEditRecord(record)}
+                        className="text-yellow-600 underline text-md"
+                      >
+                        Edit
+                      </button>
+                    </td>
                   </tr>
                 ))
-              ) : ( 
+              ) : (
                 <tr>
-                  <td colSpan={6} className="text-center py-2 text-gray-500">
+                  <td colSpan={7} className="text-center py-2 text-gray-500">
                     No Record Found
                   </td>
                 </tr>
@@ -189,6 +314,81 @@ export default function InvoiceList() {
           </table>
         </div>
       )}
+
+
+          {editRecord && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 transition-opacity duration-300 ease-out"
+              onClick={() => setEditRecord(null)} 
+            >
+              <div
+                className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-out scale-95 opacity-0 animate-fadeIn"
+                onClick={(e) => e.stopPropagation()} 
+              >
+                <h2 className="text-lg font-semibold mb-4">Edit Invoice</h2>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium">Item</label>
+                    <input
+                      type="text"
+                      value={editRecord.fields.Item || ""}
+                      onChange={(e) =>
+                        setEditRecord({
+                          ...editRecord,
+                          fields: { ...editRecord.fields, Item: e.target.value },
+                        })
+                      }
+                      className="w-full border rounded-md px-3 py-2 text-sm shadow"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Price</label>
+                    <input
+                      type="number"
+                      value={editRecord.fields.Price || ""}
+                      onChange={(e) =>
+                        setEditRecord({
+                          ...editRecord,
+                          fields: { ...editRecord.fields, Price: Number(e.target.value) },
+                        })
+                      }
+                      className="w-full border rounded-md px-3 py-2 text-sm shadow"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium">Quantity</label>
+                    <input
+                      type="number"
+                      value={editRecord.fields.Quantity || 1}
+                      onChange={(e) =>
+                        setEditRecord({
+                          ...editRecord,
+                          fields: { ...editRecord.fields, Quantity: Number(e.target.value) },
+                        })
+                      }
+                      className="w-full border rounded-md px-3 py-2 text-sm shadow"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end gap-2">
+                  <button
+                    onClick={() => setEditRecord(null)}
+                    className="px-4 py-2 rounded-lg shadow text-sm bg-gray-300 hover:bg-gray-400"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleEditSave}
+                    className="px-4 py-2 rounded-lg shadow text-sm bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
 
       {previewRecord && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
