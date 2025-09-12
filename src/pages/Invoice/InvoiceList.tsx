@@ -236,7 +236,9 @@ export default function InvoiceList() {
   
       await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+                  "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+         },
         body: JSON.stringify({
           action: "send",
           invoices: invoicesWithPdf,
