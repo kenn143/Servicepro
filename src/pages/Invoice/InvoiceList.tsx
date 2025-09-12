@@ -68,7 +68,7 @@ const InvoicePDF = ({ record }: { record: any }) => (
         </View>
 
         <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={{ fontWeight: "bold" }}>Service Location:</Text>
+          {/* <Text style={{ fontWeight: "bold" }}>Service Location:</Text> */}
           <Text></Text>
           <Text></Text>
         </View>
