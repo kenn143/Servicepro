@@ -101,11 +101,11 @@ const InvoicePDF = ({ record }: { record: any }) => (
             <Text>{record.fields.Quantity || 1}</Text>
           </View>
           <View style={styles.tableCol}>
-            <Text>{record.fields.Price}</Text>
+            <Text>${record.fields.Price}</Text>
           </View>
           <View style={styles.tableCol}>
             <Text>
-              {(record.fields.Price || 0) * (record.fields.Quantity || 1)}
+             $ {(record.fields.Price || 0) * (record.fields.Quantity || 1)}
             </Text>
           </View>
         </View>
