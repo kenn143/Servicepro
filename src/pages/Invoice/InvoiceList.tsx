@@ -374,15 +374,15 @@ export default function InvoiceList() {
   
   
   
-  const generatePdfBase64 = async (record: any) => {
-    const blob = await pdf(<InvoicePDF record={record} />).toBlob();
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob); 
-    });
-  };
+  // const generatePdfBase64 = async (record: any) => {
+  //   const blob = await pdf(<InvoicePDF record={record} />).toBlob();
+  //   return new Promise<string>((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => resolve(reader.result as string);
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(blob); 
+  //   });
+  // };
   
 
 
