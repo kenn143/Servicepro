@@ -28,15 +28,16 @@ const styles = StyleSheet.create({
 const InvoicePDF = ({ record }: { record: any }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-
+      {/* Header */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <View style={{ flexDirection: "row", gap: 20,marginTop:"40px" }}>
-          <View style={{fontSize:"12px"}}>
-            <Text >Junk Removal</Text>
+        <View style={{ flexDirection: "row", gap: 20, marginTop: "45px" }}>
+          <View style={{ fontSize: "12px",marginTop:"3px" }}>
+            <Text>Junk Removal</Text>
             <Text>115 Sunridge way</Text>
-            <Text>(714) 908-7314 </Text>
+            <Text>Redlands Ca 92373 redlands CA 92373</Text>
+            <Text>(714) 908-7314</Text>
+             <Text>junkguysoc@gmail.com</Text>
           </View>
-      
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
@@ -44,66 +45,115 @@ const InvoicePDF = ({ record }: { record: any }) => (
           <Text style={{ marginTop: 15 }}>
             Invoice Number: {record.fields.InvoiceNumber}
           </Text>
-          <Text>
+          <Text style={{marginTop:"3px"}}>
             Invoice Date: {record.fields.DateCreated?.split("T")[0]}
           </Text>
         </View>
       </View>
 
+
       <View style={[styles.section, { marginTop: 20, flexDirection: "row" }]}>
-    <View style={{ flex: 1 }}>
-      <Text style={{fontWeight:"bold"}}>Bill To:</Text>
-      <Text>{record.fields.CustomerName?.[0]}</Text>
-    </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontWeight: "bold" }}>Bill To:</Text>
+          <Text>{record.fields.CustomerName?.[0]}</Text>
+          <Text>
+             {record.address}
+        </Text>
+        <Text>
+             {record.phonenumber}
+        </Text>
+        <Text>
+             {record.email}
+        </Text>
+        </View>
 
-    <View style={{ flex: 1, alignItems: "center" }}>
-      <Text style={{fontWeight:"bold"}}>Service Location:</Text>
-      <Text>Sample Client acm Inc.</Text>
-      <Text>5520 Ruffin Road</Text>
-    </View>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <Text style={{ fontWeight: "bold" }}>Service Location:</Text>
+          <Text></Text>
+          <Text></Text>
+        </View>
 
-    <View style={{ flex: 1 }} />
-  </View>
+        <View style={{ flex: 1 }} />
+      </View>
 
+      {/* Table */}
       <View style={styles.table}>
         <View style={styles.tableRow}>
-          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Description</Text></View>
-          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>QTY</Text></View>
-          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Price</Text></View>
-          <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Amount</Text></View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Description</Text>
+          </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>QTY</Text>
+          </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Price</Text>
+          </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>Amount</Text>
+          </View>
         </View>
 
         <View style={styles.tableRow}>
-          <View style={styles.tableCol}><Text>{record.fields.Item}</Text></View>
-          <View style={styles.tableCol}><Text>{record.fields.Quantity || 1}</Text></View>
-          <View style={styles.tableCol}><Text>{record.fields.Price}</Text></View>
-          <View style={styles.tableCol}><Text>{(record.fields.Price || 0) * (record.fields.Quantity || 1)}</Text></View>
+          <View style={styles.tableCol}>
+            <Text>{record.fields.Item}</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text>{record.fields.Quantity || 1}</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text>{record.fields.Price}</Text>
+          </View>
+          <View style={styles.tableCol}>
+            <Text>
+              {(record.fields.Price || 0) * (record.fields.Quantity || 1)}
+            </Text>
+          </View>
         </View>
       </View>
 
-      {/* Terms */}
-      <View style={styles.terms}>
-        <Text>
-          <Text style={{ fontWeight: "bold" }}>Terms: </Text>
-          By paying the due balance on invoices provided, the Client hereby acknowledges that all requested service items for
-            this date and/or any other dates listed above in the description section of the table, have been performed and have
-            been tested showing successful satisfactory install/repair, unless otherwise stated on the invoice, in which labor
-            service charges still apply if any repairs have been made. By accepting this invoice, the Client agrees to pay in full the amount listed in the Total section of the invoice.
-        </Text>
-      </View>
+   
+      <View
+  style={{
+    position: "absolute",
+    bottom: 30,
+    left: 30,
+    right: 30,
+  }}
+>
 
-      {/* Notes */}
-      <View style={styles.notes}>
-        <Text>Notes: {record.fields.Notes || "No additional notes"}</Text>
-      </View>
+  <View style={styles.terms}>
+    <Text>
+      <Text style={{ fontWeight: "bold" }}>Terms: </Text>
+      By paying the due balance on invoices provided, the Client hereby
+      acknowledges that all requested service items for this date and/or
+      any other dates listed above in the description section of the
+      table, have been performed and have been tested showing successful
+      satisfactory install/repair, unless otherwise stated on the invoice,
+      in which labor service charges still apply if any repairs have been
+      made. By accepting this invoice, the Client agrees to pay in full
+      the amount listed in the Total section of the invoice.
+    </Text>
+  </View>
 
-      <View style={{textAlign:"center",fontWeight: "bold", marginTop:"30px",fontSize:"17px"}}>
-        <Text>Thank you for your business!</Text>
-      </View>
+  <View style={[styles.notes, { textAlign: "left", marginTop: 8 }]}>
+    <Text>Notes: {record.fields.Notes || "No additional notes"}</Text>
+  </View>
+
+  <View
+    style={{
+      marginTop: 15,
+      textAlign: "center",
+      fontWeight: "bold",
+      fontSize: "17px",
+    }}
+  >
+    <Text>Thank you for your business!</Text>
+  </View>
+</View>
     </Page>
   </Document>
-  
 );
+
 
 
 
@@ -142,7 +192,9 @@ export default function InvoiceList() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
+  
+ 
+      const res1 = await fetch(
         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
         {
           headers: {
@@ -150,18 +202,48 @@ export default function InvoiceList() {
           },
         }
       );
+  
+      const data1 = await res1.json();
+      const mainRecords = data1.records || [];
+  
 
-    
-      const data = await res.json();
-      console.log("res",data);
-      setRecords(data.records || []);
+      const updatedRecords = await Promise.all(
+        mainRecords.map(async (record:any) => {
+          const customerId = record.fields.CustomerId;
+
+  
+          if (!customerId) return record; 
+  
+          const res2 = await fetch(
+            `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0?filterByFormula/'${customerId}'`,
+            {
+              headers: {
+                Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+              },
+            }
+          );
+        
+  
+          const data2 = await res2.json();
+          const customerData = data2.records?.[0]?.fields || {};    
+          return {
+            ...record,
+            email: customerData.EmailAddress || "",
+            address: customerData.Address || "",
+            phonenumber: customerData.PhoneNumber || "",
+          };
+        })
+      );
+
+      setRecords(updatedRecords);
+    console.log("updated",updatedRecords)
     } catch (err) {
       console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchData();
   }, []);

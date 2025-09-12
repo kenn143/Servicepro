@@ -85,6 +85,7 @@ export default function CreateInvoice() {
         EmailAddress: rec.fields.EmailAddress || "",
         DateCreated: rec.createdTime,
       }));
+    
       setFiltered(results);
     } catch (error) {
       console.error(error);
@@ -99,6 +100,7 @@ export default function CreateInvoice() {
     setFiltered([]);
     setLoading(false);
     setSelectedCustomer(customer);
+
   };
 
   const nextStep = () => {
