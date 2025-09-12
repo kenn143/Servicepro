@@ -28,17 +28,42 @@ const styles = StyleSheet.create({
 const InvoicePDF = ({ record }: { record: any }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <View style={styles.row}>
-          <Text>Invoice Number: {record.fields.InvoiceNumber}</Text>
-          <Text>Invoice Date: {record.fields.DateCreated?.split("T")[0]}</Text>
+
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "row", gap: 20,marginTop:"40px" }}>
+          <View style={{fontSize:"12px"}}>
+            <Text >Junk Removal</Text>
+            <Text>115 Sunridge way</Text>
+            <Text>(714) 908-7314 </Text>
+          </View>
+      
+        </View>
+
+        <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
+          <Text style={{ fontSize: 24, fontWeight: "bold" }}>INVOICE</Text>
+          <Text style={{ marginTop: 15 }}>
+            Invoice Number: {record.fields.InvoiceNumber}
+          </Text>
+          <Text>
+            Invoice Date: {record.fields.DateCreated?.split("T")[0]}
+          </Text>
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text>Bill To:</Text>
-        <Text>{record.fields.CustomerName?.[0]}</Text>
-      </View>
+      <View style={[styles.section, { marginTop: 20, flexDirection: "row" }]}>
+    <View style={{ flex: 1 }}>
+      <Text style={{fontWeight:"bold"}}>Bill To:</Text>
+      <Text>{record.fields.CustomerName?.[0]}</Text>
+    </View>
+
+    <View style={{ flex: 1, alignItems: "center" }}>
+      <Text style={{fontWeight:"bold"}}>Service Location:</Text>
+      <Text>Sample Client acm Inc.</Text>
+      <Text>5520 Ruffin Road</Text>
+    </View>
+
+    <View style={{ flex: 1 }} />
+  </View>
 
       <View style={styles.table}>
         <View style={styles.tableRow}>
@@ -56,20 +81,32 @@ const InvoicePDF = ({ record }: { record: any }) => (
         </View>
       </View>
 
+      {/* Terms */}
       <View style={styles.terms}>
         <Text>
           <Text style={{ fontWeight: "bold" }}>Terms: </Text>
-          By paying the due balance on invoices provided, the Client hereby acknowledges that all requested service items
-          have been performed satisfactorily unless otherwise noted.
+          By paying the due balance on invoices provided, the Client hereby acknowledges that all requested service items for
+            this date and/or any other dates listed above in the description section of the table, have been performed and have
+            been tested showing successful satisfactory install/repair, unless otherwise stated on the invoice, in which labor
+            service charges still apply if any repairs have been made. By accepting this invoice, the Client agrees to pay in full the amount listed in the Total section of the invoice.
         </Text>
       </View>
 
+      {/* Notes */}
       <View style={styles.notes}>
         <Text>Notes: {record.fields.Notes || "No additional notes"}</Text>
       </View>
+
+      <View style={{textAlign:"center",fontWeight: "bold", marginTop:"30px",fontSize:"17px"}}>
+        <Text>Thank you for your business!</Text>
+      </View>
     </Page>
   </Document>
+  
 );
+
+
+
 
 export default function InvoiceList() {
   const [query, setQuery] = useState("");
@@ -113,7 +150,10 @@ export default function InvoiceList() {
           },
         }
       );
+
+    
       const data = await res.json();
+      console.log("res",data);
       setRecords(data.records || []);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -150,10 +190,11 @@ export default function InvoiceList() {
                     "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
         },
         body: JSON.stringify({
-          id: editRecord.id,
+          recordId: editRecord.id,
           item: editRecord.fields.Item,
           price: editRecord.fields.Price,
           quantity: editRecord.fields.Quantity,
+          customerId: editRecord.fields.CustomerId,
           action:"update"
         }),
       });
@@ -211,48 +252,127 @@ export default function InvoiceList() {
   //   }
   // };
 
+  // const handleSendInvoices = async () => {
+  //   if (selectedIds.length === 0) {
+  //     toast.error("Please select at least one invoice.");
+  //     return;
+  //   }
+  
+  //   const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
+  
+  //   try {
+  
+  //     const invoicesWithPdf = await Promise.all(
+  //       selectedRecords.map(async (r) => {
+  //         const pdfBase64 = await generatePdfBase64(r);
+         
+  //         return {
+  //           item: r.fields.Item || "",
+  //           price: r.fields.Price || 0,
+  //           quantity: r.fields.Quantity || 1,
+  //           pdf: pdfBase64, 
+  //           recordId: r.id || "",
+  //           customerId: r.fields.CustomerId || ""
+  //         };
+  //       })
+  //     );
+  //     console.log("the invoicew",invoicesWithPdf);
+  
+  //     await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json",
+  //                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+  //        },
+  //       body: JSON.stringify({
+  //         action: "send",
+  //         invoices: invoicesWithPdf,
+  //       }),
+  //     });
+  
+  //     toast.success("Invoices with PDFs sent successfully!");
+  //     setSelectedIds([]);
+  //     await fetchData(); // reload table
+  //   } catch (err) {
+  //     console.error("Error sending invoices:", err);
+  //     toast.error("Failed to send invoices.");
+  //   }
+  // };
   const handleSendInvoices = async () => {
     if (selectedIds.length === 0) {
-      toast.error("Please select at least one invoice.");
+      toast.error("Please select invoice.");
       return;
     }
+  
+    // Cloudinary config
+    const cloudName = "doj0vye62";
+    const cloudinaryUploadPreset = "Qoute_FileName";
   
     const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
   
     try {
-  
       const invoicesWithPdf = await Promise.all(
         selectedRecords.map(async (r) => {
-          const pdfBase64 = await generatePdfBase64(r);
+          const pdfBuffer = await pdf(<InvoicePDF record={r} />).toBuffer();
+
+          const pdfBlob = new Blob([pdfBuffer], { type: "application/pdf" });
+          const pdfFile = new File([pdfBlob], `Invoice_${r.id}.pdf`, {
+            type: "application/pdf",
+          });
+
+          const formData = new FormData();
+          formData.append("file", pdfFile);
+          formData.append("upload_preset", cloudinaryUploadPreset);
+          formData.append("public_id", `Invoice_${r.id}`);
+  
+          const uploadRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+  
+          const uploadData = await uploadRes.json();
+  
+          if (!uploadData.secure_url) {
+            throw new Error("Cloudinary upload failed: " + JSON.stringify(uploadData));
+          }
+  
           return {
             item: r.fields.Item || "",
             price: r.fields.Price || 0,
             quantity: r.fields.Quantity || 1,
-            pdf: pdfBase64, 
+            pdfUrl: uploadData.secure_url, 
+            recordId: r.id || "",
+            customerId: r.fields.CustomerId || "",
           };
         })
       );
-      console.log("the data",invoicesWithPdf)
+  
+      console.log("Invoices with Cloudinary URLs:", invoicesWithPdf);
   
       await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
         method: "POST",
-        headers: { "Content-Type": "application/json",
-                  "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-         },
+        headers: {
+          "Content-Type": "application/json",
+          "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+        },
         body: JSON.stringify({
           action: "send",
           invoices: invoicesWithPdf,
         }),
       });
   
-      toast.success("Invoices with PDFs sent successfully!");
+      toast.success("Invoices with Cloudinary URLs sent successfully!");
       setSelectedIds([]);
-      await fetchData(); // reload table
+      await fetchData(); 
     } catch (err) {
       console.error("Error sending invoices:", err);
       toast.error("Failed to send invoices.");
     }
   };
+  
+  
   
   const generatePdfBase64 = async (record: any) => {
     const blob = await pdf(<InvoicePDF record={record} />).toBlob();

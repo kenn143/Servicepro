@@ -196,7 +196,7 @@ export default function CreateInvoice() {
           : null,
       action:"new"
     };
-
+console.log("payload",payload)
     try {
       const response = await fetch(
         "https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr",
