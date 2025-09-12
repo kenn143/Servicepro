@@ -303,7 +303,7 @@ export default function InvoiceList() {
       return;
     }
   
-    // Cloudinary config
+
     const cloudName = "doj0vye62";
     const cloudinaryUploadPreset = "Qoute_FileName";
   
