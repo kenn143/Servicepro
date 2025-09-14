@@ -226,15 +226,16 @@ export default function InvoiceList() {
   
       const updatedRecords = await Promise.all(
         mainRecords.map(async (record: any) => {
-          const customerId = record.fields.CustomerId;
+          const customerId = record.fields.CustomerId[0];
           const invoiceId = record.fields.InvoiceId;
+
   
           let customerData: any = {};
           let invoiceDetails: any[] = [];
 
-          if (customerId) {
+        
             const res2 = await fetch(
-              `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0?filterByFormula={CustomerId}='${customerId}'`,
+              `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0/${customerId}`,
               {
                 headers: {
                   Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
@@ -243,8 +244,7 @@ export default function InvoiceList() {
             );
   
             const data2 = await res2.json();
-            customerData = data2.records?.[0]?.fields || {};
-          }
+            customerData = data2.fields || [];
   
           if (invoiceId) {
             const res3 = await fetch(
@@ -271,7 +271,6 @@ export default function InvoiceList() {
       );
   
       setRecords(updatedRecords);
-      console.log("the updated records",updatedRecords)
     } catch (err) {
       console.error("Error fetching data:", err);
     } finally {
