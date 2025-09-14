@@ -551,7 +551,6 @@ console.log("payload",payload)
                 )}
               </div>
 
-              {/* Navigation */}
               <div className="flex justify-between mt-4">
                 <button
                   onClick={prevStep}
