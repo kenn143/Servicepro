@@ -76,40 +76,59 @@ const InvoicePDF = ({ record }: { record: any }) => (
         <View style={{ flex: 1 }} />
       </View>
 
-      {/* Table */}
-      <View style={styles.table}>
-        <View style={styles.tableRow}>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>Description</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>QTY</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>Price</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>Amount</Text>
-          </View>
-        </View>
+<View style={styles.table}>
+  <View style={styles.tableRow}>
+    <View style={styles.tableColHeader}>
+      <Text style={styles.tableCellHeader}>Description</Text>
+    </View>
+    <View style={styles.tableColHeader}>
+      <Text style={styles.tableCellHeader}>QTY</Text>
+    </View>
+    <View style={styles.tableColHeader}>
+      <Text style={styles.tableCellHeader}>Price</Text>
+    </View>
+    <View style={styles.tableColHeader}>
+      <Text style={styles.tableCellHeader}>Amount</Text>
+    </View>
+  </View>
 
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol}>
-            <Text>{record.fields.Item}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text>{record.fields.Quantity || 1}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text>${record.fields.Price}</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text>
-             $ {(record.fields.Price || 0) * (record.fields.Quantity || 1)}
-            </Text>
-          </View>
+  {record.invoiceDetails && record.invoiceDetails.length > 0 ? (
+    record.invoiceDetails.map((detail: any, index: number) => (
+      <View style={styles.tableRow} key={index}>
+        <View style={styles.tableCol}>
+          <Text>{detail.ItemName}</Text>
+        </View>
+        <View style={styles.tableCol}>
+          <Text>{detail.Quantity || 1}</Text>
+        </View>
+        <View style={styles.tableCol}>
+          <Text>${detail.Price}</Text>
+        </View>
+        <View style={styles.tableCol}>
+          <Text>
+            ${((detail.Price || 0) * (detail.Quantity || 1)).toFixed(2)}
+          </Text>
         </View>
       </View>
+    ))
+  ) : (
+    <View style={styles.tableRow}>
+      <View style={styles.tableCol}>
+        <Text>No items</Text>
+      </View>
+      <View style={styles.tableCol}>
+        <Text>-</Text>
+      </View>
+      <View style={styles.tableCol}>
+        <Text>-</Text>
+      </View>
+      <View style={styles.tableCol}>
+        <Text>-</Text>
+      </View>
+    </View>
+  )}
+</View>
+
 
    
       <View
@@ -192,8 +211,6 @@ export default function InvoiceList() {
   const fetchData = async () => {
     try {
       setLoading(true);
-  
- 
       const res1 = await fetch(
         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
         {
@@ -206,43 +223,62 @@ export default function InvoiceList() {
       const data1 = await res1.json();
       const mainRecords = data1.records || [];
   
-
+  
       const updatedRecords = await Promise.all(
-        mainRecords.map(async (record:any) => {
+        mainRecords.map(async (record: any) => {
           const customerId = record.fields.CustomerId;
+          const invoiceId = record.fields.InvoiceId;
+  
+          let customerData: any = {};
+          let invoiceDetails: any[] = [];
 
+          if (customerId) {
+            const res2 = await fetch(
+              `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0?filterByFormula={CustomerId}='${customerId}'`,
+              {
+                headers: {
+                  Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+                },
+              }
+            );
   
-          if (!customerId) return record; 
+            const data2 = await res2.json();
+            customerData = data2.records?.[0]?.fields || {};
+          }
   
-          const res2 = await fetch(
-            `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0?filterByFormula/'${customerId}'`,
-            {
-              headers: {
-                Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
-              },
-            }
-          );
-        
+          if (invoiceId) {
+            const res3 = await fetch(
+              `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl7FLdkgynX4tg5Q?filterByFormula={InvoiceId}='${invoiceId}'`,
+              {
+                headers: {
+                  Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+                },
+              }
+            );
   
-          const data2 = await res2.json();
-          const customerData = data2.records?.[0]?.fields || {};    
+            const data3 = await res3.json();
+            invoiceDetails = data3.records?.map((r: any) => r.fields) || [];
+          }
+  
           return {
             ...record,
             email: customerData.EmailAddress || "",
             address: customerData.Address || "",
             phonenumber: customerData.PhoneNumber || "",
+            invoiceDetails, 
           };
         })
       );
-
+  
       setRecords(updatedRecords);
-    console.log("updated",updatedRecords)
+      console.log("the updated records",updatedRecords)
     } catch (err) {
       console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
     }
   };
+  
   
   useEffect(() => {
     fetchData();

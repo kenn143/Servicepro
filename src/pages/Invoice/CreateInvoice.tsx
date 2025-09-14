@@ -18,6 +18,7 @@ type Item = {
   quantity: number;
   price: number;
   total: number;
+  itemName:string;
 };
 
 const steps = ["Add Item", "Notes", "Attachment"];
@@ -28,8 +29,8 @@ export default function CreateInvoice() {
   const [loading, setLoading] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [activeStep, setActiveStep] = useState(0);
-  const [items, setItems] = useState<Item[]>([{ quantity: 0, price: 0, total: 0 }]);
-  const [itemName, setItemName] = useState("");
+  const [items, setItems] = useState<Item[]>([{ quantity: 0, price: 0, total: 0,itemName:"" }]);
+  // const [itemName, setItemName] = useState("");
   const [notes, setNotes] = useState("");
   const [attachment, setAttachment] = useState<File | null>(null);
   const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null);
@@ -85,7 +86,7 @@ export default function CreateInvoice() {
         EmailAddress: rec.fields.EmailAddress || "",
         DateCreated: rec.createdTime,
       }));
-    
+
       setFiltered(results);
     } catch (error) {
       console.error(error);
@@ -104,10 +105,10 @@ export default function CreateInvoice() {
   };
 
   const nextStep = () => {
-    if (!itemName.trim()) {
-      toast.error("Item name is required")
-      return;
-    }
+    // if (!itemName.trim()) {
+    //   toast.error("Item name is required")
+    //   return;
+    // }
     if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1);
   };
 
@@ -121,19 +122,28 @@ export default function CreateInvoice() {
     window.location.href = "/create-invoice";
   };
 
-  const handleItemChange = (index: number, field: keyof Item, value: number) => {
+  const handleItemChange = (
+    index: number,
+    field: keyof Item,
+    value: string | number
+  ) => {
     const newItems = [...items];
-    newItems[index][field] = value;
-
-    if (field === "price" || field === "quantity") {
+  
+    if (field === "quantity" || field === "price") {
+      newItems[index][field] = Number(value) as Item[typeof field];
       newItems[index].total = newItems[index].price * newItems[index].quantity;
+    } else if (field === "itemName") {
+      newItems[index][field] = value as Item[typeof field];
     }
-
+  
     setItems(newItems);
   };
 
+  // const addItem = () => {
+  //   setItems([...items, { quantity: 0, price: 0, total: 0 }]);
+  // };
   const addItem = () => {
-    setItems([...items, { quantity: 0, price: 0, total: 0 }]);
+    setItems([...items, { itemName: "", quantity: 0, price: 0, total: 0 }]);
   };
 
   const totalCost = items.reduce((acc, item) => acc + item.total, 0);
@@ -186,7 +196,6 @@ export default function CreateInvoice() {
       items,
       notes,
       totalCost,
-      itemName,
       attachment:
         attachment && attachmentUrl
           ? {
@@ -196,7 +205,7 @@ export default function CreateInvoice() {
               size: attachment.size,
             }
           : null,
-      action:"new"
+      action: "new",
     };
 console.log("payload",payload)
     try {
@@ -216,8 +225,8 @@ console.log("payload",payload)
       // toast.success("Invoice Successfully Created");
       toast.success("Invoice Successfully Created");
       setTimeout(() => {
-        navigate("/invoice-list"); 
-      }, 1000); 
+        navigate("/invoice-list");
+      }, 1000);
     } catch (err) {
       console.error(err);
       toast.error("Error sending invoice data.");
@@ -396,72 +405,81 @@ console.log("payload",payload)
               <div className="p-6 border rounded-xl  shadow-sm min-h-[200px] dark:text-white">
                 {activeStep === 0 && (
                   <div>
-                    <input
+                    {/* <input
                       type="text"
                       placeholder="Item Name"
                       value={itemName}
                       onChange={(e) => setItemName(e.target.value)}
-                      className="w-1/2 rounded-md border px-3 py-2 text-md shadow-sm 
-                        focus:border-blue-500 focus:ring focus:ring-blue-200 
+                      className="w-1/2 rounded-md border px-3 py-2 text-md shadow-sm
+                        focus:border-blue-500 focus:ring focus:ring-blue-200
                         focus:outline-none dark:text-white mb-4"
-                      
-                    />
 
-                    <table className="w-full text-sm mb-4">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="p-2 text-left">Quantity</th>
-                          <th className="p-2 text-left">Price</th>
-                          <th className="p-2 text-left">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((item, idx) => (
-                          <tr key={idx} className="border-b">
-                            <td className="p-2">
-                            <input
-                                type="number"
-                                value={item.quantity === 0 ? "0" : item.quantity} // show empty if 0
-                                onFocus={(e) => {
-                                  if (e.target.value === "0") e.target.value = ""; // clear when focused
-                                }}
-                                onBlur={(e) => {
-                                  if (e.target.value === "") {
-                                    handleItemChange(idx, "quantity", 0); // reset to 0 if left blank
-                                  }
-                                }}
-                                onChange={(e) =>
-                                  handleItemChange(idx, "quantity", Number(e.target.value) || 0)
-                                }
-                                className="w-full border rounded px-2 py-1 text-sm"
-                              />
+                    /> */}
 
+<table className="w-full text-sm mb-4">
+  <thead>
+    <tr className="border-b">
+      <th className="p-2 text-left">Item Name</th>
+      <th className="p-2 text-left">Quantity</th>
+      <th className="p-2 text-left">Price</th>
+      <th className="p-2 text-left">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {items.map((item, idx) => (
+      <tr key={idx} className="border-b">
+        <td className="p-2">
+          <input
+            type="text"
+            value={item.itemName}
+            onChange={(e) =>
+              handleItemChange(idx, "itemName", e.target.value)
+            }
+            className="w-full border rounded px-2 py-1 text-sm"
+          />
+        </td>
+        <td className="p-2">
+          <input
+            type="number"
+            value={item.quantity === 0 ? "0" : item.quantity}
+            onFocus={(e) => {
+              if (e.target.value === "0") e.target.value = "";
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "") {
+                handleItemChange(idx, "quantity", 0);
+              }
+            }}
+            onChange={(e) =>
+              handleItemChange(idx, "quantity", e.target.value)
+            }
+            className="w-full border rounded px-2 py-1 text-sm"
+          />
+        </td>
+        <td className="p-2">
+          <input
+            type="number"
+            value={item.price === 0 ? "0" : item.price}
+            onFocus={(e) => {
+              if (e.target.value === "0") e.target.value = "";
+            }}
+            onBlur={(e) => {
+              if (e.target.value === "") {
+                handleItemChange(idx, "price", 0);
+              }
+            }}
+            onChange={(e) =>
+              handleItemChange(idx, "price", e.target.value)
+            }
+            className="w-full border rounded px-2 py-1 text-sm"
+          />
+        </td>
+        <td className="p-2">{item.total.toFixed(2)}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-                            </td>
-                            <td className="p-2">
-                            <input
-                              type="number"
-                              value={item.price === 0 ? "0" : item.price}
-                              onFocus={(e) => {
-                                if (e.target.value === "0") e.target.value = "";
-                              }}
-                              onBlur={(e) => {
-                                if (e.target.value === "") {
-                                  handleItemChange(idx, "price", 0); // reset to 0 if left empty
-                                }
-                              }}
-                              onChange={(e) =>
-                                handleItemChange(idx, "price", Number(e.target.value) || 0)
-                              }
-                              className="w-full border rounded px-2 py-1 text-sm"
-                            />
-
-                            </td>
-                            <td className="p-2">{item.total.toFixed(2)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
 
                     <div className="flex justify-between items-center">
                       <button
@@ -558,7 +576,7 @@ console.log("payload",payload)
                   <button
                       onClick={handleSave}
                       disabled={saving}
-                      className={`px-4 py-2 rounded-lg text-white 
+                      className={`px-4 py-2 rounded-lg text-white
                         ${saving ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"}`}
                     >
                       {saving? "SAVING..." : "SAVE"}
