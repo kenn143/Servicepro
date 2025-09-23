@@ -74,7 +74,7 @@ const AppSidebar: React.FC = () => {
   }, []);
 
   const filteredNavItems = navItems.filter((item) => {
-    if (item.appKey === "Dashboard") return true; 
+    // if (item.appKey === "Dashboard") return false; 
     return accessibleApps.includes(item.appKey);
   });
 

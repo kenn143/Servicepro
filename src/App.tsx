@@ -32,7 +32,7 @@ function AnimatedRoutes() {
           <Route
             path="/home"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRight="Dashboard">  
                 <PageWrapper><Home /></PageWrapper>
               </ProtectedRoute>
             }
