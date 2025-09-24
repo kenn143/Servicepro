@@ -4,6 +4,7 @@ import { CiCamera, CiCircleCheck } from "react-icons/ci";
 import { FaRegCircle } from "react-icons/fa";
 
 
+
 const getToken = () => {
  
   const storedData = localStorage.getItem("data");
@@ -33,8 +34,10 @@ const FileTracker: React.FC = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState<number>(0);
-
+  // const [totalCount, setTotalCount] = useState<number>(0);
+  const [flyerCount, setFlyerCount] = useState<number>(0);
+  const [signsCount,setSignsCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -62,7 +65,7 @@ const FileTracker: React.FC = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
+    setIsLoading(true);
     const objectUrl = URL.createObjectURL(file);
     setImageUrl(objectUrl);
     setCaptureTime(new Date());
@@ -115,33 +118,53 @@ const FileTracker: React.FC = () => {
         console.log("Data sent to webhook successfully");
 
         const userName = getToken()?.UserName || "";
-        const selectedType = selected || "";
 
-        const formula = `AND({UserName}='${userName}', {Type}='${selectedType}', IS_SAME(CREATED_TIME(), TODAY(), 'day'))`;
 
-        const totalCountResponse = await fetch(
-          `https://api.airtable.com/v0/appUbFQNnqLyAE91b/tbldM9CuFapFApSCe?filterByFormula=${encodeURIComponent(
-            formula
-          )}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer patOqbvQBRYKN0N9t.ad5d76ed48b85d7a6ba0d090b6e3cfbe27df9e12d40d7cbcc0995c9b3d51a86b`,
-            },
-          }
-        );
-
-        if (!totalCountResponse.ok) {
-          throw new Error(`Airtable fetch failed: ${totalCountResponse.status} ${totalCountResponse.statusText}`);
+      const flyersFormula = `AND(FIND('${userName}', ARRAYJOIN({UserName}, ',')), {Type} = 'Flyers')`;
+      const flyersResponse = await fetch(
+        `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?filterByFormula=${encodeURIComponent(flyersFormula)}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+          },
         }
+      );
 
-        const airtableData = await totalCountResponse.json();
-        setTotalCount(airtableData.records.length);
-        console.log("Total records today:", airtableData);
+
+    const signsFormula = `AND(FIND('${userName}', ARRAYJOIN({UserName}, ',')), {Type} = 'Signs')`;
+    const signsResponse = await fetch(
+      `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?filterByFormula=${encodeURIComponent(signsFormula)}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+        },
+      }
+    );
+
+    const flyersData = await flyersResponse.json();
+    const signsData = await signsResponse.json();
+    setFlyerCount(flyersData.records.length);
+    setSignsCount(signsData.records.length)
+
+
+
+        // if (!totalCountResponse.ok) {
+        //   throw new Error(`Airtable fetch failed: ${totalCountResponse.status} ${totalCountResponse.statusText}`);
+        // }
+
+        // const airtableData = await totalCountResponse.json();
+        // setTotalCount(airtableData.records.length);
+        // console.log("Total records today:", airtableData);
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+     
+        setIsLoading(false);
       }
     });
+  
   };
 
   const formatDateTime = (date: Date) => {
@@ -156,7 +179,19 @@ const FileTracker: React.FC = () => {
     });
   };
 
-
+  const LoadingSkeleton = () => (
+    <div className="mt-10 w-full bg-indigo-100 p-8 rounded-xl shadow-md flex flex-col items-center animate-pulse">
+      <div className="h-4 bg-blue-200 rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-blue-200 rounded w-1/2 mb-6"></div>
+      
+      <div className="bg-blue-200 rounded-lg mb-6 w-64 h-48"></div>
+      
+      <div className="h-4 bg-blue-200 rounded w-48 mb-1"></div>
+      <div className="h-4 bg-blue-200 rounded w-40 mb-4"></div>
+      
+      <div className="bg-blue-200 rounded-md w-32 h-10"></div>
+    </div>
+  );
 
   return (
     <>
@@ -201,29 +236,40 @@ const FileTracker: React.FC = () => {
 
             <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
 
-            {imageUrl && captureTime && (
-              <div className="mt-10 w-full bg-indigo-100 p-8 rounded-xl shadow-md flex flex-col items-center">
-                <p className="text-md text-blue-900 font-medium mb-4 text-center">
-                  Congratulations, you've captured{" "}
-                  <span className="font-bold text-blue-700">{totalCount}</span> {selected.toLowerCase()} today.
-                  <br />
-                  You can do it, capture more on flyer-tracker.
-                </p>
+            {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        imageUrl && captureTime && (
+          <div className="mt-10 w-full bg-indigo-100 p-8 rounded-xl shadow-md flex flex-col items-center">
+            <p className="text-md text-blue-900 font-medium mb-4 text-center">
+              Congratulations, you've captured{" "}
+              <span className="font-bold text-blue-700">{flyerCount}</span> flyers
+              and <span className="font-bold text-blue-700">{signsCount}</span> signs today.
+              <br />
+              You can do it, capture more on flyer-tracker.
+            </p>
 
-                <img src={imageUrl} alt="Captured" className="rounded-lg mb-6 max-w-md" />
+            <img 
+              src={imageUrl} 
+              alt="Captured" 
+              className="rounded-lg mb-6 max-w-md"
+              onLoad={() => setIsLoading(false)}
+              onLoadStart={() => setIsLoading(true)}
+            />
 
-                <p className="text-md text-blue-900 mb-1">
-                  Last Capture: <span className="text-blue-700 font-medium">{formatDateTime(captureTime)}</span>
-                </p>
-                <p className="text-md text-blue-900 mb-4">
-                  Location: <span className="text-blue-700 cursor-pointer">{latitude}, {longitude}</span>
-                </p>
+            <p className="text-md text-blue-900 mb-1">
+              Last Capture: <span className="text-blue-700 font-medium">{formatDateTime(captureTime)}</span>
+            </p>
+            <p className="text-md text-blue-900 mb-4">
+              Location: <span className="text-blue-700 cursor-pointer">{latitude}, {longitude}</span>
+            </p>
 
-                <button className="bg-white text-blue-800 font-semibold py-2 px-6 rounded-md shadow hover:bg-gray-100">
-                  {selected}
-                </button>
-              </div>
-            )}
+            <button className="bg-white text-blue-800 font-semibold py-2 px-6 rounded-md shadow hover:bg-gray-100">
+              {selected}
+            </button>
+          </div>
+        )
+      )}
 
             {error && <p className="text-red-600 mb-4">{error}</p>}
           </div>
