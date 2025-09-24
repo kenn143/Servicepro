@@ -20,6 +20,7 @@ import InvoiceList from "./pages/Invoice/InvoiceList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import Captures from "./pages/Captures";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -45,6 +46,16 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/captures"
+            element={
+              <ProtectedRoute requiredRight="FlyerTracker Captures">
+                <PageWrapper><Captures /></PageWrapper>
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/quotation-list"
             element={

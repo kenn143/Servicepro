@@ -31,12 +31,23 @@ const navItems: NavItem[] = [
     appKey: "Calendar",
     path: "/calendar",
   },
+  // {
+  //   icon: <FlyerTracker />,
+  //   name: "Flyer Tracker",
+  //   appKey: "Flyer Tracker",
+  //   path: "/file-tracker",
+  // },
   {
     icon: <FlyerTracker />,
     name: "Flyer Tracker",
     appKey: "Flyer Tracker",
-    path: "/file-tracker",
+    subItems: [
+      { name: "Flyers", path: "/file-tracker" },
+      
+      { name: "FlyerTracker Captures", path: "/captures" },
+    ],
   },
+
   {
     icon: <QuoteIcon />,
     name: "Light Installers Quote",
