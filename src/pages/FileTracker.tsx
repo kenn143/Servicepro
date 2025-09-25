@@ -76,7 +76,7 @@ const FileTracker: React.FC = () => {
       const longitude = position.coords.longitude;
 
       try {
-        // Cloudinary upload
+       
         const cloudinaryUrl = "https://api.cloudinary.com/v1_1/doj0vye62/image/upload";
         const cloudinaryUploadPreset = "Qoute_FileName";
 
