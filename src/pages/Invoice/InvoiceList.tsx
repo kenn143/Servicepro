@@ -180,9 +180,8 @@ export default function InvoiceList() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // You can make this configurable if needed
+  const [itemsPerPage] = useState(10); 
 
   const fetchData = async () => {
     try {
@@ -483,9 +482,7 @@ export default function InvoiceList() {
   return (
     <div className="max-w-7xl mx-auto mt-10">
       <div className="mb-6 flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-blue-950 mb-8 dark:text-white/90 text-center">
-          Invoice List
-        </h1>
+
         <div className="flex justify-end">
         <button
           onClick={handleSendInvoices}
@@ -578,7 +575,6 @@ export default function InvoiceList() {
             </table>
           </div>
 
-          {/* Pagination Controls */}
           {totalPages > 1 && (
             <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-sm text-gray-700 dark:text-white">

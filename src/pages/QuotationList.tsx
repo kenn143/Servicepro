@@ -26,7 +26,6 @@ const QuotationList: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
@@ -125,7 +124,7 @@ const QuotationList: React.FC = () => {
     }
   };
 
-  // filter and paginate
+
   const filteredData = data.filter((item) =>
     item.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -297,51 +296,50 @@ const QuotationList: React.FC = () => {
                   </table>
                 </div>
 
-               {/* Pagination Footer */}
-<div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-  {/* Left side info */}
-  <div>
-    {totalRecords === 0
-      ? "No entries found"
-      : `Showing ${startIndex + 1} to ${endIndex} of ${totalRecords} entries`}
-  </div>
+         
+                <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
 
-  {/* Right side pagination */}
-  <div className="flex items-center gap-1">
-    {/* Prev button */}
-    <button
-      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-      disabled={currentPage === 1}
-      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
-    >
-      ‹
-    </button>
+                  <div>
+                    {totalRecords === 0
+                      ? "No entries found"
+                      : `Showing ${startIndex + 1} to ${endIndex} of ${totalRecords} entries`}
+                  </div>
 
-    {/* Page numbers */}
-    {Array.from({ length: totalPages }, (_, i) => (
-      <button
-        key={i + 1}
-        onClick={() => setCurrentPage(i + 1)}
-        className={`px-3 py-1 border rounded ${
-          currentPage === i + 1
-            ? "text-blue-600 bg-blue-50 border-blue-300"
-            : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-700"
-        }`}
-      >
-        {i + 1}
-      </button>
-    ))}
+                  <div className="flex items-center gap-1">
 
-    {/* Next button */}
-    <button
-      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-      disabled={currentPage === totalPages}
-      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
-    >
-      ›
-    </button>
-  </div>
-</div>
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
+                    >
+                      ‹
+                    </button>
+
+
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <button
+                        key={i + 1}
+                        onClick={() => setCurrentPage(i + 1)}
+                        className={`px-3 py-1 border rounded ${
+                          currentPage === i + 1
+                            ? "text-blue-600 bg-blue-50 border-blue-300"
+                            : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-700"
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+
+
+                    <button
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
+                    >
+                      ›
+                    </button>
+                  </div>
+                </div>
 
               </div>
             </div>

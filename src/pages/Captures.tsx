@@ -22,10 +22,11 @@ const Captures: React.FC = () => {
   const [records, setRecords] = useState<AirtableRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  
 
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
+
+  const [usernameSearch, setUsernameSearch] = useState<string>("");
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -34,7 +35,7 @@ const Captures: React.FC = () => {
           "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u",
           {
             headers: {
-              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`, 
+              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`, // ⚡ move API key to .env
             },
           }
         );
@@ -50,33 +51,29 @@ const Captures: React.FC = () => {
     fetchRecords();
   }, []);
 
+  // 🔹 Filter by username
+  const filteredRecords = records.filter((rec) =>
+    usernameSearch.trim() === ""
+      ? true
+      : rec.fields.UserName?.some((name) =>
+          name.toLowerCase().includes(usernameSearch.toLowerCase())
+        )
+  );
 
-  const totalRecords = records.length;
+  const totalRecords = filteredRecords.length;
   const totalPages = Math.ceil(totalRecords / recordsPerPage);
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
-  const currentRecords = records.slice(startIndex, endIndex);
+  const currentRecords = filteredRecords.slice(startIndex, endIndex);
 
-
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const goToPrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const goToNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
+  const goToPage = (page: number) => setCurrentPage(page);
+  const goToPrevious = () =>
+    currentPage > 1 && setCurrentPage(currentPage - 1);
+  const goToNext = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
   const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
     setRecordsPerPage(newRecordsPerPage);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   return (
@@ -84,14 +81,26 @@ const Captures: React.FC = () => {
       <PageMeta title="ServicePros" description="" />
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6 dark:text-white">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-lg font-semibold dark:text-white">Captures</h1>
-          
-   
+          <div className="flex items-center gap-3">
+            <input
+              type="text"
+              placeholder="Search by username..."
+              value={usernameSearch}
+              onChange={(e) => {
+                setUsernameSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="border border-gray-200 dark:border-gray-700 rounded px-4 py-2 text-sm bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+            />
+          </div>
+
           <div className="flex items-center gap-2 text-sm">
             <span>Show:</span>
             <select
               value={recordsPerPage}
-              onChange={(e) => handleRecordsPerPageChange(Number(e.target.value))}
+              onChange={(e) =>
+                handleRecordsPerPageChange(Number(e.target.value))
+              }
               className="border border-gray-200 dark:border-gray-700 rounded px-2 py-1 bg-white dark:bg-gray-800"
             >
               <option value={5}>5</option>
@@ -117,8 +126,14 @@ const Captures: React.FC = () => {
                   </div>
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                    <div
+                      className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -126,12 +141,24 @@ const Captures: React.FC = () => {
               <table className="min-w-full">
                 <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
                   <tr>
-                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 w-50">User Name</th>
-                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Image</th>
-                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Type</th>
-                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Lat</th> 
-                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Long</th>
-                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Date Created</th>
+                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      User Name
+                    </th>
+                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      Image
+                    </th>
+                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      Type
+                    </th>
+                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      Lat
+                    </th>
+                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      Long
+                    </th>
+                    <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      Date Created
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -151,7 +178,9 @@ const Captures: React.FC = () => {
                               alt="thumb"
                               className="w-12 h-12 object-cover rounded-lg mx-auto cursor-pointer transform transition-all duration-200 hover:scale-110 hover:shadow-lg hover:brightness-110"
                               onClick={() =>
-                                setSelectedImage(rec.fields.Image?.[0]?.url || "")
+                                setSelectedImage(
+                                  rec.fields.Image?.[0]?.url || ""
+                                )
                               }
                             />
                           ) : (
@@ -163,14 +192,19 @@ const Captures: React.FC = () => {
                         <td className="px-4 py-3">{rec.fields.Long ?? "-"}</td>
                         <td className="px-4 py-3">
                           {rec.fields.DateCreated
-                            ? new Date(rec.fields.DateCreated).toLocaleString()
+                            ? new Date(
+                                rec.fields.DateCreated
+                              ).toLocaleString()
                             : "-"}
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                      <td
+                        colSpan={6}
+                        className="px-4 py-8 text-center text-gray-500 dark:text-gray-400"
+                      >
                         No records found
                       </td>
                     </tr>
@@ -183,13 +217,14 @@ const Captures: React.FC = () => {
           <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 bg-white dark:bg-white/[0.03]">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-sm text-gray-600 dark:text-gray-400">
-                {loading ? (
-                  "Loading..."
-                ) : totalRecords === 0 ? (
-                  "No entries found"
-                ) : (
-                  `Showing ${startIndex + 1} to ${Math.min(endIndex, totalRecords)} of ${totalRecords} entries`
-                )}
+                {loading
+                  ? "Loading..."
+                  : totalRecords === 0
+                  ? "No entries found"
+                  : `Showing ${startIndex + 1} to ${Math.min(
+                      endIndex,
+                      totalRecords
+                    )} of ${totalRecords} entries`}
               </div>
 
               <div className="flex items-center">
@@ -204,7 +239,9 @@ const Captures: React.FC = () => {
                           >
                             1
                           </button>
-                          <span className="px-2 py-2 text-gray-500 dark:text-gray-400">...</span>
+                          <span className="px-2 py-2 text-gray-500 dark:text-gray-400">
+                            ...
+                          </span>
                         </>
                       )}
 
@@ -252,7 +289,9 @@ const Captures: React.FC = () => {
                       </button>
                       {currentPage < totalPages - 2 && totalPages > 7 && (
                         <>
-                          <span className="px-2 py-2 text-gray-500 dark:text-gray-400">...</span>
+                          <span className="px-2 py-2 text-gray-500 dark:text-gray-400">
+                            ...
+                          </span>
                           <button
                             onClick={() => goToPage(totalPages)}
                             className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
@@ -263,7 +302,7 @@ const Captures: React.FC = () => {
                       )}
                     </>
                   )}
-                  
+
                   {totalPages <= 1 && !loading && (
                     <div className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500">
                       Page 1 of 1
@@ -278,46 +317,31 @@ const Captures: React.FC = () => {
 
       {selectedImage && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50"
-          style={{
-            animation: 'fadeIn 0.3s ease-out'
-          }}
+          className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50"
           onClick={() => setSelectedImage(null)}
         >
-          <div 
-            className="relative"
-            style={{
-              animation: 'slideIn 0.3s ease-out'
-            }}
+          <div
+            className="relative animate-[slideIn_0.3s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
           >
+
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-3 -right-3 bg-white rounded-full p-2 shadow-lg hover:bg-gray-200 transition"
+            >
+              ✕
+            </button>
+
             <img
               src={selectedImage}
               alt="full"
               className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl transition-all duration-300 hover:scale-105"
             />
-            <button
-              className="absolute top-2 right-2 bg-white rounded-full px-3 py-1 text-sm font-semibold shadow-lg hover:bg-gray-100 transition-all duration-200 hover:scale-110"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedImage(null);
-              }}
-            >
-              ✕
-            </button>
           </div>
         </div>
       )}
 
       <style>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
         @keyframes slideIn {
           from {
             opacity: 0;
