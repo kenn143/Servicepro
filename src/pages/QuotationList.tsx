@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import PageMeta from "../components/common/PageMeta";
 import { useNavigate } from "react-router-dom";
-// import Loader from "../Component/Loader";
 import { toast } from "react-toastify";
 
 // Types
@@ -26,6 +25,10 @@ const QuotationList: React.FC = () => {
   const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
 
   const handleRedirect = (id: string) => {
     navigate(`/quotation?id=${id}`);
@@ -66,7 +69,7 @@ const QuotationList: React.FC = () => {
     };
 
     const fetchCustomers = async () => {
-        setLoading(true);
+      setLoading(true);
       try {
         const response = await fetch(
           "https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblLRXGbGHNnaf8bF",
@@ -122,20 +125,25 @@ const QuotationList: React.FC = () => {
     }
   };
 
-
+  // filter and paginate
   const filteredData = data.filter((item) =>
     item.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalRecords = filteredData.length;
+  const totalPages = Math.ceil(totalRecords / recordsPerPage);
+
+  const startIndex = (currentPage - 1) * recordsPerPage;
+  const endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
+
+  const currentRecords = filteredData.slice(startIndex, endIndex);
+
   return (
     <>
-      <PageMeta
-        title="ServicePros"
-        description=""
-      />
+      <PageMeta title="ServicePros" description="" />
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="custom-calendars">
-          <div className="min-h-screen  px-4 font-sans flex flex-col items-center">
+          <div className="min-h-screen px-4 font-sans flex flex-col items-center">
             <div className="w-full max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-2 sm:space-y-0 text-center mt-[20px]">
               <img
                 src="/images/Lights-Installer-Logo.webp"
@@ -147,7 +155,7 @@ const QuotationList: React.FC = () => {
               </h1>
             </div>
 
-            <div className="w-full max-w-6xl p-4 sm:p-6 md:p-10  rounded-2xl shadow-lg mt-6">
+            <div className="w-full max-w-6xl p-4 sm:p-6 md:p-10 rounded-2xl shadow-lg mt-6">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 px-2 gap-2">
                 <input
                   type="text"
@@ -165,17 +173,13 @@ const QuotationList: React.FC = () => {
                   New Quote
                 </button>
               </div>
-              <div className="w-full ">
+              <div className="w-full">
                 <div className="overflow-y-auto h-[400px]">
-                  <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm ">
+                  <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm">
                     <thead>
-                      <tr className=" text-gray-800 dark:text-white/90 text-sm">
-                        <th className="px-2 sm:px-4 py-2 text-left">
-                          Job Title
-                        </th>
-                        <th className="px-2 sm:px-4 py-2 text-left">
-                          Client Name
-                        </th>
+                      <tr className="text-gray-800 dark:text-white/90 text-sm">
+                        <th className="px-2 sm:px-4 py-2 text-left">Job Title</th>
+                        <th className="px-2 sm:px-4 py-2 text-left">Client Name</th>
                         <th className="px-1 sm:px-4 py-2 text-left">Quote</th>
                         <th className="px-2 sm:px-4 py-2 text-left">Status</th>
                         <th className="px-2 sm:px-4 py-2 text-left">Edit</th>
@@ -183,7 +187,7 @@ const QuotationList: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredData.map((item) => (
+                      {currentRecords.map((item) => (
                         <tr
                           key={item.id}
                           className="border-t border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
@@ -191,7 +195,7 @@ const QuotationList: React.FC = () => {
                           <td className="px-2 sm:px-4 py-2 whitespace-normal break-words text-sm">
                             {item.jobTitle}
                           </td>
-                          <td className="px-2 sm:px-4 py-2 whitespace-normal break-words ">
+                          <td className="px-2 sm:px-4 py-2 whitespace-normal break-words">
                             {customerList.find(
                               (cust) => cust.clientID === item.clientID
                             )?.clientName || "Unknown Client"}
@@ -270,29 +274,75 @@ const QuotationList: React.FC = () => {
                           </td>
                         </tr>
                       ))}
-                  {loading ? (
+                      {loading ? (
                         <tr>
-                            <td
+                          <td
                             colSpan={6}
                             className="px-4 py-4 text-center text-gray-500 h-20"
-                            >
+                          >
                             Loading...
-                            </td>
+                          </td>
                         </tr>
-                        ) : filteredData.length === 0 ? (
+                      ) : currentRecords.length === 0 ? (
                         <tr>
-                            <td
+                          <td
                             colSpan={6}
                             className="px-4 py-4 text-center text-gray-500 h-20"
-                            >
+                          >
                             No results found.
-                            </td>
+                          </td>
                         </tr>
-                        ) : null}
-
+                      ) : null}
                     </tbody>
                   </table>
                 </div>
+
+               {/* Pagination Footer */}
+<div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+  {/* Left side info */}
+  <div>
+    {totalRecords === 0
+      ? "No entries found"
+      : `Showing ${startIndex + 1} to ${endIndex} of ${totalRecords} entries`}
+  </div>
+
+  {/* Right side pagination */}
+  <div className="flex items-center gap-1">
+    {/* Prev button */}
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
+    >
+      ‹
+    </button>
+
+    {/* Page numbers */}
+    {Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i + 1}
+        onClick={() => setCurrentPage(i + 1)}
+        className={`px-3 py-1 border rounded ${
+          currentPage === i + 1
+            ? "text-blue-600 bg-blue-50 border-blue-300"
+            : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-700"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    {/* Next button */}
+    <button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
+    >
+      ›
+    </button>
+  </div>
+</div>
+
               </div>
             </div>
           </div>

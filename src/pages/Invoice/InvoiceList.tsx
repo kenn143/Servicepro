@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Document,
   Page,
@@ -50,7 +50,6 @@ const InvoicePDF = ({ record }: { record: any }) => (
           </Text>
         </View>
       </View>
-
 
       <View style={[styles.section, { marginTop: 20, flexDirection: "row" }]}>
         <View style={{ flex: 1 }}>
@@ -129,7 +128,6 @@ const InvoicePDF = ({ record }: { record: any }) => (
   )}
 </View>
 
-
    
       <View
   style={{
@@ -173,10 +171,6 @@ const InvoicePDF = ({ record }: { record: any }) => (
   </Document>
 );
 
-
-
-
-
 export default function InvoiceList() {
   const [query, setQuery] = useState("");
   const [records, setRecords] = useState<any[]>([]);
@@ -185,29 +179,11 @@ export default function InvoiceList() {
   const [loading, setLoading] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // You can make this configurable if needed
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const res = await fetch(
-  //         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
-  //           },
-  //         }
-  //       );
-  //       const data = await res.json();
-  //       setRecords(data.records || []);
-  //     } catch (err) {
-  //       console.error("Error fetching data:", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -223,29 +199,26 @@ export default function InvoiceList() {
       const data1 = await res1.json();
       const mainRecords = data1.records || [];
   
-  
       const updatedRecords = await Promise.all(
         mainRecords.map(async (record: any) => {
           const customerId = record.fields.CustomerId[0];
           const invoiceId = record.fields.InvoiceId;
 
-  
           let customerData: any = {};
           let invoiceDetails: any[] = [];
 
-        
-            const res2 = await fetch(
-              `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0/${customerId}`,
-              {
-                headers: {
-                  Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
-                },
-              }
-            );
-  
-            const data2 = await res2.json();
-            customerData = data2.fields || [];
-  
+          const res2 = await fetch(
+            `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0/${customerId}`,
+            {
+              headers: {
+                Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+              },
+            }
+          );
+
+          const data2 = await res2.json();
+          customerData = data2.fields || [];
+
           if (invoiceId) {
             const res3 = await fetch(
               `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl7FLdkgynX4tg5Q?filterByFormula={InvoiceId}='${invoiceId}'`,
@@ -255,11 +228,11 @@ export default function InvoiceList() {
                 },
               }
             );
-  
+
             const data3 = await res3.json();
             invoiceDetails = data3.records?.map((r: any) => r.fields) || [];
           }
-  
+
           return {
             ...record,
             email: customerData.EmailAddress || "",
@@ -269,7 +242,7 @@ export default function InvoiceList() {
           };
         })
       );
-  
+
       setRecords(updatedRecords);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -277,16 +250,30 @@ export default function InvoiceList() {
       setLoading(false);
     }
   };
-  
-  
+
   useEffect(() => {
     fetchData();
   }, []);
-  
 
   const filtered = records.filter((r) =>
     r.fields.InvoiceNumber?.toLowerCase().includes(query.toLowerCase())
   );
+
+  // Pagination calculations
+  const totalItems = filtered.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Reset to first page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query]);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   const openPDF = async (record: any) => {
     setPdfLoading(true);
@@ -300,7 +287,6 @@ export default function InvoiceList() {
     if (!editRecord) return;
 
     try {
-
       await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
         method: "POST",
         headers: { "Content-Type": "application/json" ,
@@ -320,7 +306,7 @@ export default function InvoiceList() {
         prev.map((r) => (r.id === editRecord.id ? { ...r, fields: editRecord.fields } : r))
       );
       await fetchData();
-      toast.success("Sucessfully Updated!")
+      toast.success("Successfully Updated!")
     } catch (error) {
       console.error("Error sending data to webhook:", error);
     } finally {
@@ -328,104 +314,17 @@ export default function InvoiceList() {
     }
   };
 
-  // const handleSendInvoices = async () => {
-  //   if (selectedIds.length === 0) {
-  //     toast.error("Please select at least one invoice.");
-  //     return;
-  //   }
-   
-  
-  //   const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
-  
-  //   const payload = selectedRecords.map((r) => ({
-  //     id: r.id,
-  //     item: r.fields.Item,
-  //     quantity: r.fields.Quantity || 1,
-  //     totalPrice: (r.fields.Price || 0) * (r.fields.Quantity || 1),
-  //     notes: r.fields.Notes || "No notes",
-  //     attachment: r.fields.Attachment || null, 
-  //     price: r.fields.Price || 0,
-  //     action: "send"
-  //   }));
-
-  
-  //   try {
-  //     await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json",
-  //                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-  //        },
-  //       body: JSON.stringify({
-  //         action: "send",
-  //         invoices: payload,
-  //       }),
-  //     });
-  
-  //     toast.success("Invoices sent successfully!");
-  //     setSelectedIds([]); 
-  //   } catch (err) {
-  //     console.error("Error sending invoices:", err);
-  //     toast.error("Failed to send invoices.");
-  //   }
-  // };
-
-  // const handleSendInvoices = async () => {
-  //   if (selectedIds.length === 0) {
-  //     toast.error("Please select at least one invoice.");
-  //     return;
-  //   }
-  
-  //   const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
-  
-  //   try {
-  
-  //     const invoicesWithPdf = await Promise.all(
-  //       selectedRecords.map(async (r) => {
-  //         const pdfBase64 = await generatePdfBase64(r);
-         
-  //         return {
-  //           item: r.fields.Item || "",
-  //           price: r.fields.Price || 0,
-  //           quantity: r.fields.Quantity || 1,
-  //           pdf: pdfBase64, 
-  //           recordId: r.id || "",
-  //           customerId: r.fields.CustomerId || ""
-  //         };
-  //       })
-  //     );
-  //     console.log("the invoicew",invoicesWithPdf);
-  
-  //     await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json",
-  //                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-  //        },
-  //       body: JSON.stringify({
-  //         action: "send",
-  //         invoices: invoicesWithPdf,
-  //       }),
-  //     });
-  
-  //     toast.success("Invoices with PDFs sent successfully!");
-  //     setSelectedIds([]);
-  //     await fetchData(); // reload table
-  //   } catch (err) {
-  //     console.error("Error sending invoices:", err);
-  //     toast.error("Failed to send invoices.");
-  //   }
-  // };
   const handleSendInvoices = async () => {
     if (selectedIds.length === 0) {
       toast.error("Please select invoice.");
       return;
     }
-  
 
     const cloudName = "doj0vye62";
     const cloudinaryUploadPreset = "Qoute_FileName";
-  
+
     const selectedRecords = records.filter((r) => selectedIds.includes(r.id));
-  
+
     try {
       const invoicesWithPdf = await Promise.all(
         selectedRecords.map(async (r) => {
@@ -440,7 +339,7 @@ export default function InvoiceList() {
           formData.append("file", pdfFile);
           formData.append("upload_preset", cloudinaryUploadPreset);
           formData.append("public_id", `Invoice_${r.id}`);
-  
+
           const uploadRes = await fetch(
             `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`,
             {
@@ -448,13 +347,13 @@ export default function InvoiceList() {
               body: formData,
             }
           );
-  
+
           const uploadData = await uploadRes.json();
-  
+
           if (!uploadData.secure_url) {
             throw new Error("Cloudinary upload failed: " + JSON.stringify(uploadData));
           }
-  
+
           return {
             item: r.fields.Item || "",
             price: r.fields.Price || 0,
@@ -465,8 +364,7 @@ export default function InvoiceList() {
           };
         })
       );
-  
-  
+
       await fetch("https://hook.us2.make.com/drl5ee3otd0bpfl98bfl283pfzd2hshr", {
         method: "POST",
         headers: {
@@ -478,7 +376,7 @@ export default function InvoiceList() {
           invoices: invoicesWithPdf,
         }),
       });
-  
+
       toast.success("Invoices sent successfully!");
       setSelectedIds([]);
       await fetchData(); 
@@ -487,20 +385,100 @@ export default function InvoiceList() {
       toast.error("Failed to send invoices.");
     }
   };
-  
-  
-  
-  // const generatePdfBase64 = async (record: any) => {
-  //   const blob = await pdf(<InvoicePDF record={record} />).toBlob();
-  //   return new Promise<string>((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => resolve(reader.result as string);
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(blob); 
-  //   });
-  // };
-  
 
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxVisibleButtons = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+
+    if (endPage - startPage < maxVisibleButtons - 1) {
+      startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+    }
+
+    // Previous button
+    buttons.push(
+      <button
+        key="prev"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className={`px-3 py-2 mx-1 rounded-md text-sm ${
+          currentPage === 1
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        <ChevronLeft size={16} />
+      </button>
+    );
+
+    // First page button
+    if (startPage > 1) {
+      buttons.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          className="px-3 py-2 mx-1 rounded-md text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        buttons.push(<span key="ellipsis1" className="px-2 py-2 text-gray-500">...</span>);
+      }
+    }
+
+    // Page number buttons
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-2 mx-1 rounded-md text-sm ${
+            currentPage === i
+              ? 'bg-blue-600 text-white'
+              : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    // Last page button
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        buttons.push(<span key="ellipsis2" className="px-2 py-2 text-gray-500">...</span>);
+      }
+      buttons.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className="px-3 py-2 mx-1 rounded-md text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    // Next button
+    buttons.push(
+      <button
+        key="next"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className={`px-3 py-2 mx-1 rounded-md text-sm ${
+          currentPage === totalPages
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        <ChevronRight size={16} />
+      </button>
+    );
+
+    return buttons;
+  };
 
   return (
     <div className="max-w-7xl mx-auto mt-10">
@@ -515,7 +493,6 @@ export default function InvoiceList() {
         >
           <Send size={18} /> Send Invoice
         </button>
-
         </div>
         <input
           type="text"
@@ -529,155 +506,163 @@ export default function InvoiceList() {
       {loading ? (
         <div className="text-center py-6 text-gray-500">Loading invoices...</div>
       ) : (
-        <div className="w-full">
-          <table className="w-full border border-gray-200 text-xs sm:text-sm table-auto">
-            <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
-              <tr>
-                <th className="px-2 py-1 border text-center w-20">Select</th>
-                <th className="px-2 py-1 border">Invoice Number</th>
-                {/* <th className="px-2 py-1 border">Invoice Name</th> */}
-                <th className="px-2 py-1 border">Customer</th>
-                <th className="px-2 py-1 border text-center">Status</th>
-                <th className="px-2 py-1 border text-center">Actions</th>
-                <th className="px-2 py-1 border text-center">Edit</th>
-              </tr>
-            </thead>
-            <tbody className="text-md">
-              {filtered.length > 0 ? (
-                filtered.map((record) => (
-                  <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
-                    <td className="px-2 py-1 border text-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(record.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedIds((prev) => [...prev, record.id]);
-                        } else {
-                          setSelectedIds((prev) => prev.filter((id) => id !== record.id));
-                        }
-                      }}
-                    />
-
-                    </td>
-                    <td className="px-2 py-1 border break-words w-50">{record.fields.InvoiceNumber}</td>
-                    {/* <td className="px-2 py-1 border break-words"></td> */}
-                    <td className="px-2 py-1 border break-words w-50">{record.fields.CustomerName?.[0]}</td>
-                    <td className="px-2 py-1 border text-center w-50">
-                      {record.fields.Status === "Active" ? (
-                        <span className="inline-flex items-center gap-1 text-green-600">
-                          <span className="w-3 h-3 rounded-full bg-green-600"></span> Active
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
-                          <span className="w-3 h-3 rounded-full bg-red-600"></span> Inactive
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-2 py-1 border text-center w-50">
-                      <button
-                        onClick={() => setPreviewRecord(record)}
-                        className="text-blue-600 underline text-md"
-                      >
-                        Preview
-                      </button>
-                    </td>
-                    <td className="px-2 py-1 border text-center w-40">
-                      <button
-                        onClick={() => setEditRecord(record)}
-                        className="text-yellow-600 underline text-md"
-                      >
-                        Edit
-                      </button>
+        <>
+          <div className="w-full">
+            <table className="w-full border border-gray-200 text-xs sm:text-sm table-auto">
+              <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
+                <tr>
+                  <th className="px-2 py-1 border text-center w-20">Select</th>
+                  <th className="px-2 py-1 border">Invoice Number</th>
+                  <th className="px-2 py-1 border">Customer</th>
+                  <th className="px-2 py-1 border text-center">Status</th>
+                  <th className="px-2 py-1 border text-center">Actions</th>
+                  <th className="px-2 py-1 border text-center">Edit</th>
+                </tr>
+              </thead>
+              <tbody className="text-md">
+                {currentItems.length > 0 ? (
+                  currentItems.map((record) => (
+                    <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
+                      <td className="px-2 py-1 border text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(record.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedIds((prev) => [...prev, record.id]);
+                          } else {
+                            setSelectedIds((prev) => prev.filter((id) => id !== record.id));
+                          }
+                        }}
+                      />
+                      </td>
+                      <td className="px-2 py-1 border break-words w-50">{record.fields.InvoiceNumber}</td>
+                      <td className="px-2 py-1 border break-words w-50">{record.fields.CustomerName?.[0]}</td>
+                      <td className="px-2 py-1 border text-center w-50">
+                        {record.fields.Status === "Active" ? (
+                          <span className="inline-flex items-center gap-1 text-green-600">
+                            <span className="w-3 h-3 rounded-full bg-green-600"></span> Active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
+                            <span className="w-3 h-3 rounded-full bg-red-600"></span> Inactive
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-2 py-1 border text-center w-50">
+                        <button
+                          onClick={() => setPreviewRecord(record)}
+                          className="text-blue-600 underline text-md"
+                        >
+                          Preview
+                        </button>
+                      </td>
+                      <td className="px-2 py-1 border text-center w-40">
+                        <button
+                          onClick={() => setEditRecord(record)}
+                          className="text-yellow-600 underline text-md"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="text-center py-2 text-gray-500">
+                      No Record Found
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className="text-center py-2 text-gray-500">
-                    No Record Found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+                )}
+              </tbody>
+            </table>
+          </div>
 
-
-          {editRecord && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 transition-opacity duration-300 ease-out"
-              onClick={() => setEditRecord(null)} 
-            >
-              <div
-                className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-out scale-95 opacity-0 animate-fadeIn"
-                onClick={(e) => e.stopPropagation()} 
-              >
-                <h2 className="text-lg font-semibold mb-4">Edit Invoice</h2>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium">Item</label>
-                    <input
-                      type="text"
-                      value={editRecord.fields.Item || ""}
-                      onChange={(e) =>
-                        setEditRecord({
-                          ...editRecord,
-                          fields: { ...editRecord.fields, Item: e.target.value },
-                        })
-                      }
-                      className="w-full border rounded-md px-3 py-2 text-sm shadow"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium">Price</label>
-                    <input
-                      type="number"
-                      value={editRecord.fields.Price || ""}
-                      onChange={(e) =>
-                        setEditRecord({
-                          ...editRecord,
-                          fields: { ...editRecord.fields, Price: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full border rounded-md px-3 py-2 text-sm shadow"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium">Quantity</label>
-                    <input
-                      type="number"
-                      value={editRecord.fields.Quantity || 1}
-                      onChange={(e) =>
-                        setEditRecord({
-                          ...editRecord,
-                          fields: { ...editRecord.fields, Quantity: Number(e.target.value) },
-                        })
-                      }
-                      className="w-full border rounded-md px-3 py-2 text-sm shadow"
-                    />
-                  </div>
-                </div>
-                <div className="mt-6 flex justify-end gap-2">
-                  <button
-                    onClick={() => setEditRecord(null)}
-                    className="px-4 py-2 rounded-lg shadow text-sm bg-gray-300 hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleEditSave}
-                    className="px-4 py-2 rounded-lg shadow text-sm bg-blue-600 text-white hover:bg-blue-700"
-                  >
-                    Save
-                  </button>
-                </div>
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-sm text-gray-700 dark:text-white">
+                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalItems)} of {totalItems} entries
+              </div>
+              <div className="flex justify-center">
+                {renderPaginationButtons()}
               </div>
             </div>
           )}
+        </>
+      )}
 
-
+      {editRecord && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 transition-opacity duration-300 ease-out"
+          onClick={() => setEditRecord(null)} 
+        >
+          <div
+            className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 transform transition-all duration-300 ease-out scale-95 opacity-0 animate-fadeIn"
+            onClick={(e) => e.stopPropagation()} 
+          >
+            <h2 className="text-lg font-semibold mb-4">Edit Invoice</h2>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium">Item</label>
+                <input
+                  type="text"
+                  value={editRecord.fields.Item || ""}
+                  onChange={(e) =>
+                    setEditRecord({
+                      ...editRecord,
+                      fields: { ...editRecord.fields, Item: e.target.value },
+                    })
+                  }
+                  className="w-full border rounded-md px-3 py-2 text-sm shadow"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Price</label>
+                <input
+                  type="number"
+                  value={editRecord.fields.Price || ""}
+                  onChange={(e) =>
+                    setEditRecord({
+                      ...editRecord,
+                      fields: { ...editRecord.fields, Price: Number(e.target.value) },
+                    })
+                  }
+                  className="w-full border rounded-md px-3 py-2 text-sm shadow"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Quantity</label>
+                <input
+                  type="number"
+                  value={editRecord.fields.Quantity || 1}
+                  onChange={(e) =>
+                    setEditRecord({
+                      ...editRecord,
+                      fields: { ...editRecord.fields, Quantity: Number(e.target.value) },
+                    })
+                  }
+                  className="w-full border rounded-md px-3 py-2 text-sm shadow"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                onClick={() => setEditRecord(null)}
+                className="px-4 py-2 rounded-lg shadow text-sm bg-gray-300 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditSave}
+                className="px-4 py-2 rounded-lg shadow text-sm bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {previewRecord && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6">

@@ -23,7 +23,7 @@ const Captures: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
-  // Pagination state
+
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
 
@@ -50,14 +50,14 @@ const Captures: React.FC = () => {
     fetchRecords();
   }, []);
 
-  // Calculate pagination values
+
   const totalRecords = records.length;
   const totalPages = Math.ceil(totalRecords / recordsPerPage);
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentRecords = records.slice(startIndex, endIndex);
 
-  // Pagination handlers
+
   const goToPage = (page: number) => {
     setCurrentPage(page);
   };
@@ -76,7 +76,7 @@ const Captures: React.FC = () => {
 
   const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
     setRecordsPerPage(newRecordsPerPage);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1); 
   };
 
   return (
@@ -86,7 +86,7 @@ const Captures: React.FC = () => {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-lg font-semibold dark:text-white">Captures</h1>
           
-          {/* Records per page selector */}
+   
           <div className="flex items-center gap-2 text-sm">
             <span>Show:</span>
             <select

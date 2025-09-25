@@ -42,9 +42,9 @@ const navItems: NavItem[] = [
     name: "Flyer Tracker",
     appKey: "Flyer Tracker",
     subItems: [
-      { name: "Flyers", path: "/file-tracker" },
+      { name: "Tracker", path: "/file-tracker" },
       
-      { name: "FlyerTracker Captures", path: "/captures" },
+      { name: "Captures", path: "/captures" },
     ],
   },
 

@@ -13,7 +13,7 @@ interface LineItem {
   subtotal: number;
   optional: boolean;
   isDefault?: boolean;
-  attachment: File | null;
+  attachment: File[]; 
 }
 
 interface AirtableRecord {
@@ -35,9 +35,10 @@ const Quote: React.FC = () => {
       subtotal: 0,
       optional: false,
       isDefault: true,
-      attachment: null,
+      attachment: [], 
     },
   ]);
+  
 
   const navigate = useNavigate();
   const [idCounter, setIdCounter] = useState(1);
@@ -62,24 +63,30 @@ const Quote: React.FC = () => {
 
     const uploadedItems = await Promise.all(
       lineItems.map(async (item) => {
-        if (item.attachment) {
-          const formData = new FormData();
-          formData.append("file", item.attachment);
-          formData.append("upload_preset", uploadPreset);
-
+        if (item.attachment && item.attachment.length > 0) {
           try {
-            const res = await fetch(
-              `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-              {
-                method: "POST",
-                body: formData,
-              }
+            const uploadedFiles = await Promise.all(
+              item.attachment.map(async (file) => {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", uploadPreset);
+    
+                const res = await fetch(
+                  `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+                  {
+                    method: "POST",
+                    body: formData,
+                  }
+                );
+    
+                const data = await res.json();
+                return data.secure_url as string;
+              })
             );
-
-            const data = await res.json();
+    
             return {
               ...item,
-              attachment: data.secure_url as string,
+              attachment: uploadedFiles, 
             };
           } catch (error) {
             console.error("Cloudinary Upload Error:", error);
@@ -91,6 +98,7 @@ const Quote: React.FC = () => {
         }
       })
     );
+    
 
     const finalQuote = {
       Items: uploadedItems,
@@ -106,6 +114,7 @@ const Quote: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
         },
         body: JSON.stringify(finalQuote),
       }
@@ -132,7 +141,7 @@ const Quote: React.FC = () => {
       description: "",
       subtotal: 0,
       optional: isOptional,
-      attachment: null,
+      attachment: [],
     };
 
     setLineItems([...lineItems, newItem]);
@@ -142,26 +151,25 @@ const Quote: React.FC = () => {
   const updateLineItem = (
     id: number,
     key: keyof LineItem,
-    value: string | number | File | null
+    value: string | number | File | File[] | null // ✅ added File[]
   ) => {
     setLineItems((items) =>
       items.map((item) => {
         if (item.id !== id) return item;
-
+  
         const updatedItem = { ...item, [key]: value };
-
+  
         if (key === "qty" || key === "price") {
-          const qty =
-            key === "qty" ? (value as number) : (item.qty as number);
-          const price =
-            key === "price" ? (value as number) : (item.price as number);
+          const qty = key === "qty" ? (value as number) : item.qty;
+          const price = key === "price" ? (value as number) : item.price;
           updatedItem.subtotal = qty * price;
         }
-
+  
         return updatedItem;
       })
     );
   };
+  
 
   const quoteTotal = lineItems.reduce(
     (sum, item) => sum + item.qty * item.price,
@@ -318,16 +326,18 @@ const Quote: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm font-bold">Attachment</label>
-       <input
-                    type="file"
-                    className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
-                    onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                        updateLineItem(item.id, "attachment", e.target.files[0]);
-                        }
-                    }}
+          <input
+  type="file"
+  multiple   // ✅ allow multiple files
+  className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
+  onChange={(e) => {
+    if (e.target.files) {
+      updateLineItem(item.id, "attachment", Array.from(e.target.files)); 
+    }
+  }}
   disabled={!selected}
 />
+
           <div className="text-right">
            {item.id !== 0 && (
             <button
