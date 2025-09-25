@@ -346,17 +346,28 @@ const [, setLoading] = useState<boolean>(false);
 
   {modalImage && (
   <div
-    className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+    className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50"
     onClick={closeImageModal}
   >
     <div
-      className=" rounded-lg p-2 max-w-[90%] max-h-[90%]"
-      onClick={(e) => e.stopPropagation()} 
+      className="rounded-lg p-2 max-w-[90%] max-h-[90%] relative"
+      onClick={(e) => e.stopPropagation()}
     >
+      {/* Optional: Close button */}
+      <button
+        onClick={closeImageModal}
+        className="absolute -top-4 -right-4 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10"
+        aria-label="Close modal"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
       <img
         src={modalImage}
         alt="Full size"
-        className={`max-w-full max-h-[80vh] object-contain rounded transition-transform duration-300 ${
+        className={`max-w-full max-h-[80vh] object-contain rounded transition-transform duration-300 shadow-2xl ${
           isZoomed ? "scale-100" : "scale-75"
         }`}
       />
