@@ -187,9 +187,9 @@ const Captures: React.FC = () => {
                             "-"
                           )}
                         </td>
-                        <td className="px-4 py-3">{rec.fields.Type || "-"}</td>
-                        <td className="px-4 py-3">{rec.fields.Lat ?? "-"}</td>
-                        <td className="px-4 py-3">{rec.fields.Long ?? "-"}</td>
+                        <td className="px-4 py-3 text-center">{rec.fields.Type || "-"}</td>
+                        <td className="px-4 py-4 text-center">{rec.fields.Lat ?? "-"}</td>
+                        <td className="px-4 py-3 text-center">{rec.fields.Long ?? "-"}</td>
                         <td className="px-4 py-3">
                           {rec.fields.DateCreated
                             ? new Date(
