@@ -3,7 +3,6 @@ import PageMeta from "../components/common/PageMeta";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// Types
 interface LineItem {
   id: number;
   qty: number;
@@ -151,7 +150,7 @@ const Quote: React.FC = () => {
   const updateLineItem = (
     id: number,
     key: keyof LineItem,
-    value: string | number | File | File[] | null // ✅ added File[]
+    value: string | number | File | File[] | null 
   ) => {
     setLineItems((items) =>
       items.map((item) => {
@@ -328,7 +327,7 @@ const Quote: React.FC = () => {
           <label className="block text-sm font-bold">Attachment</label>
           <input
   type="file"
-  multiple   // ✅ allow multiple files
+  multiple   
   className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
   onChange={(e) => {
     if (e.target.files) {

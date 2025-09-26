@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Send, ChevronLeft, ChevronRight } from "lucide-react";
+import { Send } from "lucide-react";
 import {
   Document,
   Page,
@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
 const InvoicePDF = ({ record }: { record: any }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      {/* Header */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View style={{ flexDirection: "row", gap: 20, marginTop: "45px" }}>
           <View style={{ fontSize: "12px",marginTop:"3px" }}>
@@ -258,14 +257,14 @@ export default function InvoiceList() {
     r.fields.InvoiceNumber?.toLowerCase().includes(query.toLowerCase())
   );
 
-  // Pagination calculations
+
   const totalItems = filtered.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Reset to first page when search changes
+ 
   useEffect(() => {
     setCurrentPage(1);
   }, [query]);
@@ -395,7 +394,6 @@ export default function InvoiceList() {
       startPage = Math.max(1, endPage - maxVisibleButtons + 1);
     }
 
-    // Previous button
     buttons.push(
       <button
         key="prev"
@@ -407,11 +405,10 @@ export default function InvoiceList() {
             : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
         }`}
       >
-        <ChevronLeft size={16} />
+        ‹
       </button>
     );
 
-    // First page button
     if (startPage > 1) {
       buttons.push(
         <button
@@ -427,7 +424,7 @@ export default function InvoiceList() {
       }
     }
 
-    // Page number buttons
+  
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
         <button
@@ -435,7 +432,7 @@ export default function InvoiceList() {
           onClick={() => handlePageChange(i)}
           className={`px-3 py-2 mx-1 rounded-md text-sm ${
             currentPage === i
-              ? 'bg-blue-600 text-white'
+              ? 'text-blue-600 bg-blue-50 border-blue-300 border'
               : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
           }`}
         >
@@ -444,7 +441,7 @@ export default function InvoiceList() {
       );
     }
 
-    // Last page button
+   
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         buttons.push(<span key="ellipsis2" className="px-2 py-2 text-gray-500">...</span>);
@@ -460,19 +457,20 @@ export default function InvoiceList() {
       );
     }
 
-    // Next button
+  
     buttons.push(
       <button
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-3 py-2 mx-1 rounded-md text-sm ${
+        className={`px-3 py-2 mx-1 rounded-md text-md ${
           currentPage === totalPages
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
         }`}
       >
-        <ChevronRight size={16} />
+        {/* <ChevronRight size={16} /> */}
+        ›
       </button>
     );
 
@@ -504,49 +502,60 @@ export default function InvoiceList() {
         <div className="text-center py-6 text-gray-500">Loading invoices...</div>
       ) : (
         <>
-          <div className="w-full">
-            <table className="w-full border border-gray-200 text-xs sm:text-sm table-auto">
-              <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
-                <tr>
-                  <th className="px-2 py-1 border text-center w-20">Select</th>
-                  <th className="px-2 py-1 border">Invoice Number</th>
-                  <th className="px-2 py-1 border">Customer</th>
-                  <th className="px-2 py-1 border text-center">Status</th>
-                  <th className="px-2 py-1 border text-center">Actions</th>
-                  <th className="px-2 py-1 border text-center">Edit</th>
-                </tr>
-              </thead>
-              <tbody className="text-md">
-                {currentItems.length > 0 ? (
-                  currentItems.map((record) => (
+         <div className="w-full overflow-x-auto">
+          <table className="w-full table-fixed border border-gray-200 text-xs sm:text-sm divide-y divide-gray-200">
+            <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
+              <tr>
+                <th className="px-2 py-1 text-center w-20">Select</th>
+                <th className="px-2 py-1 w-40">Invoice Number</th>
+                <th className="px-2 py-1 w-48">Customer</th>
+                <th className="px-2 py-1 text-center w-32">Status</th>
+                <th className="px-2 py-1 text-center w-28">Actions</th>
+                <th className="px-2 py-1 text-center w-28">Edit</th>
+              </tr>
+            </thead>
+
+          
+            <tbody className="text-md h-64 align-top divide-y divide-gray-100">
+              {currentItems.length > 0 ? (
+                <>
+                  {currentItems.map((record) => (
                     <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
-                      <td className="px-2 py-1 border text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(record.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedIds((prev) => [...prev, record.id]);
-                          } else {
-                            setSelectedIds((prev) => prev.filter((id) => id !== record.id));
-                          }
-                        }}
-                      />
+                      <td className="px-2 py-1 text-center w-20">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(record.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIds((prev) => [...prev, record.id]);
+                            } else {
+                              setSelectedIds((prev) =>
+                                prev.filter((id) => id !== record.id)
+                              );
+                            }
+                          }}
+                        />
                       </td>
-                      <td className="px-2 py-1 border break-words w-50">{record.fields.InvoiceNumber}</td>
-                      <td className="px-2 py-1 border break-words w-50">{record.fields.CustomerName?.[0]}</td>
-                      <td className="px-2 py-1 border text-center w-50">
+                      <td className="px-2 py-1 break-words w-40">
+                        {record.fields.InvoiceNumber}
+                      </td>
+                      <td className="px-2 py-1 break-words w-48">
+                        {record.fields.CustomerName?.[0]}
+                      </td>
+                      <td className="px-2 py-1 text-center w-32">
                         {record.fields.Status === "Active" ? (
                           <span className="inline-flex items-center gap-1 text-green-600">
-                            <span className="w-3 h-3 rounded-full bg-green-600"></span> Active
+                            <span className="w-3 h-3 rounded-full bg-green-600"></span>{" "}
+                            Active
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-red-600 font-semibold">
-                            <span className="w-3 h-3 rounded-full bg-red-600"></span> Inactive
+                            <span className="w-3 h-3 rounded-full bg-red-600"></span>{" "}
+                            Inactive
                           </span>
                         )}
                       </td>
-                      <td className="px-2 py-1 border text-center w-50">
+                      <td className="px-2 py-1 text-center w-28">
                         <button
                           onClick={() => setPreviewRecord(record)}
                           className="text-blue-600 underline text-md"
@@ -554,7 +563,7 @@ export default function InvoiceList() {
                           Preview
                         </button>
                       </td>
-                      <td className="px-2 py-1 border text-center w-40">
+                      <td className="px-2 py-1 text-center w-28">
                         <button
                           onClick={() => setEditRecord(record)}
                           className="text-yellow-600 underline text-md"
@@ -563,19 +572,33 @@ export default function InvoiceList() {
                         </button>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="text-center py-2 text-gray-500">
-                      No Record Found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ))}
 
-          {totalPages > 1 && (
+  
+                  {Array.from({ length: Math.max(0, 10 - currentItems.length) }).map(
+                    (_, idx) => (
+                      <tr key={`empty-${idx}`}>
+                        <td className="px-2 py-1 w-20">&nbsp;</td>
+                        <td className="px-2 py-1 w-40">&nbsp;</td>
+                        <td className="px-2 py-1 w-48">&nbsp;</td>
+                        <td className="px-2 py-1 text-center w-32">&nbsp;</td>
+                        <td className="px-2 py-1 text-center w-28">&nbsp;</td>
+                        <td className="px-2 py-1 text-center w-28">&nbsp;</td>
+                      </tr>
+                    )
+                  )}
+                </>
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center py-2 text-gray-500">
+                    No Record Found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
             <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="text-sm text-gray-700 dark:text-white">
                 Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalItems)} of {totalItems} entries
@@ -584,7 +607,7 @@ export default function InvoiceList() {
                 {renderPaginationButtons()}
               </div>
             </div>
-          )}
+        
         </>
       )}
 

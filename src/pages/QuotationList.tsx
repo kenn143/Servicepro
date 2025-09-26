@@ -3,7 +3,6 @@ import PageMeta from "../components/common/PageMeta";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// Types
 interface Quote {
   id: string;
   quoteId?: string;

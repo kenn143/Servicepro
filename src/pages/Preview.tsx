@@ -3,7 +3,6 @@ import PageMeta from "../components/common/PageMeta";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// Interfaces for Airtable data
 interface QuotationItem {
   id: string;
   quoteId: string;
@@ -353,7 +352,6 @@ const [, setLoading] = useState<boolean>(false);
       className="rounded-lg p-2 max-w-[90%] max-h-[90%] relative"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Optional: Close button */}
       <button
         onClick={closeImageModal}
         className="absolute -top-4 -right-4 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10"
