@@ -318,21 +318,22 @@ const [, setLoading] = useState<boolean>(false);
                 <div className="text-xs dark:text-white">( {item.fields["Description"]} )</div>
               )}
             </td>
-      <td className="border px-1 py-2 text-center">
-  {(() => {
-    const attachment = item.fields.Attachments?.[0]; 
-    if (!attachment) {
-      return <span className="text-sm dark:text-white">No Attachment</span>;
-    }
-            return (
-            <img
-                src={attachment.thumbnails?.small?.url || attachment.url}
-                alt="Attachment"
-                className="w-10 h-10 object-cover rounded shadow mx-auto cursor-pointer"
-                onClick={() => openImageModal(attachment.url)}
-            />
-            );
-        })()}
+            <td className="border px-1 py-2 text-center">
+              {item.fields.Attachments && item.fields.Attachments.length > 0 ? (
+                <div className="flex gap-2 justify-center">
+                  {item.fields.Attachments.map((attachment, index) => (
+                    <img
+                      key={index}
+                      src={attachment.thumbnails?.small?.url || attachment.url}
+                      alt={`Attachment ${index + 1}`}
+                      className="w-10 h-10 object-cover rounded shadow cursor-pointer"
+                      onClick={() => openImageModal(attachment.url)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <span className="text-sm dark:text-white">No Attachment</span>
+              )}
         </td>
 
           <td className="border px-1 py-2 text-center text-sm dark:text-white">
