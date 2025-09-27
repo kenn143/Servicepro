@@ -399,10 +399,10 @@ export default function InvoiceList() {
         key="prev"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-3 py-2 mx-1 rounded-md text-sm ${
+        className={`px-3 py-2 mx-1  text-sm ${
           currentPage === 1
-            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+            ? 'bg-gray-200 text-gray-400 cursor-not-allowed text-sm font-medium'
+            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm font-medium'
         }`}
       >
         ‹
@@ -414,7 +414,7 @@ export default function InvoiceList() {
         <button
           key={1}
           onClick={() => handlePageChange(1)}
-          className="px-3 py-2 mx-1 rounded-md text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="px-3 py-2 mx-1  text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
         >
           1
         </button>
@@ -430,7 +430,7 @@ export default function InvoiceList() {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-2 mx-1 rounded-md text-sm ${
+          className={`px-3 py-2  font-medium text-sm ${
             currentPage === i
               ? 'text-blue-600 bg-blue-50 border-blue-300 border'
               : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -450,7 +450,7 @@ export default function InvoiceList() {
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className="px-3 py-2 mx-1 rounded-md text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          className="px-3 py-2 mx-1  text-sm bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
         >
           {totalPages}
         </button>
@@ -463,7 +463,7 @@ export default function InvoiceList() {
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-3 py-2 mx-1 rounded-md text-md ${
+        className={`px-3 py-2 mx-1  text-md ${
           currentPage === totalPages
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -478,6 +478,7 @@ export default function InvoiceList() {
   };
 
   return (
+    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-4 dark:text-white">
     <div className="max-w-7xl mx-auto mt-10">
       <div className="mb-6 flex flex-col gap-2">
 
@@ -486,7 +487,7 @@ export default function InvoiceList() {
           onClick={handleSendInvoices}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 rounded-lg shadow text-md"
         >
-          <Send size={18} /> Send Invoice
+          <Send size={18} /> Send
         </button>
         </div>
         <input
@@ -502,26 +503,27 @@ export default function InvoiceList() {
         <div className="text-center py-6 text-gray-500">Loading invoices...</div>
       ) : (
         <>
-         <div className="w-full overflow-x-auto">
-          <table className="w-full table-fixed border border-gray-200 text-xs sm:text-sm divide-y divide-gray-200">
-            <thead className="bg-gray-100 dark:bg-black dark:text-white text-md">
+        <div className="w-full">
+         <div className="w-full overflow-x-auto h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg">
+          <table className="w-full table-fixed  border-gray-200 text-xs sm:text-sm divide-y divide-gray-200 text-center">
+            <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
               <tr>
-                <th className="px-2 py-1 text-center w-20">Select</th>
-                <th className="px-2 py-1 w-40">Invoice Number</th>
-                <th className="px-2 py-1 w-48">Customer</th>
-                <th className="px-2 py-1 text-center w-32">Status</th>
-                <th className="px-2 py-1 text-center w-28">Actions</th>
-                <th className="px-2 py-1 text-center w-28">Edit</th>
+                <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Select</th>
+                <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Invoice Number</th>
+                <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Customer</th>
+                <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Status</th>
+                <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Actions</th>
+                <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Edit</th>
               </tr>
             </thead>
 
           
-            <tbody className="text-md h-64 align-top divide-y divide-gray-100">
+            <tbody className="text-md  align-top divide-y divide-gray-100">
               {currentItems.length > 0 ? (
                 <>
                   {currentItems.map((record) => (
-                    <tr key={record.id} className="hover:bg-gray-50 dark:text-white">
-                      <td className="px-2 py-1 text-center w-20">
+                    <tr key={record.id} className="hover:bg-gray-50 dark:hover:bg-gray-900 text-sm border-b border-gray-100 dark:border-gray-800">
+                      <td className="px-4 py-3">
                         <input
                           type="checkbox"
                           checked={selectedIds.includes(record.id)}
@@ -536,13 +538,13 @@ export default function InvoiceList() {
                           }}
                         />
                       </td>
-                      <td className="px-2 py-1 break-words w-40">
+                      <td className="px-4 py-3">
                         {record.fields.InvoiceNumber}
                       </td>
-                      <td className="px-2 py-1 break-words w-48">
+                      <td className="px-4 py-3">
                         {record.fields.CustomerName?.[0]}
                       </td>
-                      <td className="px-2 py-1 text-center w-32">
+                      <td className="px-4 py-3">
                         {record.fields.Status === "Active" ? (
                           <span className="inline-flex items-center gap-1 text-green-600">
                             <span className="w-3 h-3 rounded-full bg-green-600"></span>{" "}
@@ -555,7 +557,7 @@ export default function InvoiceList() {
                           </span>
                         )}
                       </td>
-                      <td className="px-2 py-1 text-center w-28">
+                      <td className="px-4 py-3">
                         <button
                           onClick={() => setPreviewRecord(record)}
                           className="text-blue-600 underline text-md"
@@ -563,7 +565,7 @@ export default function InvoiceList() {
                           Preview
                         </button>
                       </td>
-                      <td className="px-2 py-1 text-center w-28">
+                      <td className="px-4 py-3">
                         <button
                           onClick={() => setEditRecord(record)}
                           className="text-yellow-600 underline text-md"
@@ -575,18 +577,6 @@ export default function InvoiceList() {
                   ))}
 
   
-                  {Array.from({ length: Math.max(0, 10 - currentItems.length) }).map(
-                    (_, idx) => (
-                      <tr key={`empty-${idx}`}>
-                        <td className="px-2 py-1 w-20">&nbsp;</td>
-                        <td className="px-2 py-1 w-40">&nbsp;</td>
-                        <td className="px-2 py-1 w-48">&nbsp;</td>
-                        <td className="px-2 py-1 text-center w-32">&nbsp;</td>
-                        <td className="px-2 py-1 text-center w-28">&nbsp;</td>
-                        <td className="px-2 py-1 text-center w-28">&nbsp;</td>
-                      </tr>
-                    )
-                  )}
                 </>
               ) : (
                 <tr>
@@ -597,6 +587,7 @@ export default function InvoiceList() {
               )}
             </tbody>
           </table>
+        </div>
         </div>
 
             <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -734,6 +725,7 @@ export default function InvoiceList() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

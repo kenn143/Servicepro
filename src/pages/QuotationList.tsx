@@ -142,7 +142,7 @@ const QuotationList: React.FC = () => {
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="custom-calendars">
           <div className="min-h-screen px-4 font-sans flex flex-col items-center">
-            <div className="w-full max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-2 sm:space-y-0 text-center mt-[20px]">
+            {/* <div className="w-full max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-2 sm:space-y-0 text-center mt-[20px]">
               <img
                 src="/images/Lights-Installer-Logo.webp"
                 alt="Lights Installer Logo"
@@ -151,9 +151,9 @@ const QuotationList: React.FC = () => {
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-800 dark:text-white">
                 Light Installers Quote App
               </h1>
-            </div>
+            </div> */}
 
-            <div className="w-full max-w-6xl p-4 sm:p-6 md:p-10 rounded-2xl shadow-lg mt-6">
+            <div className="w-full max-w-6xl p-4 sm:p-6 md:p-10 rounded-2xl mt-6">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 px-2 gap-2">
                 <input
                   type="text"
@@ -171,24 +171,24 @@ const QuotationList: React.FC = () => {
                   New Quote
                 </button>
               </div>
-              <div className="w-full">
-                <div className="overflow-y-auto h-[400px]">
-                  <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm">
-                    <thead>
+              <div className="w-full ">
+                <div className="overflow-y-auto h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm text-center">
+                    <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
                       <tr className="text-gray-800 dark:text-white/90 text-sm">
-                        <th className="px-2 sm:px-4 py-2 text-left">Job Title</th>
-                        <th className="px-2 sm:px-4 py-2 text-left">Client Name</th>
-                        <th className="px-1 sm:px-4 py-2 text-left">Quote</th>
-                        <th className="px-2 sm:px-4 py-2 text-left">Status</th>
-                        <th className="px-2 sm:px-4 py-2 text-left">Edit</th>
-                        <th className="px-1 sm:px-4 py-2 text-left">Delete</th>
+                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Job Title</th>
+                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Client Name</th>
+                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Quote</th>
+                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Status</th>
+                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Edit</th>
+                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Delete</th>
                       </tr>
                     </thead>
                     <tbody>
                       {currentRecords.map((item) => (
                         <tr
                           key={item.id}
-                          className="border-t border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
+                          className=" border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
                         >
                           <td className="px-2 sm:px-4 py-2 whitespace-normal break-words text-sm">
                             {item.jobTitle}
@@ -201,7 +201,7 @@ const QuotationList: React.FC = () => {
                           <td className="px-1 sm:px-4 py-2">
                             <button
                               onClick={() => handleRedirect(item.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded shadow sm:text-sm"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded shadow sm:text-sm"
                             >
                               View
                             </button>
@@ -223,7 +223,7 @@ const QuotationList: React.FC = () => {
                           </td>
                           <td className="px-3 sm:px-4 py-2">
                             <button
-                              className="bg-orange-500 hover:bg-orange-600 text-white px-1 py-1 rounded shadow sm:text-sm"
+                              className="bg-orange-500 hover:bg-orange-600 text-white px-2 py-1 rounded shadow sm:text-sm"
                               onClick={() =>
                                 navigate("/edit/" + item.id, {
                                   state: {
@@ -239,7 +239,7 @@ const QuotationList: React.FC = () => {
                               Edit
                             </button>
                           </td>
-                          <td className="px-0 sm:px-4 py-2">
+                          <td className="px-3 sm:px-4 py-2">
                             <button
                               className="bg-orange-700 hover:bg-orange-800 text-white px-2 py-1 rounded shadow sm:text-sm"
                               onClick={() => setShowConfirm(item.id)}
@@ -300,7 +300,7 @@ const QuotationList: React.FC = () => {
                 </div>
 
          
-                <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4 bg-white dark:bg-white/[0.03]">
 
                   <div>
                     {totalRecords === 0
@@ -313,7 +313,7 @@ const QuotationList: React.FC = () => {
                     <button
                       onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
-                      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
+                      className="px-3 py-2 border  disabled:opacity-50 dark:border-gray-700"
                     >
                       ‹
                     </button>
@@ -323,7 +323,7 @@ const QuotationList: React.FC = () => {
                       <button
                         key={i + 1}
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-3 py-1 border rounded ${
+                        className={`px-3 py-2 border  ${
                           currentPage === i + 1
                             ? "text-blue-600 bg-blue-50 border-blue-300"
                             : "bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-700"
@@ -337,7 +337,7 @@ const QuotationList: React.FC = () => {
                     <button
                       onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
-                      className="px-3 py-1 border rounded disabled:opacity-50 dark:border-gray-700"
+                      className="px-3 py-2 border rounded disabled:opacity-50 dark:border-gray-700"
                     >
                       ›
                     </button>

@@ -359,7 +359,6 @@ console.log("payload",payload)
                 </div>
               </div>
 
-              {/* Steps */}
               <div className="flex items-center justify-between mt-6 mb-6">
                 {steps.map((step, idx) => (
                   <div key={idx} className="flex items-center w-full">
@@ -400,8 +399,7 @@ console.log("payload",payload)
                   </div>
                 ))}
               </div>
-
-              {/* Step Content */}
+       
               <div className="p-6 border rounded-xl  shadow-sm min-h-[200px] dark:text-white">
                 {activeStep === 0 && (
                   <div>
@@ -416,69 +414,69 @@ console.log("payload",payload)
 
                     /> */}
 
-<table className="w-full text-sm mb-4">
-  <thead>
-    <tr className="border-b">
-      <th className="p-2 text-left">Item Name</th>
-      <th className="p-2 text-left">Quantity</th>
-      <th className="p-2 text-left">Price</th>
-      <th className="p-2 text-left">Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    {items.map((item, idx) => (
-      <tr key={idx} className="border-b">
-        <td className="p-2">
-          <input
-            type="text"
-            value={item.itemName}
-            onChange={(e) =>
-              handleItemChange(idx, "itemName", e.target.value)
-            }
-            className="w-full border rounded px-2 py-1 text-sm"
-          />
-        </td>
-        <td className="p-2">
-          <input
-            type="number"
-            value={item.quantity === 0 ? "0" : item.quantity}
-            onFocus={(e) => {
-              if (e.target.value === "0") e.target.value = "";
-            }}
-            onBlur={(e) => {
-              if (e.target.value === "") {
-                handleItemChange(idx, "quantity", 0);
-              }
-            }}
-            onChange={(e) =>
-              handleItemChange(idx, "quantity", e.target.value)
-            }
-            className="w-full border rounded px-2 py-1 text-sm"
-          />
-        </td>
-        <td className="p-2">
-          <input
-            type="number"
-            value={item.price === 0 ? "0" : item.price}
-            onFocus={(e) => {
-              if (e.target.value === "0") e.target.value = "";
-            }}
-            onBlur={(e) => {
-              if (e.target.value === "") {
-                handleItemChange(idx, "price", 0);
-              }
-            }}
-            onChange={(e) =>
-              handleItemChange(idx, "price", e.target.value)
-            }
-            className="w-full border rounded px-2 py-1 text-sm"
-          />
-        </td>
-        <td className="p-2">{item.total.toFixed(2)}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+                      <table className="w-full text-sm mb-4">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="p-2 text-left">Item Name</th>
+                            <th className="p-2 text-left">Quantity</th>
+                            <th className="p-2 text-left">Price</th>
+                            <th className="p-2 text-left">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items.map((item, idx) => (
+                            <tr key={idx} className="border-b">
+                              <td className="p-2">
+                                <input
+                                  type="text"
+                                  value={item.itemName}
+                                  onChange={(e) =>
+                                    handleItemChange(idx, "itemName", e.target.value)
+                                  }
+                                  className="w-full border rounded px-2 py-1 text-sm"
+                                />
+                              </td>
+                              <td className="p-2">
+                                <input
+                                  type="number"
+                                  value={item.quantity === 0 ? "0" : item.quantity}
+                                  onFocus={(e) => {
+                                    if (e.target.value === "0") e.target.value = "";
+                                  }}
+                                  onBlur={(e) => {
+                                    if (e.target.value === "") {
+                                      handleItemChange(idx, "quantity", 0);
+                                    }
+                                  }}
+                                  onChange={(e) =>
+                                    handleItemChange(idx, "quantity", e.target.value)
+                                  }
+                                  className="w-full border rounded px-2 py-1 text-sm"
+                                />
+                              </td>
+                              <td className="p-2">
+                                <input
+                                  type="number"
+                                  value={item.price === 0 ? "0" : item.price}
+                                  onFocus={(e) => {
+                                    if (e.target.value === "0") e.target.value = "";
+                                  }}
+                                  onBlur={(e) => {
+                                    if (e.target.value === "") {
+                                      handleItemChange(idx, "price", 0);
+                                    }
+                                  }}
+                                  onChange={(e) =>
+                                    handleItemChange(idx, "price", e.target.value)
+                                  }
+                                  className="w-full border rounded px-2 py-1 text-sm"
+                                />
+                              </td>
+                              <td className="p-2">{item.total.toFixed(2)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
 
 
                     <div className="flex justify-between items-center">

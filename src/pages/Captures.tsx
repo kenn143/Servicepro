@@ -51,6 +51,7 @@ const Captures: React.FC = () => {
     fetchRecords();
   }, []);
 
+
   const filteredRecords = records.filter((rec) =>
     usernameSearch.trim() === ""
       ? true

@@ -220,7 +220,28 @@ const Quote: React.FC = () => {
   const handleBack = () => {
     navigate("/quotation-list");
   };
-
+  const getToken = () => {
+  
+    const storedData = localStorage.getItem("data");
+  
+    if (!storedData) return null; // nothing stored
+  
+    try {
+      const parsed = JSON.parse(storedData);
+  
+      return {
+        ID: parsed.ID,
+        UserName: parsed.UserName,
+        FullName: parsed.FullName,
+        UserType: parsed.UserType,
+        Status: parsed.Status,
+     
+      };
+    } catch (e) {
+      console.error("Invalid JSON in localStorage for data", e);
+      return null;
+    }
+  };
 
   return (
     <>
@@ -278,7 +299,7 @@ const Quote: React.FC = () => {
         <div className='font-bold text-sm mb-1'>Quote Details:</div>
         <div>
           <span className="text-sm font-semibold text-gray-600 dark:text-white">Salesperson:</span>
-          <span className="ml-2 text-gray-800"></span>
+          <span className="ml-2 text-gray-800">{getToken()?.FullName}</span>
         </div>
       </div>
     </div>
@@ -324,18 +345,30 @@ const Quote: React.FC = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-bold">Attachment</label>
-          <input
+        
+<label className="block text-sm font-bold">Attachment</label>
+<input
   type="file"
-  multiple   
-  className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
+  multiple
+  className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 
+             file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 
+             file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
   onChange={(e) => {
     if (e.target.files) {
-      updateLineItem(item.id, "attachment", Array.from(e.target.files)); 
+      const files = Array.from(e.target.files);
+
+      if (files.length > 3) {
+        toast.error("You can only upload up to 3 files.");
+        e.target.value = ""; 
+        return;
+      }
+
+      updateLineItem(item.id, "attachment", files);
     }
   }}
   disabled={!selected}
 />
+
 
           <div className="text-right">
            {item.id !== 0 && (
