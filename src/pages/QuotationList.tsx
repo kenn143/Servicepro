@@ -248,8 +248,8 @@ const QuotationList: React.FC = () => {
                             </button>
 
                             {showConfirm === item.id && (
-                              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-white rounded-xl p-6 w-80 shadow-lg">
+                              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                <div className="bg-white/90 rounded-xl p-6 w-80 shadow-lg">
                                   <h2 className="text-lg font-semibold text-gray-800 mb-4">
                                     Are you sure you want to delete?
                                   </h2>
@@ -273,6 +273,7 @@ const QuotationList: React.FC = () => {
                                 </div>
                               </div>
                             )}
+
                           </td>
                         </tr>
                       ))}
