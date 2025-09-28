@@ -237,7 +237,7 @@ const [, setLoading] = useState<boolean>(false);
       />
      
        
-    <div className="min-h-screen  font-sans p-4">
+    <div className="min-h-screen  font-sans p-6 mt-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
          {/* <div className="flex justify-start">
