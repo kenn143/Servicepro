@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import Captures from "./pages/Captures";
+import CustomerPreview from "./pages/Customer/Preview";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -146,6 +147,8 @@ function AnimatedRoutes() {
 
         {/* Not Found */}
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
+
+        <Route path="/customerPreview" element={<PageWrapper><CustomerPreview/></PageWrapper>} />
       </Routes>
 
       <ToastContainer className="!z-[100000]" />

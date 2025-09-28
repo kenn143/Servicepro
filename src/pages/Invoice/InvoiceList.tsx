@@ -590,7 +590,7 @@ export default function InvoiceList() {
         </div>
         </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4 bg-white dark:bg-white/[0.03]">
               <div className="text-sm text-gray-700 dark:text-white">
                 Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, totalItems)} of {totalItems} entries
               </div>

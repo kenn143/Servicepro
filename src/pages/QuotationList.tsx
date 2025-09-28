@@ -27,6 +27,52 @@ const QuotationList: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const handleSend = async () => {
+    if (selectedIds.length === 0) {
+      toast.warning("No quotes selected.");
+      return;
+    }
+  
+    if (selectedIds.length > 1) {
+      toast.warning("You can only send one record at a time.");
+      return;
+    }
+  
+    const recordId = selectedIds[0]; 
+  
+    try {
+      const response = await fetch(
+        "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            recordId, 
+            accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
+          }),
+        }
+      );
+  
+      if (response.ok) {
+        toast.success("Sent successfully!");
+        setSelectedIds([]); 
+      } else {
+        toast.error("Failed to send.");
+      }
+    } catch (error) {
+      console.error("Error sending:", error);
+      toast.error("Error sending data.");
+    }
+  };
+  
+
+  const toggleCheckbox = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   const handleRedirect = (id: string) => {
     navigate(`/quotation?id=${id}`);
@@ -154,7 +200,7 @@ const QuotationList: React.FC = () => {
             </div> */}
 
             <div className="w-full max-w-6xl p-4 sm:p-6 md:p-10 rounded-2xl mt-6">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 px-2 gap-2">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 px-2 gap-2">
                 <input
                   type="text"
                   placeholder="Search by Job Title"
@@ -164,18 +210,33 @@ const QuotationList: React.FC = () => {
                   }
                   className="border border-gray-300 rounded-md px-4 py-2 w-full sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:text-white"
                 />
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded text-sm shadow w-full sm:w-auto"
-                  onClick={() => navigate("/quote-entry")}
-                >
-                  New Quote
-                </button>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded text-sm shadow w-full sm:w-auto"
+                    onClick={() => navigate("/quote-entry")}
+                  >
+                    New Quote
+                  </button>
+                  <button
+                    className={`px-4 py-2 rounded text-sm shadow w-full sm:w-auto
+                      ${
+                        selectedIds.length === 1
+                          ? "bg-green-600 hover:bg-green-700 text-white"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                    onClick={handleSend}
+                    disabled={selectedIds.length !== 1} 
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
               <div className="w-full ">
                 <div className="overflow-y-auto h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg">
                   <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm text-center">
                     <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
                       <tr className="text-gray-800 dark:text-white/90 text-sm">
+                      <th className="px-2 py-3 border-b border-gray-200 dark:border-gray-700">Select</th>
                         <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Job Title</th>
                         <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Client Name</th>
                         <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Quote</th>
@@ -188,8 +249,15 @@ const QuotationList: React.FC = () => {
                       {currentRecords.map((item) => (
                         <tr
                           key={item.id}
-                          className=" border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
+                          className="border-b border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
                         >
+                             <td className="px-2 py-2">
+                            <input
+                              type="checkbox"
+                              checked={selectedIds.includes(item.id)}
+                              onChange={() => toggleCheckbox(item.id)}
+                            />
+                          </td>
                           <td className="px-2 sm:px-4 py-2 whitespace-normal break-words text-sm">
                             {item.jobTitle}
                           </td>
