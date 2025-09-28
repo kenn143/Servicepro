@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PageMeta from "../../components/common/PageMeta";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface QuotationItem {
@@ -54,7 +54,6 @@ const [, setLoading] = useState<boolean>(false);
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
-  const navigate = useNavigate();
 
  
 
