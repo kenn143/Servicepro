@@ -47,7 +47,9 @@ const QuotationList: React.FC = () => {
         "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" ,
+                    "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          },
           body: JSON.stringify({
             recordId, 
             accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
@@ -158,6 +160,7 @@ const QuotationList: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
         },
         body: JSON.stringify(quotation),
       }
