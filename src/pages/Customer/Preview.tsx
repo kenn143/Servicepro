@@ -204,14 +204,16 @@ const [, setLoading] = useState<boolean>(false);
       approved: 1,
     };
 
-    const response = await fetch("https://hook.us2.make.com/415jpaj3alwy9nceagf5rg7oprt8s6v6", {
+    const response = await fetch("https://hook.us2.make.com/i4kvebfqqozi87eh53lcd38nbamy7l8e", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+       },
       body: JSON.stringify(quotation),
     });
 
     if (response.ok) {
-      navigate(`/Approved`);
+       toast.success("Approved");
     } else {
       toast.error("Error");
     }
