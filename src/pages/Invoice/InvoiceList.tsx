@@ -485,7 +485,7 @@ export default function InvoiceList() {
         <div className="flex justify-end">
         <button
           onClick={handleSendInvoices}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg shadow text-md"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded shadow text-sm"
         >
           <Send size={18} /> Send
         </button>
@@ -495,7 +495,7 @@ export default function InvoiceList() {
           placeholder="Search invoice..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full max-w-md border rounded-md px-3 py-2 text-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
+          className="w-full max-w-md border rounded-md px-3 py-2 text-sm shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
         />
       </div>
 {/* 
