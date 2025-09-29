@@ -498,13 +498,37 @@ export default function InvoiceList() {
           className="w-full max-w-md border rounded-md px-3 py-2 text-md shadow focus:outline-none focus:ring-2 focus:ring-blue-400 dark:text-white"
         />
       </div>
-
+{/* 
       {loading ? (
         <div className="text-center py-6 text-gray-500">Loading invoices...</div>
-      ) : (
+      ) : ( */}
         <>
         <div className="w-full">
          <div className="w-full overflow-x-auto h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg">
+         {loading ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+                    <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-transparent border-t-blue-500 animate-spin"></div>
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400 font-medium">
+                    Loading Invoices...
+                  </div>
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <div
+                      className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            ) : (
           <table className="w-full table-fixed  border-gray-200 text-xs sm:text-sm divide-y divide-gray-200 text-center">
             <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
               <tr>
@@ -575,7 +599,18 @@ export default function InvoiceList() {
                       </td>
                     </tr>
                   ))}
-
+                   <style>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+      `}</style>
   
                 </>
               ) : (
@@ -587,6 +622,7 @@ export default function InvoiceList() {
               )}
             </tbody>
           </table>
+            )}
         </div>
         </div>
 
@@ -600,7 +636,7 @@ export default function InvoiceList() {
             </div>
         
         </>
-      )}
+      {/* )} */}
 
       {editRecord && (
         <div

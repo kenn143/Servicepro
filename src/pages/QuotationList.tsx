@@ -236,6 +236,30 @@ const QuotationList: React.FC = () => {
               </div>
               <div className="w-full ">
                 <div className="overflow-y-auto h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg">
+                {loading ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+                    <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-transparent border-t-blue-500 animate-spin"></div>
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400 font-medium">
+                    Loading Light Installers...
+                  </div>
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <div
+                      className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            ) : (
                   <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm text-center">
                     <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
                       <tr className="text-gray-800 dark:text-white/90 text-sm">
@@ -348,7 +372,7 @@ const QuotationList: React.FC = () => {
                           </td>
                         </tr>
                       ))}
-                      {loading ? (
+                      {/* {loading ? (
                         <tr>
                           <td
                             colSpan={6}
@@ -366,9 +390,10 @@ const QuotationList: React.FC = () => {
                             No results found.
                           </td>
                         </tr>
-                      ) : null}
+                      ) : null} */}
                     </tbody>
                   </table>
+                   )}
                 </div>
 
          
@@ -421,6 +446,18 @@ const QuotationList: React.FC = () => {
           </div>
         </div>
       </div>
+      <style>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+      `}</style>
     </>
   );
 };
