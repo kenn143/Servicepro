@@ -215,13 +215,13 @@ const QuotationList: React.FC = () => {
                 />
                 <div className="flex gap-2 w-full sm:w-auto">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded text-sm shadow w-full sm:w-auto"
+                    className="bg-blue-500 text-white px-2 py-1 rounded shadow sm:text-sm" 
                     onClick={() => navigate("/quote-entry")}
                   >
                     New Quote
                   </button>
                   <button
-                    className={`px-4 py-2 rounded text-sm shadow w-full sm:w-auto
+                    className={`px-2 py-1 rounded text-sm shadow w-full sm:w-auto
                       ${
                         selectedIds.length === 1
                           ? "bg-green-600 hover:bg-green-700 text-white"
@@ -294,12 +294,13 @@ const QuotationList: React.FC = () => {
                             )?.clientName || "Unknown Client"}
                           </td>
                           <td className="px-1 sm:px-4 py-2">
-                            <button
-                              onClick={() => handleRedirect(item.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded shadow sm:text-sm"
-                            >
-                              View
-                            </button>
+                          <button
+                            onClick={() => handleRedirect(item.id)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded sm:text-sm transition-colors"
+                          >
+                            View
+                          </button>
+
                           </td>
                           <td className="px-3 sm:px-4 py-2">
                             {item.status === "Approved" ? (

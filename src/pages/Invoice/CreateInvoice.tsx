@@ -109,6 +109,11 @@ export default function CreateInvoice() {
     //   toast.error("Item name is required")
     //   return;
     // }
+    if (items.some(item => item.itemName.trim() === "")) {
+      toast.error("Item name cannot be empty");
+      return;
+    }
+   
     if (activeStep < steps.length - 1) setActiveStep((prev) => prev + 1);
   };
 
@@ -143,6 +148,10 @@ export default function CreateInvoice() {
   //   setItems([...items, { quantity: 0, price: 0, total: 0 }]);
   // };
   const addItem = () => {
+    if (items.some(item => item.itemName.trim() === "")) {
+      toast.error("Item name cannot be empty");
+      return;
+    }
     setItems([...items, { itemName: "", quantity: 0, price: 0, total: 0 }]);
   };
 
@@ -180,6 +189,7 @@ export default function CreateInvoice() {
       alert("Please select a customer before saving.");
       return;
     }
+    
 
     let attachmentUrl: string | null = null;
 
@@ -274,7 +284,7 @@ console.log("payload",payload)
                 value={query}
                 onChange={(e) => handleChange(e.target.value)}
                 placeholder="Search customer..."
-                className="w-full rounded-md border px-3 py-2 text-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white"
+                className="w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none dark:text-white"
               />
 
               {loading && (
@@ -482,7 +492,7 @@ console.log("payload",payload)
                     <div className="flex justify-between items-center">
                       <button
                         onClick={addItem}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                        className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
                       >
                         Add Item
                       </button>
@@ -553,7 +563,7 @@ console.log("payload",payload)
                 <button
                   onClick={prevStep}
                   disabled={activeStep === 0}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
+                  className={`px-2 py-1 rounded shadow  transition-colors text-sm ${
                     activeStep === 0
                       ? "bg-gray-300 text-gray-600 cursor-not-allowed"
                       : "bg-gray-500 text-white hover:bg-gray-600"
@@ -565,7 +575,7 @@ console.log("payload",payload)
                 {activeStep < steps.length - 1 ? (
                   <button
                     onClick={nextStep}
-                    className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                    className="px-2 py-1 rounded shadow  bg-blue-500 text-white hover:bg-blue-600 text-sm"
                   >
                     Next
                   </button>
@@ -573,7 +583,7 @@ console.log("payload",payload)
                   <button
                       onClick={handleSave}
                       disabled={saving}
-                      className={`px-4 py-2 rounded-lg text-white
+                      className={`px-2 py-1 rounded shadow  text-white text-sm
                         ${saving ? "bg-green-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"}`}
                     >
                       {saving? "SAVING..." : "SAVE"}

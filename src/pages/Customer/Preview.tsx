@@ -49,7 +49,7 @@ const Preview: React.FC = () => {
 const [, setQuoteNumber] = useState<string>("");
   const [datecreated, setDateCreated] = useState<string>("");
   const [status, setStatus] = useState<string | null>(null);
-const [, setLoading] = useState<boolean>(false);
+const [loading, setLoading] = useState<boolean>(true);
 
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
@@ -101,9 +101,11 @@ const [, setLoading] = useState<boolean>(false);
 
         if (item.optional) setCheckedOptionals({ [item.id]: true });
 
-        setLoading(false);
+        // setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+      }finally{
+        setLoading(false);
       }
     };
 
@@ -127,11 +129,13 @@ const [, setLoading] = useState<boolean>(false);
 
       const data = await response.json();
       setCustomerList(data.records);
-      setLoading(false);
+      
       return data;
     } catch (error) {
       console.error("Error fetching data:", error);
       return null;
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -167,11 +171,13 @@ const [, setLoading] = useState<boolean>(false);
       setPhoneNumber(phone);
       setAddress(addr);
 
-      setLoading(false);
+     
       return data;
     } catch (error) {
       console.error("Error fetching data:", error);
       return null;
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -237,6 +243,30 @@ const [, setLoading] = useState<boolean>(false);
      
        
     <div className="min-h-screen  font-sans p-6 mt-4">
+        {loading ? (
+            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative">
+                <div className="w-12 h-12 rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+                <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-transparent border-t-blue-500 animate-spin"></div>
+              </div>
+              <div className="text-gray-600 dark:text-gray-400 font-medium">
+                Please wait...
+              </div>
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <div
+                  className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
+              </div>
+            </div>
+          </div>
+            ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
          {/* <div className="flex justify-start">
@@ -290,6 +320,7 @@ const [, setLoading] = useState<boolean>(false);
 
 
           <div className="w-full overflow-x-hidden">
+        
   <table className="w-full table-fixed border-collapse border-b-4 text-md">
     <thead>
       <tr className=" dark:text-white">
@@ -342,6 +373,7 @@ const [, setLoading] = useState<boolean>(false);
       ))}
     </tbody>
   </table>
+    
 
   {modalImage && (
   <div
@@ -414,9 +446,21 @@ const [, setLoading] = useState<boolean>(false);
           </button>
         </div>
       </div>
+      )}
     </div>
      
-    
+    <style>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+      `}</style>
     </>
   );
 };

@@ -485,7 +485,7 @@ export default function InvoiceList() {
         <div className="flex justify-end">
         <button
           onClick={handleSendInvoices}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 rounded-lg shadow text-md"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg shadow text-md"
         >
           <Send size={18} /> Send
         </button>
