@@ -18,8 +18,8 @@ interface LineItem {
 interface AirtableRecord {
   id: string;
   fields: {
-    ClientID: string;
-    Name: string;
+    CustomerId: string;
+    CustomerName: string;
   };
 }
 
@@ -184,12 +184,12 @@ const Quote: React.FC = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblLRXGbGHNnaf8bF",
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
           {
             method: "GET",
             headers: {
               Authorization:
-                "Bearer pat2hVGQIspOMAhMC.0f845073a21d5cfe012c97f92393af8cdda9d0e33f0f890e2923be81b4f81cfd",
+                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
               "Content-Type": "application/json",
             },
           }
@@ -201,6 +201,7 @@ const Quote: React.FC = () => {
 
         const data = await response.json();
         setOptions(data.records as AirtableRecord[]);
+        console.log("data",data.records as AirtableRecord[]);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -275,8 +276,8 @@ const Quote: React.FC = () => {
         >
           <option value="">--Choose Client--</option>
           {options.map(item => (
-            <option key={item.id} value={item.fields.ClientID}>
-              {item.fields.Name}
+            <option key={item.id} value={item.fields.CustomerId}>
+              {item.fields.CustomerName}
             </option>
           ))}
         </select>
