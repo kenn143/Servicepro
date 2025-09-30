@@ -355,7 +355,7 @@ const [, setLoading] = useState<boolean>(false);
     >
       <button
         onClick={closeImageModal}
-        className="absolute -top-4 -right-4 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10"
+        className="absolute -top-4 -right-4  hover:bg-red-700 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10 bg-red-500"
         aria-label="Close modal"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,7 +366,7 @@ const [, setLoading] = useState<boolean>(false);
       <img
         src={modalImage}
         alt="Full size"
-        className={`max-w-full max-h-[80vh] object-contain rounded transition-transform duration-300 shadow-2xl ${
+        className={`max-w-full max-h-[80vh] object-contain rounded transition-transform duration-300 shadow-2xl  ${
           isZoomed ? "scale-100" : "scale-75"
         }`}
       />

@@ -317,25 +317,27 @@ const Captures: React.FC = () => {
 
       {selectedImage && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 rounded"
           onClick={() => setSelectedImage(null)}
         >
           <div
-            className="relative animate-[slideIn_0.3s_ease-out]"
+            className="relative animate-[slideIn_0.3s_ease-out] rounded-full"
             onClick={(e) => e.stopPropagation()}
           >
 
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute -top-3 -right-3 bg-white rounded-full p-2 shadow-lg hover:bg-gray-200 transition"
+              className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-2 hover:bg-red-600"
             >
-              ✕
+                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
             </button>
 
             <img
               src={selectedImage}
               alt="full"
-              className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl transition-all duration-300 hover:scale-105"
+              className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl transition-all duration-300 "
             />
           </div>
         </div>

@@ -207,9 +207,9 @@ const EditPage: React.FC = () => {
     setTimeout(() => setPopupImage(null), 300); 
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   const getToken = () => {
 
@@ -237,6 +237,30 @@ const EditPage: React.FC = () => {
     <>
       <PageMeta title="ServicePros" description="" />
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      {loading ? (
+            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative">
+                <div className="w-12 h-12 rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+                <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-transparent border-t-blue-500 animate-spin"></div>
+              </div>
+              <div className="text-gray-600 dark:text-gray-400 font-medium">
+                Please wait...
+              </div>
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <div
+                  className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
+              </div>
+            </div>
+          </div>
+            ) : (
         <div className="custom-calendars">
           <div className=" min-h-screen p-4 sm:p-6 font-sans">
             <div className="max-w-6xl mx-auto  rounded-xl shadow-md p-4 sm:p-6">
@@ -481,13 +505,13 @@ const EditPage: React.FC = () => {
               <div className="flex gap-4 mt-4">
                 <button
                   onClick={() => handleAddItem(false)}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
                 >
                   + Add Item
                 </button>
                 <button
                   onClick={() => handleAddItem(true)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                  className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-sm"
                 >
                   + Add Optional Item
                 </button>
@@ -511,7 +535,7 @@ const EditPage: React.FC = () => {
                 <button
                   onClick={handleUpdate}
                   disabled={updating}
-                  className={`px-4 py-2 text-white rounded 
+                  className={`px-2 py-1 text-white rounded text-sm 
           ${
             updating
               ? "bg-sky-400 cursor-not-allowed"
@@ -524,6 +548,7 @@ const EditPage: React.FC = () => {
             </div>
           </div>
         </div>
+            )}
       </div>
 
       {popupImage && (
@@ -542,13 +567,16 @@ const EditPage: React.FC = () => {
             <img
               src={popupImage}
               alt="Popup"
-              className="max-w-[90vw] max-h-[80vh] rounded shadow-lg"
+              className="max-w-[90vw] max-h-[80vh] rounded shadow-lg "
             />
+            
             <button
-              className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-2 hover:bg-red-600"
+              className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full p-2 hover:bg-red-700  rounded-full"
               onClick={closePopup}
             >
-              ✕
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
             </button>
           </div>
         </div>
