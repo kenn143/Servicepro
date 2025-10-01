@@ -240,14 +240,36 @@ const [, setLoading] = useState<boolean>(false);
                 <div className="min-h-screen  font-sans">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
-         <div className="flex justify-start">
-         <button className="flex items-center text-sm text-gray-700 hover:text-black dark:text-white" onClick={handleRedirect}>
-            <svg className="h-5 w-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-            </button>
-        </div>
+        <div className="flex justify-between items-center">
+                <button
+                  className="flex items-center text-sm text-gray-700 hover:text-black dark:text-white"
+                  onClick={handleRedirect}
+                >
+                  <svg
+                    className="h-5 w-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                  Back
+                </button>
+
+                <div>
+                      <img
+                  className="w-36 h-auto sm:w-20 md:w-36 lg:w-36 object-contain"
+                  src="./images/Media.jpg"
+                  alt="Logo"
+                />
+                </div>
+              </div>
+
 
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>

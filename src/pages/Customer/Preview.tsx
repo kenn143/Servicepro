@@ -269,16 +269,15 @@ const [loading, setLoading] = useState<boolean>(true);
             ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
-         {/* <div className="flex justify-start">
-         <button className="flex items-center text-sm text-gray-700 hover:text-black dark:text-white" onClick={handleRedirect}>
-            <svg className="h-5 w-5 mr-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-            </button>
-        </div> */}
+        <div className="flex justify-end">
+        <img
+            className="w-36 h-auto sm:w-20 md:w-36 lg:w-36 object-contain"
+            src="./images/Media.jpg"
+            alt="Logo"
+          />
+          </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex flex-row justify-between items-start md:items-center gap-4">
             <div>
               <p className="text-sm font-semibold dark:text-white">Quote # {initialData[0]?.quoteNumber}</p>
               <p className="font-sans text-2xl font-bold text-blue-600">{clientName}</p>
@@ -286,30 +285,29 @@ const [loading, setLoading] = useState<boolean>(true);
               <p className="font-semibold text-xs text-gray-500">{phoneNumber}</p>
               <p className="font-semibold text-xs text-gray-500">{address}</p>
             </div>
-            <div className="flex flex-col items-end space-y-2">
-                <button
-                    disabled
-                    className={`flex items-center gap-2 px-4 py-1 rounded-xl text-sm font-medium shadow cursor-default 
-                        ${status === "Pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : status === "Approved"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-100 text-gray-800"
-                        }`}
-                    >
-                    {status === null ? (
-                        "Loading..."
-                    ) : status === "Pending" ? (
-                        <>
-                        ⭕ Awaiting Response
-                        </>
-                    ) : (
-                        <>
-                        ✔️ Approved
-                        </>
-                    )}
-                </button>
 
+
+
+            <div className="flex flex-col items-end space-y-2">
+              <button
+                disabled
+                className={`flex items-center gap-2 px-4 py-1 rounded-xl text-sm font-medium shadow cursor-default 
+                  ${
+                    status === "Pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : status === "Approved"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+              >
+                {status === null ? (
+                  "Loading..."
+                ) : status === "Pending" ? (
+                  <>⭕ Awaiting Response</>
+                ) : (
+                  <>✔️ Approved</>
+                )}
+              </button>
 
               <div className="flex justify-end space-x-2 items-baseline">
                 <p className="text-sm dark:text-white">Sent on</p>
@@ -317,6 +315,7 @@ const [loading, setLoading] = useState<boolean>(true);
               </div>
             </div>
           </div>
+
 
 
           <div className="w-full overflow-x-hidden">
