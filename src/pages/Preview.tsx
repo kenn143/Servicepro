@@ -21,10 +21,10 @@ interface QuotationItem {
 interface CustomerRecord {
   id: string;
   fields: {
-    "Item Name"?: string;
+    ItemName?: string;
     Description?: string;
     Quantity?: number;
-    "Unit Price"?: number;
+    UnitPrice?: number;
     IsOptional?: number;
     Attachments?: { url: string; thumbnails?: { small?: { url: string } } }[];
     Name?: string;
@@ -64,12 +64,12 @@ const [, setLoading] = useState<boolean>(false);
     const fetchData = async () => {
       try {
         if (!id) return;
-        const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tbluuR1Nl6tbnLhS2/${id}`;
+        const url = `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW/${id}`;
         const response = await fetch(url, {
           method: "GET",
           headers: {
             Authorization:
-              "Bearer pat3UfBiORCRUDmnz.e300c4a692d7eebbb77d85848146bc048e39b58cde696374fc7ac9467a61468e",
+              "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
             "Content-Type": "application/json",
           },
         });
@@ -116,12 +116,12 @@ const [, setLoading] = useState<boolean>(false);
   const QuotationInfoFetch = async (id: string): Promise<any> => {
     try {
            const formula = `{QuoteID} = ${id}`; 
-      const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblYVFWQZUwxenmiw?filterByFormula=${encodeURIComponent(formula)}`;
+      const url = `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblESRF794GfZbS9S?filterByFormula=${encodeURIComponent(formula)}`;
   
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: "Bearer patAFsT3g1wFUFyk8.1c95d3e5a6b3062dc4c13f144f5dcd70aa89b1ecca4ff68880721b10640b08bf",
+          Authorization: "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
           "Content-Type": "application/json",
         },
       });
@@ -129,6 +129,7 @@ const [, setLoading] = useState<boolean>(false);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
+      console.log("the data is",data)
       setCustomerList(data.records);
       setLoading(false);
       return data;
@@ -188,7 +189,7 @@ const [, setLoading] = useState<boolean>(false);
   const getTotal = (): number => {
     return customerList.reduce((sum, item) => {
       const qty = item.fields["Quantity"] || 0;
-      const price = item.fields["Unit Price"] || 0;
+      const price = item.fields["UnitPrice"] || 0;
       const isOptional = item.fields["IsOptional"] === 1;
 
       if (!isOptional || checkedOptionals[item.id]) {
@@ -335,7 +336,7 @@ const [, setLoading] = useState<boolean>(false);
             )}
           </td>
           <td className="border px-1 py-2 break-words text-sm dark:text-white">
-              <div>{item.fields["Item Name"]}</div>
+              <div>{item.fields["ItemName"]}</div>
               {item.fields["Description"] && (
                 <div className="text-xs dark:text-white">( {item.fields["Description"]} )</div>
               )}
@@ -359,7 +360,7 @@ const [, setLoading] = useState<boolean>(false);
         </td>
 
           <td className="border px-1 py-2 text-center text-sm dark:text-white">
-            ${item.fields["Unit Price"]?.toLocaleString()}
+            ${item.fields["UnitPrice"]?.toLocaleString()}
           </td>
         </tr>
       ))}

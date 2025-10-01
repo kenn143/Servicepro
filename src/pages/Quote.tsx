@@ -7,7 +7,7 @@ interface LineItem {
   id: number;
   qty: number;
   price: number;
-  productprice: string;
+  itemName: string;
   description: string;
   subtotal: number;
   optional: boolean;
@@ -29,7 +29,7 @@ const Quote: React.FC = () => {
       id: 0,
       qty: 1,
       price: 0,
-      productprice: "",
+      itemName: "",
       description: "",
       subtotal: 0,
       optional: false,
@@ -136,7 +136,7 @@ const Quote: React.FC = () => {
       id: idCounter,
       qty: 1,
       price: 0,
-      productprice: "",
+      itemName: "",
       description: "",
       subtotal: 0,
       optional: isOptional,
@@ -318,8 +318,8 @@ const Quote: React.FC = () => {
           <input
             type="text"
             className="mt-1 w-full border rounded px-3 py-2"
-            value={item.productprice}
-            onChange={(e) => updateLineItem(item.id, 'productprice', e.target.value)}
+            value={item.itemName}
+            onChange={(e) => updateLineItem(item.id, 'itemName', e.target.value)}
             disabled = {!selected}
           />
         </div>

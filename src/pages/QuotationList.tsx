@@ -13,8 +13,8 @@ interface Quote {
 }
 
 interface Customer {
-  clientID?: string;
-  clientName?: string;
+  CustomerId?: string;
+  CustomerName?: string;
 }
 
 const QuotationList: React.FC = () => {
@@ -84,12 +84,12 @@ const QuotationList: React.FC = () => {
     const fetchQuotes = async () => {
       try {
         const response = await fetch(
-          "https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tbluuR1Nl6tbnLhS2",
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
           {
             method: "GET",
             headers: {
               Authorization:
-                "Bearer pat3UfBiORCRUDmnz.e300c4a692d7eebbb77d85848146bc048e39b58cde696374fc7ac9467a61468e",
+                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
               "Content-Type": "application/json",
             },
           }
@@ -118,12 +118,12 @@ const QuotationList: React.FC = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          "https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblLRXGbGHNnaf8bF",
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
           {
             method: "GET",
             headers: {
               Authorization:
-                "Bearer pat2hVGQIspOMAhMC.0f845073a21d5cfe012c97f92393af8cdda9d0e33f0f890e2923be81b4f81cfd",
+                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
               "Content-Type": "application/json",
             },
           }
@@ -135,9 +135,10 @@ const QuotationList: React.FC = () => {
 
         const result = await response.json();
         const customers: Customer[] = result.records.map((record: any) => ({
-          clientID: record.fields["ClientID"],
-          clientName: record.fields["Name"],
+          CustomerId: record.fields["CustomerId"],
+          CustomerName: record.fields["CustomerName"],
         }));
+        console.log("cusotmelist",customers)
         setCustomerList(customers);
         setLoading(false);
       } catch (error) {
@@ -290,8 +291,8 @@ const QuotationList: React.FC = () => {
                           </td>
                           <td className="px-2 sm:px-4 py-2 whitespace-normal break-words">
                             {customerList.find(
-                              (cust) => cust.clientID === item.clientID
-                            )?.clientName || "Unknown Client"}
+                              (cust) => cust.CustomerId === item.clientID
+                            )?.CustomerName || "Unknown Client"}
                           </td>
                           <td className="px-1 sm:px-4 py-2">
                           <button
@@ -324,10 +325,10 @@ const QuotationList: React.FC = () => {
                                 navigate("/edit/" + item.id, {
                                   state: {
                                     item,
-                                    clientName:
+                                    CustomerName:
                                       customerList.find(
-                                        (cust) => cust.clientID === item.clientID
-                                      )?.clientName || "Unknown Client",
+                                        (cust) => cust.CustomerId === item.clientID
+                                      )?.CustomerName || "Unknown Client",
                                   },
                                 })
                               }
