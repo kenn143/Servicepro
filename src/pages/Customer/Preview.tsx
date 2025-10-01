@@ -269,7 +269,7 @@ const [loading, setLoading] = useState<boolean>(true);
             ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
-        <div className="flex justify-end">
+        <div className="flex justify-center md:justify-end">
         <img
             className="w-36 h-auto sm:w-20 md:w-36 lg:w-36 object-contain"
             src="./images/Media.jpg"
