@@ -307,8 +307,8 @@ const [, setLoading] = useState<boolean>(false);
 
 
               <div className="flex justify-end space-x-2 items-baseline">
-                <p className="text-sm dark:text-white">Sent on</p>
-                <p className="font-semibold text-lg dark:text-white">{datecreated}</p>
+                <p className="text-sm dark:text-white">Sent on: </p>
+                <p className="font-semibold text-lg dark:text-white">{datecreated || "N/A"}</p>
               </div>
             </div>
           </div>
