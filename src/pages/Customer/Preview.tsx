@@ -89,7 +89,6 @@ const [loading, setLoading] = useState<boolean>(true);
           clientID: record.fields["ClientID"] || 0,
           datecreated: record.fields["Date Created"] || "",
         };
-
         QuotationInfoFetch(item.quoteId);
         CustomerInfoFetch(item.clientID);
 
@@ -127,7 +126,6 @@ const [loading, setLoading] = useState<boolean>(true);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
-      console.log("the data is",data)
       setCustomerList(data.records);
       setLoading(false);
       return data;
@@ -274,7 +272,7 @@ const [loading, setLoading] = useState<boolean>(true);
         <div className="flex justify-center md:justify-end">
         <img
             className="w-36 h-auto sm:w-20 md:w-36 lg:w-36 object-contain"
-            src="./images/Media.jpg"
+            src="./images/Media.PNG"
             alt="Logo"
           />
           </div>

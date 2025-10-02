@@ -267,7 +267,7 @@ const [, setLoading] = useState<boolean>(false);
                 <div>
                       <img
                   className="w-36 h-auto sm:w-20 md:w-36 lg:w-36 object-contain"
-                  src="./images/Media.jpg"
+                  src="./images/Media.PNG"
                   alt="Logo"
                 />
                 </div>
