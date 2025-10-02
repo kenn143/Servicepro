@@ -204,7 +204,7 @@ const [loading, setLoading] = useState<boolean>(true);
       quotationDetails: customerList,
       jobTitle,
       total: getTotal(),
-      recordId,
+      customerId: recordId,
       approved: 1,
     };
 
