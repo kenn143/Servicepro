@@ -12,7 +12,7 @@ interface LineItem {
   subtotal: number;
   optional: boolean;
   isDefault?: boolean;
-  attachment: File[]; 
+  attachment: File[];
 }
 
 interface AirtableRecord {
@@ -24,20 +24,21 @@ interface AirtableRecord {
 }
 
 const Quote: React.FC = () => {
-  const [lineItems, setLineItems] = useState<LineItem[]>([
-    {
-      id: 0,
-      qty: 1,
-      price: 0,
-      itemName: "",
-      description: "",
-      subtotal: 0,
-      optional: false,
-      isDefault: true,
-      attachment: [], 
-    },
-  ]);
-  
+  // const [lineItems, setLineItems] = useState<LineItem[]>([
+  //   {
+  //     id: 0,
+  //     qty: 1,
+  //     price: 0,
+  //     itemName: "",
+  //     description: "",
+  //     subtotal: 0,
+  //     optional: false,
+  //     isDefault: true,
+  //     attachment: [],
+  //   },
+  // ]);
+const [lineItems, setLineItems] = useState<LineItem[]>([]);
+
 
   const navigate = useNavigate();
   const [idCounter, setIdCounter] = useState(1);
@@ -60,6 +61,8 @@ const Quote: React.FC = () => {
       return;
     }
 
+    
+
     const uploadedItems = await Promise.all(
       lineItems.map(async (item) => {
         if (item.attachment && item.attachment.length > 0) {
@@ -69,7 +72,7 @@ const Quote: React.FC = () => {
                 const formData = new FormData();
                 formData.append("file", file);
                 formData.append("upload_preset", uploadPreset);
-    
+
                 const res = await fetch(
                   `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
                   {
@@ -77,15 +80,15 @@ const Quote: React.FC = () => {
                     body: formData,
                   }
                 );
-    
+
                 const data = await res.json();
                 return data.secure_url as string;
               })
             );
-    
+
             return {
               ...item,
-              attachment: uploadedFiles, 
+              attachment: uploadedFiles,
             };
           } catch (error) {
             console.error("Cloudinary Upload Error:", error);
@@ -97,7 +100,7 @@ const Quote: React.FC = () => {
         }
       })
     );
-    
+
 
     const finalQuote = {
       Items: uploadedItems,
@@ -120,11 +123,11 @@ const Quote: React.FC = () => {
     );
 
     if (response.ok) {
-     
+
       toast.success("Quote Saved Successfully!");
       setTimeout(() => {
-        navigate("/quotation-list"); 
-      }, 1000); 
+        navigate("/quotation-list");
+      }, 1000);
     } else {
       toast.error("Error sending quote");
     }
@@ -150,25 +153,25 @@ const Quote: React.FC = () => {
   const updateLineItem = (
     id: number,
     key: keyof LineItem,
-    value: string | number | File | File[] | null 
+    value: string | number | File | File[] | null
   ) => {
     setLineItems((items) =>
       items.map((item) => {
         if (item.id !== id) return item;
-  
+
         const updatedItem = { ...item, [key]: value };
-  
+
         if (key === "qty" || key === "price") {
           const qty = key === "qty" ? (value as number) : item.qty;
           const price = key === "price" ? (value as number) : item.price;
           updatedItem.subtotal = qty * price;
         }
-  
+
         return updatedItem;
       })
     );
   };
-  
+
 
   const quoteTotal = lineItems.reduce(
     (sum, item) => sum + item.qty * item.price,
@@ -222,21 +225,21 @@ const Quote: React.FC = () => {
     navigate("/quotation-list");
   };
   const getToken = () => {
-  
+
     const storedData = localStorage.getItem("data");
-  
+
     if (!storedData) return null; // nothing stored
-  
+
     try {
       const parsed = JSON.parse(storedData);
-  
+
       return {
         ID: parsed.ID,
         UserName: parsed.UserName,
         FullName: parsed.FullName,
         UserType: parsed.UserType,
         Status: parsed.Status,
-     
+
       };
     } catch (e) {
       console.error("Invalid JSON in localStorage for data", e);
@@ -262,7 +265,7 @@ const Quote: React.FC = () => {
             Back
             </button>
         </div>
-    
+
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
       <div className="flex flex-col sm:flex-row items-start sm:items-center w-full">
         <h2 className="text-xl sm:text-2xl font-bold mr-0 sm:mr-2 dark:text-white">Quote for</h2>
@@ -308,7 +311,7 @@ const Quote: React.FC = () => {
     {lineItems.map((item) => (
       <div
         key={item.id}
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start border-b-[2px] pb-4 mt-6 rounded ${
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start border-b-[2px] pb-4 mt-6 rounded pt-5 ${
           item.optional ? 'bg-gray-100 dark:bg-gray-500' : ''
         }`}
       >
@@ -346,13 +349,13 @@ const Quote: React.FC = () => {
           />
         </div>
         <div>
-        
-<label className="block text-sm font-bold">Attachment</label>
+
+<label className="block text-sm font-bold">Images</label>
 <input
   type="file"
   multiple
-  className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2 
-             file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 
+  className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2
+             file:mr-2 file:py-1 file:px-3 file:rounded file:border-0
              file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
   onChange={(e) => {
     if (e.target.files) {
@@ -360,7 +363,7 @@ const Quote: React.FC = () => {
 
       if (files.length > 3) {
         toast.error("You can only upload up to 3 files.");
-        e.target.value = ""; 
+        e.target.value = "";
         return;
       }
 
@@ -372,14 +375,20 @@ const Quote: React.FC = () => {
 
 
           <div className="text-right">
-           {item.id !== 0 && (
+           {/* {item.id !== 0 && (
             <button
               onClick={() => handleDeleteLineItem(item.id)}
               className="mt-4 px-4 py-2 bg-red-400 text-white border border-red-400 rounded hover:bg-red-700 hover:border-[1px]"
             >
               Delete
             </button>
-          )}
+          )} */}
+          <button
+            onClick={() => handleDeleteLineItem(item.id)}
+            className="mt-4 px-2 py-1 bg-red-400 text-white border border-red-400 rounded hover:bg-red-700 hover:border-[1px]"
+          >
+            Delete
+          </button>
           </div>
         </div>
         <div className="text-right">
@@ -387,12 +396,12 @@ const Quote: React.FC = () => {
       </div>
     ))}
     <div className="mt-6 flex flex-wrap gap-2">
-      <button
+      {/* <button
         onClick={() => handleAddLineItem(false)}
         className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
       >
         + Add Line Item
-      </button>
+      </button> */}
       <button
         onClick={() => handleAddLineItem(true)}
         className="px-2 py-1 bg-white text-green-600 border border-green-600 rounded hover:bg-green-100"
@@ -419,7 +428,7 @@ const Quote: React.FC = () => {
     <button
         onClick={addItem}
         disabled={loading}
-        className={`px-2 py-1 text-white rounded 
+        className={`px-2 py-1 text-white rounded
           ${loading ? "bg-sky-400 cursor-not-allowed" : "bg-sky-500 hover:bg-sky-700"}`}
       >
         {loading ? "SAVING..." : "SAVE"}

@@ -405,7 +405,7 @@ const EditPage: React.FC = () => {
 
                       <div>
                         <label className="block text-sm font-bold">
-                          Attachment
+                          Images
                         </label>
 
                         <div className="flex flex-wrap gap-2 mt-1">
