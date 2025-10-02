@@ -326,7 +326,7 @@ const [loading, setLoading] = useState<boolean>(true);
         <th className="border px-1 py-2 text-center w-[20%] text-sm">Selection</th>
         <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
         <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
-        <th className="border px-1 py-2 text-center w-[25%] text-sm">Unit Price</th>
+        <th className="border px-1 py-2 text-center w-[25%] text-sm">Price</th>
       </tr>
     </thead>
     <tbody>

@@ -4,13 +4,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface QuoteFields {
-  "Item Name": string;
+  ItemName: string;
   Description: string;
   Quantity: number;
-  "Unit Price": number;
+  UnitPrice: number;
   IsOptional: number;
   Attachments?: { url: string }[];
-
   [key: string]: any;
 }
 
@@ -31,12 +30,14 @@ interface LocationState {
     status?: string;
     salesperson?: string;
   };
-  clientName?: string;
+  CustomerName?: string;
 }
+
+
 
 const EditPage: React.FC = () => {
   const location = useLocation();
-  const { item, clientName } = (location.state as LocationState) || {};
+  const { item, CustomerName } = (location.state as LocationState) || {};
   const [quoteData, setQuoteData] = useState<QuoteRecord[]>([]);
   const [newItems, setNewItems] = useState<QuoteRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -55,14 +56,14 @@ const EditPage: React.FC = () => {
         if (!item?.quoteId) return;
 
         const formula = `{QuoteID} = '${item.quoteId}'`;
-        const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblYVFWQZUwxenmiw?filterByFormula=${encodeURIComponent(
+        const url = `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblESRF794GfZbS9S?filterByFormula=${encodeURIComponent(
           formula
         )}`;
 
         const response = await fetch(url, {
           method: "GET",
           headers: {
-            Authorization: `Bearer patAFsT3g1wFUFyk8.1c95d3e5a6b3062dc4c13f144f5dcd70aa89b1ecca4ff68880721b10640b08bf`,
+            Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
             "Content-Type": "application/json",
           },
         });
@@ -89,10 +90,10 @@ const EditPage: React.FC = () => {
       {
         id: Date.now(),
         fields: {
-          "Item Name": "",
+          ItemName: "",
           Description: "",
           Quantity: 1,
-          "Unit Price": 0,
+          UnitPrice: 0,
           IsOptional: isOptional ? 1 : 0,
           Attachments: [],
         },
@@ -293,10 +294,10 @@ const EditPage: React.FC = () => {
                   </h2>
                   <select
                     className="w-full sm:w-auto font-semibold text-base px-2 py-2 mt-2 sm:mt-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:text-white"
-                    value={clientName || ""}
+                    value={CustomerName || ""}
                     disabled
                   >
-                    <option value="">{clientName || "--Choose Client--"}</option>
+                    <option value="">{CustomerName || "--Choose Client--"}</option>
                   </select>
                 </div>
               </div>
@@ -356,7 +357,7 @@ const EditPage: React.FC = () => {
                             isNew &&
                             handleInputChange(
                               idx - quoteData.length,
-                              "Item Name",
+                              "ItemName",
                               e.target.value
                             )
                           }
@@ -394,7 +395,7 @@ const EditPage: React.FC = () => {
                             isNew &&
                             handleInputChange(
                               idx - quoteData.length,
-                              "Unit Price",
+                              "UnitPrice",
                               e.target.value
                             )
                           }

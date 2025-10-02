@@ -46,14 +46,12 @@ const Preview: React.FC = () => {
   const [emailaddress, setEmailAddress] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [address, setAddress] = useState<string>("");
-const [, setQuoteNumber] = useState<string>("");
+  const [, setQuoteNumber] = useState<string>("");
   const [datecreated, setDateCreated] = useState<string>("");
   const [status, setStatus] = useState<string | null>(null);
-const [, setLoading] = useState<boolean>(false);
-
+  const [, setLoading] = useState<boolean>(false);
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
-
   const navigate = useNavigate();
 
   const handleRedirect = () => {
@@ -272,8 +270,6 @@ const [, setLoading] = useState<boolean>(false);
                 />
                 </div>
               </div>
-
-
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <p className="text-sm font-semibold dark:text-white">Quote # {initialData[0]?.quoteNumber}</p>
@@ -304,100 +300,95 @@ const [, setLoading] = useState<boolean>(false);
                     )}
 
                 </button>
-
-
               <div className="flex justify-end space-x-2 items-baseline">
                 <p className="text-sm dark:text-white">Sent on: </p>
                 <p className="font-semibold text-lg dark:text-white">{datecreated || "N/A"}</p>
               </div>
             </div>
           </div>
-
-
           <div className="w-full overflow-x-hidden">
-  <table className="w-full table-fixed border-collapse border-b-4 text-md">
-    <thead>
-      <tr className=" dark:text-white">
-        <th className="border px-1 py-2 text-center w-[20%] text-sm">Selection</th>
-        <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
-        <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
-        <th className="border px-1 py-2 text-center w-[25%] text-sm">Unit Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      {customerList.map((item) => (
-        <tr key={item.id} className="hover:bg-gray-50">
-          <td className="border px-1 py-2 text-center">
-            {item.fields["IsOptional"] === 1 && (
-              <input
-                type="checkbox"
-                checked={checkedOptionals[item.id] || false}
-                onChange={() => handleCheckboxChange(item.id)}
-              />
-            )}
-          </td>
-          <td className="border px-1 py-2 break-words text-sm dark:text-white">
-              <div>{item.fields["ItemName"]}</div>
-              {item.fields["Description"] && (
-                <div className="text-xs dark:text-white">( {item.fields["Description"]} )</div>
-              )}
-            </td>
-            <td className="border px-1 py-2 text-center">
-              {item.fields.Attachments && item.fields.Attachments.length > 0 ? (
-                <div className="flex gap-2 justify-center">
-                  {item.fields.Attachments.map((attachment, index) => (
-                    <img
-                      key={index}
-                      src={attachment.thumbnails?.small?.url || attachment.url}
-                      alt={`Attachment ${index + 1}`}
-                      className="w-10 h-10 object-cover rounded shadow cursor-pointer"
-                      onClick={() => openImageModal(attachment.url)}
+        <table className="w-full table-fixed border-collapse border-b-4 text-md">
+          <thead>
+            <tr className=" dark:text-white">
+              <th className="border px-1 py-2 text-center w-[20%] text-sm">Selection</th>
+              <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
+              <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
+              <th className="border px-1 py-2 text-center w-[25%] text-sm">Unit Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customerList.map((item) => (
+              <tr key={item.id} className="hover:bg-gray-50">
+                <td className="border px-1 py-2 text-center">
+                  {item.fields["IsOptional"] === 1 && (
+                    <input
+                      type="checkbox"
+                      checked={checkedOptionals[item.id] || false}
+                      onChange={() => handleCheckboxChange(item.id)}
                     />
-                  ))}
-                </div>
-              ) : (
-                <span className="text-sm dark:text-white">No Image</span>
-              )}
-        </td>
+                  )}
+                </td>
+                <td className="border px-1 py-2 break-words text-sm dark:text-white">
+                    <div>{item.fields["ItemName"]}</div>
+                    {item.fields["Description"] && (
+                      <div className="text-xs dark:text-white">( {item.fields["Description"]} )</div>
+                    )}
+                  </td>
+                  <td className="border px-1 py-2 text-center">
+                    {item.fields.Attachments && item.fields.Attachments.length > 0 ? (
+                      <div className="flex gap-2 justify-center">
+                        {item.fields.Attachments.map((attachment, index) => (
+                          <img
+                            key={index}
+                            src={attachment.thumbnails?.small?.url || attachment.url}
+                            alt={`Attachment ${index + 1}`}
+                            className="w-10 h-10 object-cover rounded shadow cursor-pointer"
+                            onClick={() => openImageModal(attachment.url)}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-sm dark:text-white">No Image</span>
+                    )}
+              </td>
+                <td className="border px-1 py-2 text-center text-sm dark:text-white">
+                  ${item.fields["UnitPrice"]?.toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-          <td className="border px-1 py-2 text-center text-sm dark:text-white">
-            ${item.fields["UnitPrice"]?.toLocaleString()}
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+            {modalImage && (
+            <div
+              className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50"
+              onClick={closeImageModal}
+            >
+              <div
+                className="rounded-lg p-2 max-w-[90%] max-h-[90%] relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={closeImageModal}
+                  className="absolute -top-4 -right-4  hover:bg-red-700 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10 bg-red-500"
+                  aria-label="Close modal"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
 
-  {modalImage && (
-  <div
-    className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50"
-    onClick={closeImageModal}
-  >
-    <div
-      className="rounded-lg p-2 max-w-[90%] max-h-[90%] relative"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={closeImageModal}
-        className="absolute -top-4 -right-4  hover:bg-red-700 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10 bg-red-500"
-        aria-label="Close modal"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-
-      <img
-        src={modalImage}
-        alt="Full size"
-        className={`max-w-full max-h-[80vh] object-contain rounded transition-transform duration-300 shadow-2xl  ${
-          isZoomed ? "scale-100" : "scale-75"
-        }`}
-      />
-    </div>
-  </div>
-)}
-</div>
+                <img
+                  src={modalImage}
+                  alt="Full size"
+                  className={`max-w-full max-h-[80vh] object-contain rounded transition-transform duration-300 shadow-2xl  ${
+                    isZoomed ? "scale-100" : "scale-75"
+                  }`}
+                />
+              </div>
+            </div>
+          )}
+      </div>
           <div className="flex flex-col items-end space-y-2">
             <div className="bg-gray-100 rounded-lg p-4 shadow w-full md:w-1/2">
               <div className="flex justify-between">
