@@ -313,7 +313,7 @@ useEffect(() => {
                     New Quote
                   </button>
                   <button
-                    className={`px-2 py-1 rounded text-sm shadow w-full sm:w-auto
+                    className={`px-6 py-1 rounded shadow sm:text-sm
                       ${
                         selectedIds.length === 1
                           ? "bg-green-600 hover:bg-green-700 text-white"

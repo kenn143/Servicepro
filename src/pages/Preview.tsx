@@ -429,12 +429,12 @@ const [, setLoading] = useState<boolean>(false);
           </div>
 
           <button 
-          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-700"
+          className="bg-green-600 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-green-700"
           onClick={handleApproved}
           >
             Approve
           </button>
-          <button className="bg-red-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-red-600">
+          <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-600">
             Request Changes
           </button>
         </div>
