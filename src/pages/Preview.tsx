@@ -320,7 +320,7 @@ const [, setLoading] = useState<boolean>(false);
       <tr className=" dark:text-white">
         <th className="border px-1 py-2 text-center w-[20%] text-sm">Selection</th>
         <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
-        <th className="border px-1 py-2 text-center w-[25%] text-sm">Attachment</th>
+        <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
         <th className="border px-1 py-2 text-center w-[25%] text-sm">Unit Price</th>
       </tr>
     </thead>
@@ -356,7 +356,7 @@ const [, setLoading] = useState<boolean>(false);
                   ))}
                 </div>
               ) : (
-                <span className="text-sm dark:text-white">No Attachment</span>
+                <span className="text-sm dark:text-white">No Image</span>
               )}
         </td>
 
