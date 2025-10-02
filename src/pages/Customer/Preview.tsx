@@ -21,10 +21,10 @@ interface QuotationItem {
 interface CustomerRecord {
   id: string;
   fields: {
-    "Item Name"?: string;
+    ItemName?: string;
     Description?: string;
     Quantity?: number;
-    "Unit Price"?: number;
+    UnitPrice?: number;
     IsOptional?: number;
     Attachments?: { url: string; thumbnails?: { small?: { url: string } } }[];
     Name?: string;
@@ -33,7 +33,6 @@ interface CustomerRecord {
     Address?: string;
   };
 }
-
 const Preview: React.FC = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
@@ -61,12 +60,12 @@ const [loading, setLoading] = useState<boolean>(true);
     const fetchData = async () => {
       try {
         if (!id) return;
-        const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tbluuR1Nl6tbnLhS2/${id}`;
+        const url = `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW/${id}`;
         const response = await fetch(url, {
           method: "GET",
           headers: {
             Authorization:
-              "Bearer pat3UfBiORCRUDmnz.e300c4a692d7eebbb77d85848146bc048e39b58cde696374fc7ac9467a61468e",
+              "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
             "Content-Type": "application/json",
           },
         });
@@ -101,11 +100,9 @@ const [loading, setLoading] = useState<boolean>(true);
 
         if (item.optional) setCheckedOptionals({ [item.id]: true });
 
-        // setLoading(false);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-      }finally{
-        setLoading(false);
       }
     };
 
@@ -115,12 +112,12 @@ const [loading, setLoading] = useState<boolean>(true);
   const QuotationInfoFetch = async (id: string): Promise<any> => {
     try {
            const formula = `{QuoteID} = ${id}`; 
-      const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblYVFWQZUwxenmiw?filterByFormula=${encodeURIComponent(formula)}`;
+      const url = `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblESRF794GfZbS9S?filterByFormula=${encodeURIComponent(formula)}`;
   
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: "Bearer patAFsT3g1wFUFyk8.1c95d3e5a6b3062dc4c13f144f5dcd70aa89b1ecca4ff68880721b10640b08bf",
+          Authorization: "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
           "Content-Type": "application/json",
         },
       });
@@ -128,14 +125,13 @@ const [loading, setLoading] = useState<boolean>(true);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
+      console.log("the data is",data)
       setCustomerList(data.records);
-      
+      setLoading(false);
       return data;
     } catch (error) {
       console.error("Error fetching data:", error);
       return null;
-    } finally{
-      setLoading(false);
     }
   };
 
@@ -191,7 +187,7 @@ const [loading, setLoading] = useState<boolean>(true);
   const getTotal = (): number => {
     return customerList.reduce((sum, item) => {
       const qty = item.fields["Quantity"] || 0;
-      const price = item.fields["Unit Price"] || 0;
+      const price = item.fields["UnitPrice"] || 0;
       const isOptional = item.fields["IsOptional"] === 1;
 
       if (!isOptional || checkedOptionals[item.id]) {
@@ -342,7 +338,7 @@ const [loading, setLoading] = useState<boolean>(true);
             )}
           </td>
           <td className="border px-1 py-2 break-words text-sm dark:text-white">
-              <div>{item.fields["Item Name"]}</div>
+              <div>{item.fields["ItemName"]}</div>
               {item.fields["Description"] && (
                 <div className="text-xs dark:text-white">( {item.fields["Description"]} )</div>
               )}
@@ -366,7 +362,7 @@ const [loading, setLoading] = useState<boolean>(true);
         </td>
 
           <td className="border px-1 py-2 text-center text-sm dark:text-white">
-            ${item.fields["Unit Price"]?.toLocaleString()}
+            ${item.fields["UnitPrice"]?.toLocaleString()}
           </td>
         </tr>
       ))}
@@ -385,7 +381,7 @@ const [loading, setLoading] = useState<boolean>(true);
     >
       <button
         onClick={closeImageModal}
-        className="absolute -top-4 -right-4 bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10"
+        className="absolute -top-4 -right-4  hover:bg-red-700 text-white rounded-full p-2 transition-colors backdrop-blur-sm z-10 bg-red-500"
         aria-label="Close modal"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
