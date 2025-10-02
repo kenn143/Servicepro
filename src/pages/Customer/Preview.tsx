@@ -142,13 +142,13 @@ const [loading, setLoading] = useState<boolean>(true);
     }
 
     try {
-     const formula = `{ClientID} = ${id}`; 
-    const url = `https://api.airtable.com/v0/app4pNHoxT8aj9vzJ/tblLRXGbGHNnaf8bF?filterByFormula=${encodeURIComponent(formula)}`;
+     const formula = `{CustomerId} = ${id}`; 
+    const url = `https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0?filterByFormula=${encodeURIComponent(formula)}`;
   
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: "Bearer pat2hVGQIspOMAhMC.0f845073a21d5cfe012c97f92393af8cdda9d0e33f0f890e2923be81b4f81cfd", 
+          Authorization: "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609", 
           "Content-Type": "application/json",
         },
       });
@@ -157,9 +157,9 @@ const [loading, setLoading] = useState<boolean>(true);
 
       const data = await response.json();
 
-      const name = data.records[0]?.fields?.Name || "";
-      const email = data.records[0]?.fields?.["Email Address"] || "";
-      const phone = data.records[0]?.fields?.["Phone Number"] || "";
+      const name = data.records[0]?.fields?.CustomerName || "";
+      const email = data.records[0]?.fields?.["EmailAddress"] || "";
+      const phone = data.records[0]?.fields?.["PhoneNumber"] || "";
       const addr = data.records[0]?.fields?.["Address"] || "";
 
       setClientName(name);
