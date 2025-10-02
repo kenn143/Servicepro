@@ -39,19 +39,28 @@ const QuotationList: React.FC = () => {
       toast.warning("You can only send one record at a time.");
       return;
     }
+    
   
     const recordId = selectedIds[0]; 
-  
+    const selectedQuote = data.find((q) => q.id === recordId);
+
+    if (!selectedQuote) {
+      toast.error("Quote not found.");
+      return;
+    }
+   
     try {
       const response = await fetch(
         "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" ,
-                    "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          headers: { 
+            "Content-Type": "application/json",
+            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
           },
           body: JSON.stringify({
             recordId, 
+            clientId: selectedQuote.clientID, 
             accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
           }),
         }
@@ -68,6 +77,7 @@ const QuotationList: React.FC = () => {
       toast.error("Error sending data.");
     }
   };
+  
   
 
   const toggleCheckbox = (id: string) => {
