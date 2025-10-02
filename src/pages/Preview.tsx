@@ -292,17 +292,16 @@ const [, setLoading] = useState<boolean>(false);
                         : "bg-gray-100 text-gray-800"
                         }`}
                     >
-                    {status === null ? (
+                {status === null ? (
                         "Loading..."
                     ) : status === "Pending" ? (
-                        <>
-                        ⭕ Awaiting Response
-                        </>
+                        <>⭕ Awaiting Response</>
+                    ) : status === "Waiting for Approval" ? (
+                        <>⏳ Waiting for Approval</>
                     ) : (
-                        <>
-                        ✔️ Approved
-                        </>
+                        <>✔️ Approved</>
                     )}
+
                 </button>
 
 
