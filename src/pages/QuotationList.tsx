@@ -80,75 +80,147 @@ const QuotationList: React.FC = () => {
     navigate(`/quotation?id=${id}`);
   };
 
-  useEffect(() => {
-    const fetchQuotes = async () => {
-      try {
-        const response = await fetch(
-          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
-          {
-            method: "GET",
-            headers: {
-              Authorization:
-                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  // useEffect(() => {
+  //   const fetchQuotes = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization:
+  //               "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
 
-        const result = await response.json();
-        const records: Quote[] = result.records.map((record: any) => ({
-          id: record.id,
-          quoteId: record.fields["Quote ID"],
-          clientID: record.fields["ClientID"],
-          jobTitle: record.fields["Job Title"],
-          quoteLink: `/Preview?id=${record.id}`,
-          status: record.fields["Status"],
-        }));
-        setData(records);
-      } catch (error) {
-        console.error("Error fetching quotes:", error);
+  //       const result = await response.json();
+  //       const records: Quote[] = result.records.map((record: any) => ({
+  //         id: record.id,
+  //         quoteId: record.fields["Quote ID"],
+  //         clientID: record.fields["ClientID"],
+  //         jobTitle: record.fields["Job Title"],
+  //         quoteLink: `/Preview?id=${record.id}`,
+  //         status: record.fields["Status"],
+  //       }));
+  //       setData(records);
+  //     } catch (error) {
+  //       console.error("Error fetching quotes:", error);
+  //     }
+  //   };
+
+
+  //   const fetchCustomers = async () => {
+  //     setLoading(true);
+  //     try {
+  //       const response = await fetch(
+  //         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization:
+  //               "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+
+  //       const result = await response.json();
+  //       const customers: Customer[] = result.records.map((record: any) => ({
+  //         CustomerId: record.fields["CustomerId"],
+  //         CustomerName: record.fields["CustomerName"],
+  //       }));
+  //       console.log("cusotmelist",customers)
+  //       setCustomerList(customers);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching customers:", error);
+  //     }
+  //   };
+
+  //   fetchQuotes();
+  //   fetchCustomers();
+  // }, []);
+
+const fetchQuotes = async () => {
+  try {
+    const response = await fetch(
+      "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+          "Content-Type": "application/json",
+        },
       }
-    };
+    );
 
-    const fetchCustomers = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
-          {
-            method: "GET",
-            headers: {
-              Authorization:
-                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
-              "Content-Type": "application/json",
-            },
-          }
-        );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+    const result = await response.json();
+    const records: Quote[] = result.records.map((record: any) => ({
+      id: record.id,
+      quoteId: record.fields["Quote ID"],
+      clientID: record.fields["ClientID"],
+      jobTitle: record.fields["Job Title"],
+      quoteLink: `/Preview?id=${record.id}`,
+      status: record.fields["Status"],
+    }));
+    setData(records);
+  } catch (error) {
+    console.error("Error fetching quotes:", error);
+  }
+};
 
-        const result = await response.json();
-        const customers: Customer[] = result.records.map((record: any) => ({
-          CustomerId: record.fields["CustomerId"],
-          CustomerName: record.fields["CustomerName"],
-        }));
-        console.log("cusotmelist",customers)
-        setCustomerList(customers);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching customers:", error);
+const fetchCustomers = async () => {
+  setLoading(true);
+  try {
+    const response = await fetch(
+      "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
+      {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+          "Content-Type": "application/json",
+        },
       }
-    };
+    );
 
-    fetchQuotes();
-    fetchCustomers();
-  }, []);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    const customers: Customer[] = result.records.map((record: any) => ({
+      CustomerId: record.fields["CustomerId"],
+      CustomerName: record.fields["CustomerName"],
+    }));
+    setCustomerList(customers);
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchQuotes();
+  fetchCustomers();
+}, []);
+  
 
   const handleDelete = async (id: string) => {
     let quotation = {
@@ -168,10 +240,13 @@ const QuotationList: React.FC = () => {
     );
     if (response.ok) {
       toast.success("Deleted Successfully!");
+      fetchQuotes();
+      fetchCustomers();
     } else {
       toast.error("Error");
     }
   };
+  
 
 
   const filteredData = data.filter((item) =>

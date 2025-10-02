@@ -43,7 +43,7 @@ const Quote: React.FC = () => {
   const [idCounter, setIdCounter] = useState(1);
   const [jobTitle, setJobTitle] = useState("");
   const [options, setOptions] = useState<AirtableRecord[]>([]);
-  const [selected, setSelected] = useState<string>("");
+  const [selected, setSelected] = useState<{ customerId: string; recordId: string } | null>(null);
   const [clientMessage, setClientMessage] = useState("");
   const [loading,setLoading]= useState(false);
 
@@ -103,10 +103,10 @@ const Quote: React.FC = () => {
       Items: uploadedItems,
       total: quoteTotal,
       jobTitle: jobTitle,
-      ClientId: selected,
+      ClientId: selected?.customerId,
+      RecordId: selected?.recordId,   
       ClientMessage: clientMessage,
     };
-
     const response = await fetch(
       "https://hook.us2.make.com/bv2ju7vw5t8ttf241hooe12z5qpueb8u",
       {
@@ -211,9 +211,11 @@ const Quote: React.FC = () => {
   }, []);
 
   const handleChangeForDropdown = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelected(e.target.value);
+    const customerId = e.target.value;
+    const recordId = e.target.selectedOptions[0].dataset.recordid || "";
+    setSelected({ customerId, recordId });
   };
-
+  
   const handleClientMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setClientMessage(e.target.value);
   };
@@ -268,19 +270,24 @@ const Quote: React.FC = () => {
         <h2 className="text-xl sm:text-2xl font-bold mr-0 sm:mr-2 dark:text-white">Quote for</h2>
 
         <select
-          id="dropdown"
-          className="w-full sm:w-auto font-semibold text-base px-2 py-2 mt-2 sm:mt-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-sans dark:bg-black"
-          value={selected}
-          onChange={handleChangeForDropdown}
-          required
-        >
-          <option value="">--Choose Client--</option>
-          {options.map(item => (
-            <option key={item.id} value={item.fields.CustomerId}>
-              {item.fields.CustomerName}
-            </option>
-          ))}
-        </select>
+  id="dropdown"
+  className="w-full sm:w-auto font-semibold text-base px-2 py-2 mt-2 sm:mt-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-sans dark:bg-black"
+  value={selected?.customerId || ""}
+  onChange={handleChangeForDropdown}
+  required
+>
+  <option value="">--Choose Client--</option>
+  {options.map(item => (
+    <option 
+      key={item.id} 
+      value={item.fields.CustomerId} 
+      data-recordid={item.id}
+    >
+      {item.fields.CustomerName}
+    </option>
+  ))}
+</select>
+
       </div>
     </div>
 
