@@ -53,6 +53,7 @@ const [loading, setLoading] = useState<boolean>(true);
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<string>("");
+  const [quotationRecordId, setQuotationRecordId] = useState<string>("");
 
  
 
@@ -97,6 +98,7 @@ const [loading, setLoading] = useState<boolean>(true);
         setQuoteNumber(item.quoteNumber);
         setDateCreated(item.datecreated);
         setStatus(item.status);
+        setQuotationRecordId(item.id);
 
         if (item.optional) setCheckedOptionals({ [item.id]: true });
 
@@ -205,6 +207,7 @@ const [loading, setLoading] = useState<boolean>(true);
       jobTitle,
       total: getTotal(),
       customerId: recordId,
+      quotationId: quotationRecordId,
       approved: 1,
     };
 
