@@ -246,6 +246,7 @@ const [, setLoading] = useState<boolean>(false);
                 <button
                   className="flex items-center text-sm text-gray-700 hover:text-black dark:text-white"
                   onClick={handleRedirect}
+                  
                 >
                   <svg
                     className="h-5 w-5 mr-1"
@@ -428,12 +429,13 @@ const [, setLoading] = useState<boolean>(false);
           </div>
 
           <button 
-          className="bg-green-600 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-green-700"
+          className="bg-green-600 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           onClick={handleApproved}
+          disabled
           >
             Approve
           </button>
-          <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-600">
+          <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
             Request Changes
           </button>
         </div>
