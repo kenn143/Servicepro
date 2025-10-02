@@ -13,6 +13,7 @@ interface Quote {
 }
 
 interface Customer {
+  recordId?:string;
   CustomerId?: string;
   CustomerName?: string;
 }
@@ -48,7 +49,10 @@ const QuotationList: React.FC = () => {
       toast.error("Quote not found.");
       return;
     }
-   
+    const customer = customerList.find(
+      (c) => c.CustomerId === selectedQuote.clientID
+    );
+
     try {
       const response = await fetch(
         "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
@@ -61,6 +65,7 @@ const QuotationList: React.FC = () => {
           body: JSON.stringify({
             recordId, 
             clientId: selectedQuote.clientID, 
+            customerRecordId: customer?.recordId || null, 
             accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
           }),
         }
@@ -215,6 +220,7 @@ const fetchCustomers = async () => {
 
     const result = await response.json();
     const customers: Customer[] = result.records.map((record: any) => ({
+      recordId:record.id,
       CustomerId: record.fields["CustomerId"],
       CustomerName: record.fields["CustomerName"],
     }));
