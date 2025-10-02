@@ -52,7 +52,7 @@ const [loading, setLoading] = useState<boolean>(true);
 
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
-
+  const [recordId, setRecordId] = useState<string>("");
 
  
 
@@ -156,16 +156,18 @@ const [loading, setLoading] = useState<boolean>(true);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
-
+   
       const name = data.records[0]?.fields?.CustomerName || "";
       const email = data.records[0]?.fields?.["EmailAddress"] || "";
       const phone = data.records[0]?.fields?.["PhoneNumber"] || "";
       const addr = data.records[0]?.fields?.["Address"] || "";
+      const recordId =data.records[0]?.id
 
       setClientName(name);
       setEmailAddress(email);
       setPhoneNumber(phone);
       setAddress(addr);
+      setRecordId(recordId);
 
      
       return data;
@@ -202,6 +204,7 @@ const [loading, setLoading] = useState<boolean>(true);
       quotationDetails: customerList,
       jobTitle,
       total: getTotal(),
+      recordId,
       approved: 1,
     };
 
