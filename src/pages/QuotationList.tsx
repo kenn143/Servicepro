@@ -547,13 +547,13 @@ useEffect(() => {
       </h2>
       <div className="flex justify-end space-x-3">
         <button
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-2 py-1 rounded"
           onClick={() => setShowConfirm(null)}
         >
           Cancel
         </button>
         <button
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
           onClick={() => {
             handleDelete(showConfirm);
           }}
