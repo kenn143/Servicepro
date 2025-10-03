@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import PageMeta from "../components/common/PageMeta";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { ChevronDown } from "lucide-react";
 
 interface Quote {
   id: string;
@@ -29,6 +30,7 @@ const QuotationList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSend = async () => {
     if (selectedIds.length === 0) {
@@ -53,43 +55,46 @@ const QuotationList: React.FC = () => {
       (c) => c.CustomerId === selectedQuote.clientID
     );
 
-    try {
-      const response = await fetch(
-        "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
-        {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-          },
-          body: JSON.stringify({
-            recordId, 
-            clientId: selectedQuote.clientID, 
-            customerRecordId: customer?.recordId || null, 
-            accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
-          }),
-        }
-      );
+    console.log("clientId",customer?.recordId)
+    // try {
+    //   const response = await fetch(
+    //     "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
+    //     {
+    //       method: "POST",
+    //       headers: { 
+    //         "Content-Type": "application/json",
+    //         "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+    //       },
+    //       body: JSON.stringify({
+    //         recordId, 
+    //         clientId: selectedQuote.clientID, 
+    //         customerRecordId: customer?.recordId || null, 
+    //         accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
+    //       }),
+    //     }
+    //   );
   
-      if (response.ok) {
-        toast.success("Sent successfully!");
-        setSelectedIds([]); 
-        fetchQuotes();
-        fetchCustomers();
-      } else {
-        toast.error("Failed to send.");
-      }
-    } catch (error) {
-      console.error("Error sending:", error);
-      toast.error("Error sending data.");
-    }
+    //   if (response.ok) {
+    //     toast.success("Sent successfully!");
+    //     setSelectedIds([]); 
+    //     fetchQuotes();
+    //     fetchCustomers();
+    //   } else {
+    //     toast.error("Failed to send.");
+    //   }
+    // } catch (error) {
+    //   console.error("Error sending:", error);
+    //   toast.error("Error sending data.");
+    // }finally {
+    //   setShowDropdown(false); 
+    // }
   };
   
   
 
   const toggleCheckbox = (id: string) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? [] : [id]   // only one id at a time
     );
   };
 
@@ -263,6 +268,7 @@ useEffect(() => {
     } else {
       toast.error("Error");
     }
+    setShowConfirm(null); 
   };
   
 
@@ -314,7 +320,7 @@ useEffect(() => {
                   >
                     New Quote
                   </button>
-                  <button
+                  {/* <button
                     className={`px-6 py-1 rounded shadow sm:text-sm
                       ${
                         selectedIds.length === 1
@@ -325,7 +331,67 @@ useEffect(() => {
                     disabled={selectedIds.length !== 1} 
                   >
                     Send
+                  </button> */}
+
+                                  <div className="relative inline-block text-left">
+                  <button
+                    type="button"
+                    className={`inline-flex justify-center w-full rounded-md px-2 py-1 text-sm font-medium shadow-sm ${
+                      selectedIds.length === 1
+                        ? "bg-green-600 text-white hover:bg-green-700"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                    disabled={selectedIds.length !== 1}
+                    onClick={() => setShowDropdown(!showDropdown)} 
+                  >
+                    Actions
+                    <ChevronDown className="ml-2 h-4 w-4" />
                   </button>
+
+                  {showDropdown && selectedIds.length === 1 && (
+                    <div className="absolute right-0 z-20 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                      <div className="py-1">
+                        <button
+                          onClick={() => {
+                            navigate("/edit/" + selectedIds[0], {
+                              state: {
+                                item: data.find((q) => q.id === selectedIds[0]),
+                                CustomerName:
+                                  customerList.find(
+                                    (cust) =>
+                                      cust.CustomerId ===
+                                      data.find((q) => q.id === selectedIds[0])
+                                        ?.clientID
+                                  )?.CustomerName || "Unknown Client",
+                              },
+                            });
+                            setShowDropdown(false); 
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          ✏️ Edit
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setShowConfirm(selectedIds[0]);
+                            setShowDropdown(false); 
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        >
+                          🗑️ Delete
+                        </button>
+
+                        <button
+                          onClick={handleSend}
+                          className="w-full text-left px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                        >
+                          📤 Send
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 </div>
               </div>
               <div className="w-full ">
@@ -354,147 +420,77 @@ useEffect(() => {
                 </div>
               </div>
             ) : (
-                  <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm text-center">
-                    <thead className="bg-gray-100 dark:bg-gray-800 text-sm sticky top-0 z-10">
-                      <tr className="text-gray-800 dark:text-white/90 text-sm">
-                      <th className="px-2 py-3 border-b border-gray-200 dark:border-gray-700 w-15">Select</th>
-                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Job Title</th>
-                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Client Name</th>
-                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700"></th>
-                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Status</th>
-                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Edit</th>
-                        <th className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentRecords.map((item) => (
-                        <tr
-                          key={item.id}
-                          className="border-b border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700 text-sm"
-                        >
-                             <td className="px-2 py-2">
-                            <input
-                              type="checkbox"
-                              checked={selectedIds.includes(item.id)}
-                              onChange={() => toggleCheckbox(item.id)}
-                            />
-                          </td>
-                          <td className="px-2 sm:px-4 py-2 whitespace-normal break-words text-sm">
-                            {item.jobTitle}
-                          </td>
-                          <td className="px-2 sm:px-4 py-2 whitespace-normal break-words">
-                            {customerList.find(
-                              (cust) => cust.CustomerId === item.clientID
-                            )?.CustomerName || "Unknown Client"}
-                          </td>
-                          <td className="px-1 sm:px-4 py-2">
-                          <button
-                            onClick={() => handleRedirect(item.id)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded sm:text-sm transition-colors"
-                          >
-                            View
-                          </button>
-
-                          </td>
-                          <td className="px-3 sm:px-4 py-2">
-                          {item.status === "Approved" ? (
-                              <div className="text-black px-1 py-1 rounded cursor-default w-15 dark:text-white">
-                                <span className="inline-flex items-center gap-1 text-green-600">
-                                  <span className="w-3 h-3 rounded-full bg-green-600"></span> Approved
-                                </span>
-                              </div>
-                            ) : item.status === "Waiting for Approval" ? (
-                              <div className="text-black px-1 py-1 rounded cursor-default w-15 dark:text-white">
-                                <span className="inline-flex items-center gap-1 text-blue-500 leading-none">
-                                  <span className="w-6 h-3 rounded-full bg-blue-500"></span> Waiting for Approval
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="text-blue-700 px-1 py-1 rounded cursor-default w-15 dark:text-white">
-                                <span className="inline-flex items-center gap-1 text-yellow-600">
-                                  <span className="w-3 h-3 rounded-full bg-yellow-600"></span> Pending
-                                </span>
-                              </div>
-                            )}
-
-                          </td>
-                          <td className="px-3 sm:px-4 py-2">
-                            <button
-                              className="bg-orange-500 hover:bg-orange-600 text-white px-2 py-1 rounded shadow sm:text-sm"
-                              onClick={() =>
-                                navigate("/edit/" + item.id, {
-                                  state: {
-                                    item,
-                                    CustomerName:
-                                      customerList.find(
-                                        (cust) => cust.CustomerId === item.clientID
-                                      )?.CustomerName || "Unknown Client",
-                                  },
-                                })
-                              }
-                            >
-                              Edit
-                            </button>
-                          </td>
-                          <td className="px-3 sm:px-4 py-2">
-                            <button
-                              className="bg-orange-700 hover:bg-orange-800 text-white px-2 py-1 rounded shadow sm:text-sm"
-                              onClick={() => setShowConfirm(item.id)}
-                            >
-                              Delete
-                            </button>
-
-                            {showConfirm === item.id && (
-                              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                <div className="bg-white/90 rounded-xl p-6 w-80 shadow-lg">
-                                  <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                                    Are you sure you want to delete?
-                                  </h2>
-                                  <div className="flex justify-end space-x-3">
-                                    <button
-                                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-                                      onClick={() => setShowConfirm(null)}
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                                      onClick={() => {
-                                        handleDelete(item.id);
-                                        setShowConfirm(null);
-                                      }}
-                                    >
-                                      Confirm
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                          </td>
-                        </tr>
-                      ))}
-                      {/* {loading ? (
-                        <tr>
-                          <td
-                            colSpan={6}
-                            className="px-4 py-4 text-center text-gray-500 h-20"
-                          >
-                            Loading...
-                          </td>
-                        </tr>
-                      ) : currentRecords.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={6}
-                            className="px-4 py-4 text-center text-gray-500 h-20"
-                          >
-                            No results found.
-                          </td>
-                        </tr>
-                      ) : null} */}
-                    </tbody>
-                  </table>
+              <table className="w-full table-fixed border-collapse text-[10px] sm:text-sm text-center">
+              <thead className="bg-gray-100 dark:bg-gray-800 sticky top-0 z-10">
+                <tr className="text-gray-800 dark:text-white/90">
+                  <th className="px-2 py-2 border-b border-gray-200 dark:border-gray-700 w-14">Select</th>
+                  <th className="px-2 py-2 border-b border-gray-200 dark:border-gray-700">Job Title</th>
+                  <th className="px-2 py-2 border-b border-gray-200 dark:border-gray-700">Client Name</th>
+                  <th className="px-2 py-2 border-b border-gray-200 dark:border-gray-700">Action</th>
+                  <th className="px-2 py-2 border-b border-gray-200 dark:border-gray-700">Status</th>
+                </tr>
+              </thead>
+            
+              <tbody>
+                {currentRecords.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="border-b border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    {/* Checkbox */}
+                    <td className="px-2 py-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(item.id)}
+                        onChange={() => toggleCheckbox(item.id)}
+                      />
+                    </td>
+            
+                    {/* Job Title */}
+                    <td className="px-2 py-2 whitespace-normal break-words">
+                      {item.jobTitle}
+                    </td>
+            
+                    {/* Client Name */}
+                    <td className="px-2 py-2 whitespace-normal break-words">
+                      {customerList.find((cust) => cust.CustomerId === item.clientID)
+                        ?.CustomerName || "Unknown Client"}
+                    </td>
+            
+                    {/* View Button */}
+                    <td className="px-2 py-2">
+                      <button
+                        onClick={() => handleRedirect(item.id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs sm:text-sm transition-colors"
+                      >
+                        View
+                      </button>
+                    </td>
+            
+                    {/* Status */}
+                    <td className="px-2 py-2 text-center">
+                      {item.status === "Approved" ? (
+                        <span className="inline-flex items-center gap-1 text-green-600">
+                          <span className="w-2.5 h-2.5 rounded-full bg-green-600"></span>
+                          Approved
+                        </span>
+                      ) : item.status === "Waiting for Approval" ? (
+                        <span className="inline-flex items-center gap-1 text-blue-500">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                          Waiting for Approval
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-yellow-600">
+                          <span className="w-2.5 h-2.5 rounded-full bg-yellow-600"></span>
+                          Pending
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
                    )}
                 </div>
 

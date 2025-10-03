@@ -406,7 +406,7 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
         onClick={() => handleAddLineItem(true)}
         className="px-2 py-1 bg-white text-green-600 border border-green-600 rounded hover:bg-green-100"
       >
-        + Add Optional Line Item
+        + Add Optional Item
       </button>
     </div>
     <div className="mt-6 text-right text-xl font-semibold">

@@ -504,15 +504,15 @@ const EditPage: React.FC = () => {
               </div>
 
               <div className="flex gap-4 mt-4">
-                <button
+                {/* <button
                   onClick={() => handleAddItem(false)}
                   className="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
                 >
                   + Add Item
-                </button>
+                </button> */}
                 <button
                   onClick={() => handleAddItem(true)}
-                  className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-sm"
+                  className="px-2 py-1 bg-white text-green-600 border border-green-600 rounded hover:bg-green-100"
                 >
                   + Add Optional Item
                 </button>
