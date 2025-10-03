@@ -341,11 +341,11 @@ const EditPage: React.FC = () => {
                       }`}
                     >
                       <div>
-                        {isOptional && (
+                        {/* {isOptional && (
                           <div className="text-xs text-gray-500 font-semibold mb-1 mt-[-15px] italic">
                             Optional
                           </div>
-                        )}
+                        )} */}
                         <label className="block text-sm font-bold ">
                           Item Name
                         </label>

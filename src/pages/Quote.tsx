@@ -316,7 +316,8 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
         }`}
       >
         <div>
-          {item.optional && <p className="text-xs italic ">Optional</p>}
+        {/* {item.optional && <p className="text-xs italic ">Optional</p>} */}
+
           <label className="block text-sm font-bold ">Lighting Style</label>
           <input
             type="text"
@@ -350,28 +351,28 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
         </div>
         <div>
 
-<label className="block text-sm font-bold">Images</label>
-<input
-  type="file"
-  multiple
-  className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2
-             file:mr-2 file:py-1 file:px-3 file:rounded file:border-0
-             file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
-  onChange={(e) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
+              <label className="block text-sm font-bold">Images</label>
+              <input
+                type="file"
+                multiple
+                className="mt-1 w-full text-sm text-gray-500 border border-dashed border-gray-300 rounded px-3 py-2
+                          file:mr-2 file:py-1 file:px-3 file:rounded file:border-0
+                          file:bg-gray-100 file:text-sm file:text-gray-700 hover:file:bg-gray-200"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    const files = Array.from(e.target.files);
 
-      if (files.length > 3) {
-        toast.error("You can only upload up to 3 files.");
-        e.target.value = "";
-        return;
-      }
+                    if (files.length > 3) {
+                      toast.error("You can only upload up to 3 files.");
+                      e.target.value = "";
+                      return;
+                    }
 
-      updateLineItem(item.id, "attachment", files);
-    }
-  }}
-  disabled={!selected}
-/>
+                    updateLineItem(item.id, "attachment", files);
+                  }
+                }}
+                disabled={!selected}
+              />
 
 
           <div className="text-right">

@@ -55,39 +55,39 @@ const QuotationList: React.FC = () => {
       (c) => c.CustomerId === selectedQuote.clientID
     );
 
-    console.log("clientId",customer?.recordId)
-    // try {
-    //   const response = await fetch(
-    //     "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
-    //     {
-    //       method: "POST",
-    //       headers: { 
-    //         "Content-Type": "application/json",
-    //         "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-    //       },
-    //       body: JSON.stringify({
-    //         recordId, 
-    //         clientId: selectedQuote.clientID, 
-    //         customerRecordId: customer?.recordId || null, 
-    //         accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
-    //       }),
-    //     }
-    //   );
   
-    //   if (response.ok) {
-    //     toast.success("Sent successfully!");
-    //     setSelectedIds([]); 
-    //     fetchQuotes();
-    //     fetchCustomers();
-    //   } else {
-    //     toast.error("Failed to send.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error sending:", error);
-    //   toast.error("Error sending data.");
-    // }finally {
-    //   setShowDropdown(false); 
-    // }
+    try {
+      const response = await fetch(
+        "https://hook.us2.make.com/rux68caxuw6fvkeyg1ptt7ntn5vpm6bj",
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          },
+          body: JSON.stringify({
+            recordId, 
+            clientId: selectedQuote.clientID, 
+            customerRecordId: customer?.recordId || null, 
+            accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
+          }),
+        }
+      );
+  
+      if (response.ok) {
+        toast.success("Sent successfully!");
+        setSelectedIds([]); 
+        fetchQuotes();
+        fetchCustomers();
+      } else {
+        toast.error("Failed to send.");
+      }
+    } catch (error) {
+      console.error("Error sending:", error);
+      toast.error("Error sending data.");
+    }finally {
+      setShowDropdown(false); 
+    }
   };
   
   
@@ -271,7 +271,7 @@ useEffect(() => {
     }
     setShowConfirm(null); 
   };
-  
+
 
 
   const filteredData = data.filter((item) =>
@@ -285,6 +285,7 @@ useEffect(() => {
   const endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
 
   const currentRecords = filteredData.slice(startIndex, endIndex);
+  
 
   return (
     <>
