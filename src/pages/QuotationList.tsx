@@ -94,7 +94,7 @@ const QuotationList: React.FC = () => {
 
   const toggleCheckbox = (id: string) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? [] : [id]   // only one id at a time
+      prev.includes(id) ? [] : [id]   
     );
   };
 
@@ -437,7 +437,6 @@ useEffect(() => {
                     key={item.id}
                     className="border-b border-gray-200 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-700"
                   >
-                    {/* Checkbox */}
                     <td className="px-2 py-2">
                       <input
                         type="checkbox"
@@ -446,18 +445,14 @@ useEffect(() => {
                       />
                     </td>
             
-                    {/* Job Title */}
                     <td className="px-2 py-2 whitespace-normal break-words">
                       {item.jobTitle}
                     </td>
             
-                    {/* Client Name */}
                     <td className="px-2 py-2 whitespace-normal break-words">
                       {customerList.find((cust) => cust.CustomerId === item.clientID)
                         ?.CustomerName || "Unknown Client"}
                     </td>
-            
-                    {/* View Button */}
                     <td className="px-2 py-2">
                     <button
                       onClick={() => handleRedirect(item.id)}
@@ -466,8 +461,6 @@ useEffect(() => {
                       View
                     </button>
                     </td>
-            
-                    {/* Status */}
                     <td className="px-2 py-2 text-center">
                       {item.status === "Approved" ? (
                         <span className="inline-flex items-center gap-1 text-green-600">
