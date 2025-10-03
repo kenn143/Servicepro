@@ -250,6 +250,7 @@ useEffect(() => {
       isDeleted: true,
       recordId: id,
     };
+
     const response = await fetch(
       "https://hook.us2.make.com/wefhgttc2tgkb87snbopatvnia7v6yzz",
       {
@@ -537,6 +538,33 @@ useEffect(() => {
           </div>
         </div>
       </div>
+
+      {showConfirm && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div className="bg-white/90 rounded-xl p-6 w-80 shadow-lg">
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        Are you sure you want to delete?
+      </h2>
+      <div className="flex justify-end space-x-3">
+        <button
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+          onClick={() => setShowConfirm(null)}
+        >
+          Cancel
+        </button>
+        <button
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          onClick={() => {
+            handleDelete(showConfirm);
+          }}
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       <style>{`
         @keyframes slideIn {
           from {
