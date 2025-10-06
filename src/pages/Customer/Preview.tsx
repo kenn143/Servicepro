@@ -64,13 +64,13 @@ const Preview: React.FC = () => {
       return;
     }
 
-    const requestPayload = {
-      quoteId: initialData[0]?.quoteId,
-      clientName,
-      jobTitle,
-      message: requestMessage,
-      action: "Request Changes",
-    };
+    // const requestPayload = {
+    //   quoteId: initialData[0]?.quoteId,
+    //   clientName,
+    //   jobTitle,
+    //   message: requestMessage,
+    //   action: "Request Changes",
+    // };
 
     // try {
     //   const response = await fetch("https://hook.us2.make.com/415jpaj3alwy9nceagf5rg7oprt8s6v6", {
