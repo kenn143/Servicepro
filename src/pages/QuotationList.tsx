@@ -335,7 +335,7 @@ useEffect(() => {
                     Send
                   </button> */}
 
-                                  <div className="relative inline-block text-left">
+                 <div className="relative inline-block text-left">
                   <button
                     type="button"
                     className={`inline-flex justify-center w-full rounded-md px-2 py-1 text-sm font-medium shadow-sm ${

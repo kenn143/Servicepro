@@ -53,6 +53,44 @@ const Preview: React.FC = () => {
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false); // modal visibility
+  const [requestMessage, setRequestMessage] = useState<string>(""); // textarea message
+
+
+  const handleRequestChanges = async () => {
+    if (!requestMessage.trim()) {
+      toast.error("Please enter your message before submitting.");
+      return;
+    }
+
+    const requestPayload = {
+      quoteId: initialData[0]?.quoteId,
+      clientName,
+      jobTitle,
+      message: requestMessage,
+      action: "Request Changes",
+    };
+
+    try {
+      const response = await fetch("https://hook.us2.make.com/415jpaj3alwy9nceagf5rg7oprt8s6v6", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestPayload),
+      });
+
+      if (response.ok) {
+        toast.success("Request sent successfully!");
+        setRequestMessage(""); // clear message
+        setIsRequestModalOpen(false); // close modal
+      } else {
+        toast.error("Failed to send request.");
+      }
+    } catch (error) {
+      console.error("Error sending request:", error);
+      toast.error("Something went wrong.");
+    }
+  };
+
 
   const handleRedirect = () => {
     navigate(`/quotation-list`);
@@ -426,10 +464,54 @@ const Preview: React.FC = () => {
           >
             Approve
           </button>
-          <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
-            Request Changes
-          </button>
+          <button
+          className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          onClick={() => setIsRequestModalOpen(true)}
+          disabled
+        >
+          Request Changes
+        </button>
         </div>
+
+        {isRequestModalOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50"
+          onClick={() => setIsRequestModalOpen(false)} 
+        >
+          <div
+            className="bg-white rounded-2xl shadow-lg p-6 w-11/12 md:w-1/3"
+            onClick={(e) => e.stopPropagation()} 
+          >
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">
+              Request Changes
+            </h2>
+
+            <textarea
+              className="w-full border border-gray-300 rounded-lg p-2 mb-4 text-sm focus:ring-2 focus:ring-blue-400"
+              rows={5}
+              placeholder="Enter your change request..."
+              value={requestMessage}
+              onChange={(e) => setRequestMessage(e.target.value)}
+            />
+
+            <div className="flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 text-sm"
+                onClick={() => setIsRequestModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                onClick={handleRequestChanges}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
         </div>

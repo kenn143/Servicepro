@@ -32,13 +32,14 @@ const Captures: React.FC = () => {
     const fetchRecords = async () => {
       try {
         const res = await fetch(
-          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u",
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?sort[0][field]=DateCreated&sort[0][direction]=desc",
           {
             headers: {
-              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`, 
+              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
             },
           }
         );
+    
         const data = await res.json();
         setRecords(data.records || []);
       } catch (error) {
@@ -47,6 +48,7 @@ const Captures: React.FC = () => {
         setLoading(false);
       }
     };
+    
 
     fetchRecords();
   }, []);
