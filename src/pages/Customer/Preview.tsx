@@ -485,66 +485,90 @@ const Preview: React.FC = () => {
             Approve
           </button>
           <button
-          className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow hover:bg-blue-600"
-          onClick={() => setIsRequestModalOpen(true)}
-        >
-          Request Changes
-        </button>
+  className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow 
+             hover:bg-blue-600 active:scale-95 transition-all duration-200" // NEW
+  onClick={() => setIsRequestModalOpen(true)}
+>
+  Request Changes
+</button>
         </div>
 
         {isRequestModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50"
-          onClick={() => setIsRequestModalOpen(false)} 
-        >
-          <div
-            className="bg-white rounded-2xl shadow-lg p-6 w-11/12 md:w-1/3 "
-            onClick={(e) => e.stopPropagation()} 
-          >
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
-              Request Changes
-            </h2>
-            <textarea
-              className="w-full border border-gray-300 rounded-lg p-2 mb-4 text-sm focus:ring-2 focus:ring-blue-400"
-              rows={5}
-              placeholder="Enter your change request..."
-              value={requestMessage}
-              onChange={(e) => setRequestMessage(e.target.value)}
-            />
+  <div
+    className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 
+               animate-fadeIn" // NEW
+  >
+    <div
+      className="bg-white rounded-2xl shadow-lg p-6 w-11/12 md:w-1/3 transform 
+                 transition-all duration-300 ease-out scale-95 opacity-0 animate-scaleIn 
+                 relative" 
+    >
 
-            <div className="flex justify-end space-x-3">
-              <button
-                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 text-sm"
-                onClick={() => setIsRequestModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-                onClick={handleRequestChanges}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <button
+        className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 
+                   transition-colors duration-200" // NEW
+        onClick={() => setIsRequestModalOpen(false)}
+      >
+        ✕
+      </button>
+
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+        Request Changes
+      </h2>
+
+      <textarea
+        className="w-full border border-gray-300 rounded-lg p-2 mb-4 text-sm 
+                   focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
+                   transition-all duration-200" // NEW
+        rows={5}
+        placeholder="Enter your change request..."
+        value={requestMessage}
+        onChange={(e) => setRequestMessage(e.target.value)}
+      />
+
+  
+      <div className="flex justify-end space-x-3">
+        <button
+          className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 
+                     active:scale-95 transition-all duration-200 text-sm" 
+          onClick={() => setIsRequestModalOpen(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg 
+                     hover:bg-blue-700 active:scale-95 
+                     transition-all duration-200 text-sm" 
+          onClick={handleRequestChanges}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       </div>
       )}
     </div>
      
     <style>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
+      @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.25s ease-out forwards;
+}
       `}</style>
     </>
   );
