@@ -47,6 +47,14 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [selected, setSelected] = useState<string>("");
   const [clientMessage, setClientMessage] = useState("");
   const [loading,setLoading]= useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [newClient, setNewClient] = useState({
+    fullname: "",
+    email: "",
+    address: "",
+    phone: "",
+  });
+  const [loadingClient, setLoadingClient] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setJobTitle(e.target.value);
@@ -228,7 +236,7 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
 
     const storedData = localStorage.getItem("data");
 
-    if (!storedData) return null; // nothing stored
+    if (!storedData) return null;
 
     try {
       const parsed = JSON.parse(storedData);
@@ -245,6 +253,49 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
       console.error("Invalid JSON in localStorage for data", e);
       return null;
     }
+  };
+
+  const handleAddClient = async () => {
+    if (!newClient.fullname.trim()) {
+      toast.error("Full Name is required");
+      return;
+    }
+  
+    setLoadingClient(true);
+  
+    try {
+      const response = await fetch(
+        "https://hook.us2.make.com/ljh1e6lm1vehjzy9h9xu6ou3lvlxss6g",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          },
+          body: JSON.stringify({
+            FullName: newClient.fullname,
+            Email: newClient.email,
+            Address: newClient.address,
+            PhoneNumber: newClient.phone,
+            Action: "newClient"
+          }),
+        }
+      );
+  
+      if (response.ok) {
+        toast.success("Client added successfully!");
+        setShowModal(false);
+        // Reset fields
+        setNewClient({ fullname: "", email: "", address: "", phone: "" });
+      } else {
+        toast.error("Failed to submit client data");
+      }
+    } catch (error) {
+      console.error("Error submitting client:", error);
+      toast.error("Error sending data");
+    }
+  
+    setLoadingClient(false);
   };
 
   return (
@@ -265,27 +316,122 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
             Back
             </button>
         </div>
+        
 
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center w-full">
-        <h2 className="text-xl sm:text-2xl font-bold mr-0 sm:mr-2 dark:text-white">Quote for</h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center w-full">
+                  <h2 className="text-xl sm:text-2xl font-bold mr-0 sm:mr-2 dark:text-white">
+                    Quote for
+                  </h2>
 
-        <select
-          id="dropdown"
-          className="w-full sm:w-auto font-semibold text-base px-2 py-2 mt-2 sm:mt-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-sans dark:bg-black"
-          value={selected}
-          onChange={handleChangeForDropdown}
-          required
+                  <div className="flex items-center w-full sm:w-auto gap-2">
+                    <select
+                      id="dropdown"
+                      className="w-full sm:w-auto font-semibold text-base px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-sans dark:bg-black"
+                      value={selected}
+                      onChange={handleChangeForDropdown}
+                      required
+                    >
+                      <option value="">--Choose Client--</option>
+                      {options.map((item) => (
+                        <option key={item.id} value={item.fields.CustomerId}>
+                          {item.fields.CustomerName}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="ml-2 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+  
+{showModal && (
+  <div
+    className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50"
+    onClick={(e) => e.stopPropagation()} 
+  >
+    <div
+      className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-96 relative transition-all duration-300 ease-in-out"
+      onClick={(e) => e.stopPropagation()} 
+    >
+      
+      <button
+        onClick={() => setShowModal(false)}
+        className="absolute top-3 right-3 text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white"
+      >
+        ✕
+      </button>
+
+  
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+        Add New Client
+      </h2>
+
+      <div className="space-y-3">
+  
+        <input
+          type="text"
+          placeholder="Full Name"
+          className="w-full border rounded-md p-2 dark:bg-gray-700 dark:text-white"
+          value={newClient.fullname}
+          onChange={(e) =>
+            setNewClient({ ...newClient, fullname: e.target.value })
+          }
+        />
+
+        <input
+          type="email"
+          placeholder="Email Address"
+          className="w-full border rounded-md p-2 dark:bg-gray-700 dark:text-white"
+          value={newClient.email}
+          onChange={(e) =>
+            setNewClient({ ...newClient, email: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="Address"
+          className="w-full border rounded-md p-2 dark:bg-gray-700 dark:text-white"
+          value={newClient.address}
+          onChange={(e) =>
+            setNewClient({ ...newClient, address: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          placeholder="Phone Number"
+          className="w-full border rounded-md p-2 dark:bg-gray-700 dark:text-white"
+          value={newClient.phone}
+          onChange={(e) =>
+            setNewClient({ ...newClient, phone: e.target.value })
+          }
+        />
+
+        <button
+          onClick={handleAddClient}
+          disabled={loadingClient}
+          className={`w-full mt-3 text-white py-2 rounded-md transition ${
+            loadingClient
+              ? "bg-green-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
         >
-          <option value="">--Choose Client--</option>
-          {options.map(item => (
-            <option key={item.id} value={item.fields.CustomerId}>
-              {item.fields.CustomerName}
-            </option>
-          ))}
-        </select>
+          {loadingClient ? "Sending..." : "Submit"}
+        </button>
       </div>
     </div>
+  </div>
+)}
+
+
 
     <div className="flex flex-col md:flex-row gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-300">
       <div className="md:pr-4 w-full md:w-1/2">
