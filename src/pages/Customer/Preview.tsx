@@ -54,7 +54,7 @@ const Preview: React.FC = () => {
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<string>("");
   const [quotationRecordId, setQuotationRecordId] = useState<string>("");
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false); // modal visibility
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false); 
   const [requestMessage, setRequestMessage] = useState<string>("");
 
 
@@ -486,7 +486,7 @@ const Preview: React.FC = () => {
           </button>
           <button
   className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-2xl shadow 
-             hover:bg-blue-600 active:scale-95 transition-all duration-200" // NEW
+             hover:bg-blue-600 active:scale-95 transition-all duration-200" 
   onClick={() => setIsRequestModalOpen(true)}
 >
   Request Changes
@@ -496,7 +496,7 @@ const Preview: React.FC = () => {
         {isRequestModalOpen && (
   <div
     className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 
-               animate-fadeIn" // NEW
+               animate-fadeIn" 
   >
     <div
       className="bg-white rounded-2xl shadow-lg p-6 w-11/12 md:w-1/3 transform 
@@ -506,7 +506,7 @@ const Preview: React.FC = () => {
 
       <button
         className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 
-                   transition-colors duration-200" // NEW
+                   transition-colors duration-200" 
         onClick={() => setIsRequestModalOpen(false)}
       >
         ✕
@@ -519,7 +519,7 @@ const Preview: React.FC = () => {
       <textarea
         className="w-full border border-gray-300 rounded-lg p-2 mb-4 text-sm 
                    focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
-                   transition-all duration-200" // NEW
+                   transition-all duration-200" 
         rows={5}
         placeholder="Enter your change request..."
         value={requestMessage}

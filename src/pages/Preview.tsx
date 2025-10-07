@@ -53,8 +53,8 @@ const Preview: React.FC = () => {
   const [modalImage, setModalImage] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false); // modal visibility
-  const [requestMessage, setRequestMessage] = useState<string>(""); // textarea message
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState<boolean>(false); 
+  const [requestMessage, setRequestMessage] = useState<string>(""); 
 
 
   const handleRequestChanges = async () => {
