@@ -64,32 +64,32 @@ const Preview: React.FC = () => {
       return;
     }
 
-    // const requestPayload = {
-    //   quoteId: initialData[0]?.quoteId,
-    //   clientName,
-    //   jobTitle,
-    //   message: requestMessage,
-    //   action: "Request Changes",
-    // };
+    const requestPayload = {
+      quoteId: initialData[0]?.quoteId,
+      clientName,
+      jobTitle,
+      message: requestMessage,
+      action: "RequestChanges",
+    };
 
-    // try {
-    //   const response = await fetch("https://hook.us2.make.com/415jpaj3alwy9nceagf5rg7oprt8s6v6", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(requestPayload),
-    //   });
+    try {
+      const response = await fetch("https://hook.us2.make.com/mmwc3j5pcc6j53hifyful1ls0cviblbg", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestPayload),
+      });
 
-    //   if (response.ok) {
-    //     toast.success("Request sent successfully!");
-    //     setRequestMessage(""); // clear message
-    //     setIsRequestModalOpen(false); // close modal
-    //   } else {
-    //     toast.error("Failed to send request.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error sending request:", error);
-    //   toast.error("Something went wrong.");
-    // }
+      if (response.ok) {
+        toast.success("Request sent successfully!");
+        setRequestMessage(""); 
+        setIsRequestModalOpen(false); 
+      } else {
+        toast.error("Failed to send request.");
+      }
+    } catch (error) {
+      console.error("Error sending request:", error);
+      toast.error("Something went wrong.");
+    }
   };
 
  
