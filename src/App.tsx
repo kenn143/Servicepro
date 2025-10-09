@@ -116,7 +116,7 @@ function AnimatedRoutes() {
           <Route
             path="/calendar"
             element={
-              <ProtectedRoute requiredRight="Calendar">
+              <ProtectedRoute requiredRight="Invoice">
                 <PageWrapper><Calendar /></PageWrapper>
               </ProtectedRoute>
             }
@@ -134,6 +134,8 @@ function AnimatedRoutes() {
         {/* Auth pages */}
         <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
         <Route path="/signup" element={<PageWrapper><SignUp /></PageWrapper>} />
+
+        {/* <Route path="/calendar" element={<PageWrapper><Calendar /></PageWrapper>} /> */}
 
         {/* Root route → redirect depending on auth */}
         <Route
