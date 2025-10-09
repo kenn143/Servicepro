@@ -18,6 +18,7 @@ interface QuoteRecord {
   fields: QuoteFields;
   attachment?: File | null;
   salesperson?: string;
+  
 }
 
 interface LocationState {
@@ -43,6 +44,7 @@ const EditPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const [updating, setUpdating] = useState(false);
+  const [clientMessage, setClientMessage] = useState<string>("");
 
   const [popupImage, setPopupImage] = useState<string | null>(null);
   const [popupVisible, setPopupVisible] = useState(false);
@@ -96,6 +98,7 @@ const EditPage: React.FC = () => {
           UnitPrice: 0,
           IsOptional: isOptional ? 1 : 0,
           Attachments: [],
+          status:"new"
         },
         attachment: null,
       },
@@ -109,7 +112,7 @@ const EditPage: React.FC = () => {
   ) => {
     const updated = [...newItems];
 
-    if (field === "Quantity" || field === "Unit Price" || field === "IsOptional") {
+    if (field === "Quantity" || field === "UnitPrice" || field === "IsOptional") {
       (updated[index].fields[field] as number) = Number(value) || 0;
     } else {
       (updated[index].fields[field] as string) = value as string;
@@ -121,13 +124,34 @@ const EditPage: React.FC = () => {
   const totalPrice = [...quoteData, ...newItems].reduce(
     (acc, record) =>
       acc +
-      (record.fields?.Quantity || 0) * (record.fields?.["Unit Price"] || 0),
+      (record.fields?.Quantity || 0) * (record.fields?.["UnitPrice"] || 0),
     0
   );
-
   const handleUpdate = async () => {
+    if(item?.status != "Pending"){
+      return;
+    }
     try {
-      const lineItems = [...quoteData, ...newItems];
+      // const lineItems = [...quoteData, ...newItems];
+      const lineItems = [
+        // Existing quoteData → status: "update"
+        ...quoteData.map((item) => ({
+          ...item,
+          fields: {
+            ...item.fields,
+            status: "update",
+            clientMessage: clientMessage, // include client message if needed
+          },
+        })),
+        // New items → status: "new"
+        ...newItems.map((item) => ({
+          ...item,
+          fields: {
+            ...item.fields,
+            status: "new",
+          },
+        })),
+      ];
       setUpdating(true);
 
       const uploadedItems = await Promise.all(
@@ -167,7 +191,15 @@ const EditPage: React.FC = () => {
           }
         })
       );
+      const payload = {
+        lineItems: uploadedItems,
+        clientMessage: clientMessage, 
+        quoteId: item?.quoteId,
+        customerName: CustomerName,
+        quoteRecordId: item?.id
+      };
 
+      console.log("payload",payload);
       const response = await fetch(
         "https://hook.us2.make.com/58fjj1kj4kdwne8v4d0lcx2labniduin",
         {
@@ -176,9 +208,11 @@ const EditPage: React.FC = () => {
             "Content-Type": "application/json",
             "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
           },
-          body: JSON.stringify(uploadedItems),
+          body: JSON.stringify(payload),
         }
       );
+
+      console.log("theuploadedItems",payload);
 
       if (response.ok) {
         toast.success("Quote Updated Successfully!");
@@ -352,7 +386,7 @@ const EditPage: React.FC = () => {
                         <input
                           type="text"
                           className="mt-1 w-full border rounded px-3 py-2"
-                          value={fields["Item Name"] || ""}
+                          value={fields["ItemName"] || ""}
                           onChange={(e) =>
                             isNew &&
                             handleInputChange(
@@ -390,7 +424,7 @@ const EditPage: React.FC = () => {
                         <input
                           type="number"
                           className="mt-1 w-full border rounded px-3 py-2"
-                          value={fields["Unit Price"] || 0}
+                          value={fields["UnitPrice"] || 0}
                           onChange={(e) =>
                             isNew &&
                             handleInputChange(
@@ -529,22 +563,25 @@ const EditPage: React.FC = () => {
                   rows={4}
                   className="w-full border border-gray-300 rounded-md p-2 dark:text-white"
                   placeholder="Enter message"
+                  value={clientMessage}
+                  onChange={(e) => setClientMessage(e.target.value)}
                 ></textarea>
               </div>
 
               <div className="text-left">
-                <button
-                  onClick={handleUpdate}
-                  disabled={updating}
-                  className={`px-2 py-1 text-white rounded text-sm 
-          ${
-            updating
-              ? "bg-sky-400 cursor-not-allowed"
-              : "bg-sky-500 hover:bg-sky-700"
-          }`}
-                >
-                  {updating ? "UPDATING..." : "UPDATE"}
-                </button>
+              <button
+              onClick={handleUpdate}
+              disabled={updating || item?.status !== "Pending"}
+              title={item?.status !== "Pending" ? `Your quote is ${item?.status}` : ""}
+              className={`px-2 py-1 text-white rounded text-sm 
+                  ${
+                    updating || item?.status !== "Pending"
+                      ? "bg-sky-400 cursor-not-allowed"
+                      : "bg-sky-500 hover:bg-sky-700"
+                  }`}
+            >
+              {updating ? "UPDATING..." : "UPDATE"}
+            </button>
               </div>
             </div>
           </div>
