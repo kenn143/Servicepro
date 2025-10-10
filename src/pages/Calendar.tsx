@@ -212,7 +212,7 @@ const Calendar: React.FC = () => {
                   type="text"
                   value={typeOfLights}
                   onChange={(e) => setTypeOfLights(e.target.value)}
-                  placeholder="e.g. LED, Fairy, Chandelier"
+                  placeholder=""
                   className="w-full rounded-lg border px-4 py-2 text-sm"
                 />
               </div>
