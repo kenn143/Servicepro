@@ -69,50 +69,50 @@ const Calendar: React.FC = () => {
       eventDate,
       imageBase64,
     };
+console.log("payload",payload)
+    // try {
+    //   const res = await fetch(
+    //     "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
+    //     {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" ,
+    //                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
 
-    try {
-      const res = await fetch(
-        "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" ,
-                    "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+    //       },
+    //       body: JSON.stringify(payload),
+    //     }
+    //   );
+    //      console.log("submitted",payload)
+    //   if (res.ok) {
+    //     toast.success("Submitted Successfully");
+    //   } else {
+    //     toast.error("Webhook request failed.");
+    //   }
 
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-         console.log("submitted",payload)
-      if (res.ok) {
-        toast.success("Submitted Successfully");
-      } else {
-        toast.error("Webhook request failed.");
-      }
+    //   if (selectedEvent) {
+    //     setEvents((prev) =>
+    //       prev.map((e) =>
+    //         e.id === selectedEvent.id
+    //           ? { ...e, title: eventTitle, start: eventDate }
+    //           : e
+    //       )
+    //     );
+    //   } else {
+    //     const newEvent: CalendarEvent = {
+    //       id: Date.now().toString(),
+    //       title: eventTitle,
+    //       start: eventDate,
+    //       extendedProps: { calendar: "Primary" },
+    //     };
+    //     setEvents((prev) => [...prev, newEvent]);
+    //   }
 
-      if (selectedEvent) {
-        setEvents((prev) =>
-          prev.map((e) =>
-            e.id === selectedEvent.id
-              ? { ...e, title: eventTitle, start: eventDate }
-              : e
-          )
-        );
-      } else {
-        const newEvent: CalendarEvent = {
-          id: Date.now().toString(),
-          title: eventTitle,
-          start: eventDate,
-          extendedProps: { calendar: "Primary" },
-        };
-        setEvents((prev) => [...prev, newEvent]);
-      }
-
-      closeModal();
-      resetModalFields();
-    } catch (err) {
-      console.error(err);
-      toast.error("Network error while sending webhook.");
-    }
+    //   closeModal();
+    //   resetModalFields();
+    // } catch (err) {
+    //   console.error(err);
+    //   toast.error("Network error while sending webhook.");
+    // }
   };
 
   const resetModalFields = () => {
@@ -158,12 +158,12 @@ const Calendar: React.FC = () => {
         >
           <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
             <h5 className="mb-2 font-semibold text-gray-800 text-xl">
-              {selectedEvent ? "Edit Event" : "Add New Lighting Event"}
+              {selectedEvent ? "Edit Event" : "Add New Job"}
             </h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
        
               <div>
-                <label className="block text-sm font-medium mb-1">Event Title</label>
+                <label className="block text-sm font-medium mb-1">Job Title</label>
                 <input
                   type="text"
                   value={eventTitle}
@@ -175,7 +175,7 @@ const Calendar: React.FC = () => {
 
          
               <div>
-                <label className="block text-sm font-medium mb-1">Event Date</label>
+                <label className="block text-sm font-medium mb-1">Schedule</label>
                 <input
                   type="date"
                   value={eventDate}

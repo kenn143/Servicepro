@@ -11,6 +11,7 @@ interface Quote {
   jobTitle?: string;
   quoteLink?: string;
   status?: string;
+  createdTime?:string;
 }
 
 interface Customer {
@@ -199,8 +200,15 @@ const fetchQuotes = async () => {
       jobTitle: record.fields["Job Title"],
       quoteLink: `/Preview?id=${record.id}`,
       status: record.fields["Status"],
+      createdTime: record.createdTime,
     }));
-    setData(records);
+    const sortedRecords = records.sort(
+      (a: Quote, b: Quote) =>
+        new Date(b.createdTime ?? "").getTime() -
+        new Date(a.createdTime ?? "").getTime()
+    );
+    // setData(records);
+       setData(sortedRecords);
   } catch (error) {
     console.error("Error fetching quotes:", error);
   }
