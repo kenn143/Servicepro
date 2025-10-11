@@ -11,9 +11,16 @@ import { toast } from "react-toastify";
 
 interface CalendarEvent extends EventInput {
   extendedProps: {
-    calendar: string;
+    calendar?: string;
+    houseAddress?: string;
+    clientName?: string;
+    typeOfLights?: string;
+    lightsAmount?: string;
+    salesPerson?: string;
+    installerStaff?: string;
   };
 }
+
 
 const Calendar: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
@@ -30,27 +37,70 @@ const Calendar: React.FC = () => {
   const { isOpen, openModal, closeModal } = useModal();
 
   useEffect(() => {
-    setEvents([
-      {
-        id: "1",
-        title: "Lighting Installation",
-        start: new Date().toISOString().split("T")[0],
-        extendedProps: { calendar: "Danger" },
-      },
-    ]);
+    const fetchJobsFromAirtable = async () => {
+      try {
+        const res = await fetch(
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbltyOXOlotQfkygb",
+          {
+            headers: {
+              Authorization:
+                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+            },
+          }
+        );
+
+        if (!res.ok) {
+          toast.error("Failed to fetch Airtable data");
+          return;
+        }
+
+        const data = await res.json();
+
+        const formattedEvents: CalendarEvent[] = data.records
+          .filter((record: any) => record.fields.DateScheduled && record.fields.JobTitle)
+          .map((record: any) => ({
+            id: record.id,
+            title: record.fields.JobTitle,
+            start: record.fields.DateScheduled,
+            extendedProps: {
+              houseAddress: record.fields.HouseAddress,
+              clientName: record.fields.CustomerName?.[0],
+              typeOfLights: record.fields.TypeOfLights,
+              lightsAmount: record.fields.AmountOfLights,
+              salesPerson: record.fields.SalesPerson,
+              installerStaff: record.fields.InstallerStaff,
+            },
+          }));
+
+        setEvents(formattedEvents);
+      } catch (err) {
+        console.error("Error fetching Airtable data:", err);
+        toast.error("Network error while loading events.");
+      }
+    };
+
+    fetchJobsFromAirtable();
   }, []);
+
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     resetModalFields();
-    setEventDate(selectInfo.startStr); 
+    setEventDate(selectInfo.startStr);
     openModal();
   };
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
+    const props = event.extendedProps as CalendarEvent["extendedProps"];
+  
     setSelectedEvent(event as unknown as CalendarEvent);
     setEventTitle(event.title);
     setEventDate(event.start?.toISOString().split("T")[0] || "");
+    setHouseAddress(props.houseAddress || "");
+    setClientName(props.clientName || "");
+    setTypeOfLights(props.typeOfLights || "");
+    setLightsAmount(props.lightsAmount || "");
+    setImageBase64("");
     openModal();
   };
 
@@ -69,50 +119,53 @@ const Calendar: React.FC = () => {
       eventDate,
       imageBase64,
     };
-console.log("payload",payload)
-    // try {
-    //   const res = await fetch(
-    //     "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
-    //     {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" ,
-    //                 "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
 
-    //       },
-    //       body: JSON.stringify(payload),
-    //     }
-    //   );
-    //      console.log("submitted",payload)
-    //   if (res.ok) {
-    //     toast.success("Submitted Successfully");
-    //   } else {
-    //     toast.error("Webhook request failed.");
-    //   }
+    try {
+      const res = await fetch(
+        "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-    //   if (selectedEvent) {
-    //     setEvents((prev) =>
-    //       prev.map((e) =>
-    //         e.id === selectedEvent.id
-    //           ? { ...e, title: eventTitle, start: eventDate }
-    //           : e
-    //       )
-    //     );
-    //   } else {
-    //     const newEvent: CalendarEvent = {
-    //       id: Date.now().toString(),
-    //       title: eventTitle,
-    //       start: eventDate,
-    //       extendedProps: { calendar: "Primary" },
-    //     };
-    //     setEvents((prev) => [...prev, newEvent]);
-    //   }
+      console.log("submitted", payload);
 
-    //   closeModal();
-    //   resetModalFields();
-    // } catch (err) {
-    //   console.error(err);
-    //   toast.error("Network error while sending webhook.");
-    // }
+      if (res.ok) toast.success("Submitted Successfully");
+      else toast.error("Webhook request failed.");
+      if (selectedEvent) {
+        setEvents((prev) =>
+          prev.map((e) =>
+            e.id === selectedEvent.id
+              ? { ...e, title: eventTitle, start: eventDate }
+              : e
+          )
+        );
+      } else {
+        const newEvent: CalendarEvent = {
+          id: Date.now().toString(),
+          title: eventTitle,
+          start: eventDate,
+          extendedProps: {
+            houseAddress,
+            clientName,
+            typeOfLights,
+            lightsAmount,
+          },
+        };
+        setEvents((prev) => [...prev, newEvent]);
+      }
+
+      closeModal();
+      resetModalFields();
+    } catch (err) {
+      console.error(err);
+      toast.error("Network error while sending webhook.");
+    }
   };
 
   const resetModalFields = () => {
@@ -160,8 +213,8 @@ console.log("payload",payload)
             <h5 className="mb-2 font-semibold text-gray-800 text-xl">
               {selectedEvent ? "Edit Event" : "Add New Job"}
             </h5>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-       
               <div>
                 <label className="block text-sm font-medium mb-1">Job Title</label>
                 <input
@@ -173,7 +226,6 @@ console.log("payload",payload)
                 />
               </div>
 
-         
               <div>
                 <label className="block text-sm font-medium mb-1">Schedule</label>
                 <input
@@ -212,7 +264,6 @@ console.log("payload",payload)
                   type="text"
                   value={typeOfLights}
                   onChange={(e) => setTypeOfLights(e.target.value)}
-                  placeholder=""
                   className="w-full rounded-lg border px-4 py-2 text-sm"
                 />
               </div>
@@ -226,17 +277,14 @@ console.log("payload",payload)
                   min={1}
                   value={lightsAmount}
                   onChange={(e) => setLightsAmount(e.target.value)}
-                  placeholder="Enter quantity"
                   className="w-full rounded-lg border px-4 py-2 text-sm"
                 />
               </div>
 
-        
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium mb-1">
                   Image of Lights Design
                 </label>
-              
                 <input
                   type="file"
                   accept="image/*"
@@ -250,10 +298,9 @@ console.log("payload",payload)
                       reader.readAsDataURL(file);
                     }
                   }}
-                   className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-2 py-2 rounded-lg shadow-sm transition-all duration-150 ease-in-out w-21"
+                  className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-2 py-2 rounded-lg shadow-sm transition-all duration-150 ease-in-out w-21"
                 />
               </div>
-              
             </div>
 
             <div className="flex items-center gap-3 mt-8 justify-end">
@@ -280,8 +327,8 @@ console.log("payload",payload)
 const renderEventContent = (eventInfo: any) => (
   <div className="flex items-center space-x-1">
     <div className="fc-daygrid-event-dot"></div>
-    <b>{eventInfo.timeText}</b>
-    <span>{eventInfo.event.title}</span>
+    {/* <b>{eventInfo.timeText}</b> */}
+    <span className="bg-blue-300 rounded w-25 text-center">{eventInfo.event.title}</span>
   </div>
 );
 
