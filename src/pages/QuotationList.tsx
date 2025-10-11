@@ -258,7 +258,6 @@ useEffect(() => {
       isDeleted: true,
       recordId: id,
     };
-
     const response = await fetch(
       "https://hook.us2.make.com/wefhgttc2tgkb87snbopatvnia7v6yzz",
       {
@@ -272,8 +271,11 @@ useEffect(() => {
     );
     if (response.ok) {
       toast.success("Deleted Successfully!");
-      fetchQuotes();
-      fetchCustomers();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      // fetchQuotes();
+      // fetchCustomers();
     } else {
       toast.error("Error");
     }
