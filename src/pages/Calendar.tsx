@@ -211,125 +211,126 @@ const Calendar: React.FC = () => {
           }}
         />
 
-        <Modal
-          isOpen={isOpen}
-          onClose={closeModal}
-          className="max-w-[800px] p-6 lg:p-10"
-        >
-          <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
-            <h5 className="mb-2 font-semibold text-gray-800 text-xl">
-              {selectedEvent ? "Edit Event" : "Add New Job"}
-            </h5>
+<Modal
+  isOpen={isOpen}
+  onClose={closeModal}
+  className="max-w-[500px] p-4 lg:p-6" // smaller width + less padding
+>
+  <div className="flex flex-col px-1 overflow-y-auto custom-scrollbar">
+    <h5 className="mb-3 font-semibold text-gray-800 text-lg">
+      {selectedEvent ? "Edit Event" : "Add New Job"}
+    </h5>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <div>
-                <label className="block text-sm font-medium mb-1">Job Title</label>
-                <input
-                  type="text"
-                  value={eventTitle}
-                  onChange={(e) => setEventTitle(e.target.value)}
-                  placeholder="Enter event name"
-                  className="w-full rounded-lg border px-4 py-2 text-sm"
-                />
-              </div>
+    <div className="grid grid-cols-1 gap-4 mt-4">
+      <div>
+        <label className="block text-xs font-medium mb-1">Job Title</label>
+        <input
+          type="text"
+          value={eventTitle}
+          onChange={(e) => setEventTitle(e.target.value)}
+          placeholder="Enter job title"
+          className="w-full rounded-lg border px-3 py-1.5 text-sm"
+        />
+      </div>
 
-                          <div>
-              <label className="block text-sm font-medium mb-1">Schedule</label>
-              <DatePicker
-                selected={eventDate}
-                onChange={(date) => setEventDate(date)}
-                showTimeSelect
-                timeFormat="HH:mm"
-                timeIntervals={15}
-                dateFormat="MMMM d, yyyy h:mm aa"
-                placeholderText="Select date and time"
-                className="w-full rounded-lg border px-4 py-2 text-sm"
-              />
-            </div>
+      <div>
+        <label className="block text-xs font-medium mb-1">Schedule</label>
+        <DatePicker
+          selected={eventDate}
+          onChange={(date) => setEventDate(date)}
+          showTimeSelect
+          timeFormat="HH:mm"
+          timeIntervals={15}
+          dateFormat="MMM d, yyyy h:mm aa"
+          placeholderText="Select date & time"
+          className="w-full rounded-lg border px-3 py-1.5 text-sm"
+        />
+      </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">House Address</label>
-                <input
-                  type="text"
-                  value={houseAddress}
-                  onChange={(e) => setHouseAddress(e.target.value)}
-                  placeholder="Enter address"
-                  className="w-full rounded-lg border px-4 py-2 text-sm"
-                />
-              </div>
+      <div>
+        <label className="block text-xs font-medium mb-1">House Address</label>
+        <input
+          type="text"
+          value={houseAddress}
+          onChange={(e) => setHouseAddress(e.target.value)}
+          placeholder="Enter address"
+          className="w-full rounded-lg border px-3 py-1.5 text-sm"
+        />
+      </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Client Name</label>
-                <input
-                  type="text"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  placeholder="Enter client name"
-                  className="w-full rounded-lg border px-4 py-2 text-sm"
-                />
-              </div>
+      <div>
+        <label className="block text-xs font-medium mb-1">Client Name</label>
+        <input
+          type="text"
+          value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
+          placeholder="Enter client name"
+          className="w-full rounded-lg border px-3 py-1.5 text-sm"
+        />
+      </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Type of Lights</label>
-                <input
-                  type="text"
-                  value={typeOfLights}
-                  onChange={(e) => setTypeOfLights(e.target.value)}
-                  className="w-full rounded-lg border px-4 py-2 text-sm"
-                />
-              </div>
+      <div>
+        <label className="block text-xs font-medium mb-1">Type of Lights</label>
+        <input
+          type="text"
+          value={typeOfLights}
+          onChange={(e) => setTypeOfLights(e.target.value)}
+          className="w-full rounded-lg border px-3 py-1.5 text-sm"
+        />
+      </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Amount of Lights Needed
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  value={lightsAmount}
-                  onChange={(e) => setLightsAmount(e.target.value)}
-                  className="w-full rounded-lg border px-4 py-2 text-sm"
-                />
-              </div>
+      <div>
+        <label className="block text-xs font-medium mb-1">
+          Amount of Lights Needed
+        </label>
+        <input
+          type="number"
+          min={1}
+          value={lightsAmount}
+          onChange={(e) => setLightsAmount(e.target.value)}
+          className="w-full rounded-lg border px-3 py-1.5 text-sm"
+        />
+      </div>
 
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-1">
-                  Image of Lights Design
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setImageBase64(reader.result as string);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-2 py-2 rounded-lg shadow-sm transition-all duration-150 ease-in-out w-21"
-                />
-              </div>
-            </div>
+      <div className="">
+        <label className="block text-xs font-medium mb-1">
+          Image of Lights Design
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                setImageBase64(reader.result as string);
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+          className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm transition-all duration-150 ease-in-out w-19"
+        />
+      </div>
+    </div>
 
-            <div className="flex items-center gap-3 mt-8 justify-end">
-              <button
-                onClick={closeModal}
-                className="rounded-lg border px-4 py-2 text-sm text-gray-600"
-              >
-                Close
-              </button>
-              <button
-                onClick={handleAddOrUpdateEvent}
-                className="rounded-lg bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-white"
-              >
-                Create
-              </button>
-            </div>
-          </div>
-        </Modal>
+    <div className="flex items-center gap-2 mt-6 justify-end">
+      <button
+        onClick={closeModal}
+        className="rounded-lg border px-3 py-1.5 text-xs text-gray-600"
+      >
+        Close
+      </button>
+      <button
+        onClick={handleAddOrUpdateEvent}
+        className="rounded-lg bg-sky-500 hover:bg-sky-600 px-3 py-1.5 text-xs text-white"
+      >
+        Create
+      </button>
+    </div>
+  </div>
+</Modal>
+
       </div>
     </>
   );
