@@ -366,7 +366,7 @@ useEffect(() => {
                   {showDropdown && selectedIds.length === 1 && (
                     <div className="absolute right-0 z-20 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                       <div className="py-1">
-                        <button
+                        {/* <button
                           onClick={() => {
                             navigate("/edit/" + selectedIds[0], {
                               state: {
@@ -385,7 +385,38 @@ useEffect(() => {
                           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
                           ✏️ Edit
-                        </button>
+                        </button> */}
+
+                      {(() => {
+                                  const selectedQuote = data.find((q) => q.id === selectedIds[0]);
+                                  const isPending = selectedQuote?.status === "Pending";
+
+                                  return (
+                                    <button
+                                      onClick={() => {
+                                        if (!isPending) return; 
+                                        navigate("/edit/" + selectedIds[0], {
+                                          state: {
+                                            item: selectedQuote,
+                                            CustomerName:
+                                              customerList.find(
+                                                (cust) => cust.CustomerId === selectedQuote?.clientID
+                                              )?.CustomerName || "Unknown Client",
+                                          },
+                                        });
+                                        setShowDropdown(false);
+                                      }}
+                                      disabled={!isPending}
+                                      className={`w-full text-left px-4 py-2 text-sm rounded ${
+                                        isPending
+                                          ? "text-gray-700 hover:bg-gray-100"
+                                          : "text-gray-400 cursor-not-allowed bg-gray-50"
+                                      }`}
+                                    >
+                                      ✏️ Edit
+                                    </button>
+                                  );
+                                })()}
 
                         <button
                           onClick={() => {

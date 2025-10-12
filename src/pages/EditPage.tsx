@@ -369,8 +369,8 @@ const EditPage: React.FC = () => {
 
               <div className="mt-6 space-y-4 border-b-[2px] pb-4 dark:text-white">
                 {[...quoteData, ...newItems].map((record, idx) => {
-                const fields = record.fields;
-                const isOptional = fields?.IsOptional === 1;
+  const fields = record.fields;
+  const isOptional = fields?.IsOptional === 1;
 
                   return (
                     <div
@@ -551,26 +551,18 @@ const EditPage: React.FC = () => {
 
               <div className="text-left">
               <button
-              onClick={item?.status === "Pending" && !updating ? handleUpdate : undefined}
+              onClick={handleUpdate}
               disabled={updating || item?.status !== "Pending"}
               title={item?.status !== "Pending" ? `Your quote is ${item?.status}` : ""}
-              className={`px-2 py-1 text-white rounded text-sm transition
-                ${
-                  updating
-                    ? "bg-sky-400 cursor-wait"
-                    : item?.status !== "Pending"
-                    ? "bg-gray-300 text-gray-600 cursor-not-allowed opacity-70"
-                    : "bg-sky-500 hover:bg-sky-700"
-                }`}
-              style={item?.status !== "Pending" ? { pointerEvents: "none" } : {}}
+              className={`px-2 py-1 text-white rounded text-sm 
+                  ${
+                    updating || item?.status !== "Pending"
+                      ? "bg-sky-400 cursor-not-allowed"
+                      : "bg-sky-500 hover:bg-sky-700"
+                  }`}
             >
-              {updating
-                ? "UPDATING..."
-                : item?.status !== "Pending"
-                ? `DISABLED (${item?.status})`
-                : "UPDATE"}
+              {updating ? "UPDATING..." : "UPDATE"}
             </button>
-
               </div>
             </div>
           </div>
