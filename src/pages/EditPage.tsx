@@ -205,7 +205,6 @@ const EditPage: React.FC = () => {
         totalPrice:totalPrice
       };
 
-      console.log("payload",payload);
       const response = await fetch(
         "https://hook.us2.make.com/58fjj1kj4kdwne8v4d0lcx2labniduin",
         {
@@ -217,8 +216,6 @@ const EditPage: React.FC = () => {
           body: JSON.stringify(payload),
         }
       );
-
-      console.log("theuploadedItems",payload);
 
       if (response.ok) {
         toast.success("Quote Updated Successfully!");
@@ -552,7 +549,7 @@ const EditPage: React.FC = () => {
               <div className="text-left">
               <button
               onClick={handleUpdate}
-              disabled={updating || item?.status !== "Pending"}
+             
               title={item?.status !== "Pending" ? `Your quote is ${item?.status}` : ""}
               className={`px-2 py-1 text-white rounded text-sm 
                   ${
