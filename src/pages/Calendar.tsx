@@ -118,61 +118,61 @@ const Calendar: React.FC = () => {
     }
 
     const payload = {
-      eventTitle,
+      jobTitle:eventTitle,
       houseAddress,
       clientName,
       typeOfLights,
       lightsAmount,
-      eventDate: eventDate ? eventDate.toISOString() : "",
+      dateSchedule: eventDate ? eventDate.toISOString() : "",
       imageBase64,
     };
-      console.log("payload",payload);
-    // try {
-    //   const res = await fetch(
-    //     "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-    //       },
-    //       body: JSON.stringify(payload),
-    //     }
-    //   );
+     
+    try {
+      const res = await fetch(
+        "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-    //   console.log("submitted", payload);
+      console.log("submitted", payload);
 
-    //   if (res.ok) toast.success("Submitted Successfully");
-    //   else toast.error("Webhook request failed.");
-    //   if (selectedEvent) {
-    //     setEvents((prev) =>
-    //       prev.map((e) =>
-    //         e.id === selectedEvent.id
-    //           ? { ...e, title: eventTitle, start: eventDate }
-    //           : e
-    //       )
-    //     );
-    //   } else {
-    //     const newEvent: CalendarEvent = {
-    //       id: Date.now().toString(),
-    //       title: eventTitle,
-    //       start: eventDate ? eventDate.toISOString() : "",
-    //       extendedProps: {
-    //         houseAddress,
-    //         clientName,
-    //         typeOfLights,
-    //         lightsAmount,
-    //       },
-    //     };
-    //     setEvents((prev) => [...prev, newEvent]);
-    //   }
+      if (res.ok) toast.success("Submitted Successfully");
+      else toast.error("Webhook request failed.");
+      if (selectedEvent) {
+        setEvents((prev) =>
+          prev.map((e) =>
+            e.id === selectedEvent.id
+              ? { ...e, title: eventTitle, start: eventDate }
+              : e
+          )
+        );
+      } else {
+        const newEvent: CalendarEvent = {
+          id: Date.now().toString(),
+          title: eventTitle,
+          start: eventDate ? eventDate.toISOString() : "",
+          extendedProps: {
+            houseAddress,
+            clientName,
+            typeOfLights,
+            lightsAmount,
+          },
+        };
+        setEvents((prev) => [...prev, newEvent]);
+      }
 
-    //   closeModal();
-    //   resetModalFields();
-    // } catch (err) {
-    //   console.error(err);
-    //   toast.error("Network error while sending webhook.");
-    // }
+      closeModal();
+      resetModalFields();
+    } catch (err) {
+      console.error(err);
+      toast.error("Network error while sending webhook.");
+    }
   };
 
   const resetModalFields = () => {
@@ -325,7 +325,7 @@ const Calendar: React.FC = () => {
                 onClick={handleAddOrUpdateEvent}
                 className="rounded-lg bg-sky-500 hover:bg-sky-600 px-4 py-2 text-sm text-white"
               >
-                Submit
+                Create
               </button>
             </div>
           </div>
