@@ -369,8 +369,8 @@ const EditPage: React.FC = () => {
 
               <div className="mt-6 space-y-4 border-b-[2px] pb-4 dark:text-white">
                 {[...quoteData, ...newItems].map((record, idx) => {
-  const fields = record.fields;
-  const isOptional = fields?.IsOptional === 1;
+                const fields = record.fields;
+                const isOptional = fields?.IsOptional === 1;
 
                   return (
                     <div
