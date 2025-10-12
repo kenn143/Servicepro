@@ -106,20 +106,25 @@ const EditPage: React.FC = () => {
   };
 
   const handleInputChange = (
-    index: number,
+    idx: number,
     field: keyof QuoteFields,
     value: string | number
   ) => {
-    const updated = [...newItems];
-
+    const allItems = [...quoteData, ...newItems];
+    const item = allItems[idx];
+  
     if (field === "Quantity" || field === "UnitPrice" || field === "IsOptional") {
-      (updated[index].fields[field] as number) = Number(value) || 0;
+      (item.fields[field] as number) = Number(value) || 0;
     } else {
-      (updated[index].fields[field] as string) = value as string;
+      (item.fields[field] as string) = value as string;
     }
-
-    setNewItems(updated);
+  
+    const updatedQuoteData = allItems.slice(0, quoteData.length);
+    const updatedNewItems = allItems.slice(quoteData.length);
+    setQuoteData(updatedQuoteData);
+    setNewItems(updatedNewItems);
   };
+  
 
   const totalPrice = [...quoteData, ...newItems].reduce(
     (acc, record) =>
@@ -132,18 +137,18 @@ const EditPage: React.FC = () => {
       return;
     }
     try {
-      // const lineItems = [...quoteData, ...newItems];
+      
       const lineItems = [
-        // Existing quoteData → status: "update"
+     
         ...quoteData.map((item) => ({
           ...item,
           fields: {
             ...item.fields,
             status: "update",
-            clientMessage: clientMessage, // include client message if needed
+            clientMessage: clientMessage, 
           },
         })),
-        // New items → status: "new"
+     
         ...newItems.map((item) => ({
           ...item,
           fields: {
@@ -196,7 +201,8 @@ const EditPage: React.FC = () => {
         clientMessage: clientMessage, 
         quoteId: item?.quoteId,
         customerName: CustomerName,
-        quoteRecordId: item?.id
+        quoteRecordId: item?.id,
+        totalPrice:totalPrice
       };
 
       console.log("payload",payload);
@@ -345,7 +351,7 @@ const EditPage: React.FC = () => {
                     type="text"
                     className="w-full border border-gray-300 rounded-md p-2"
                     value={item?.jobTitle || ""}
-                    readOnly
+                    // readOnly
                   />
                 </div>
                 <div className="md:pl-4 pt-4 md:pt-0 w-full md:w-1/2">
@@ -363,9 +369,8 @@ const EditPage: React.FC = () => {
 
               <div className="mt-6 space-y-4 border-b-[2px] pb-4 dark:text-white">
                 {[...quoteData, ...newItems].map((record, idx) => {
-                  const fields = record.fields;
-                  const isOptional = fields?.IsOptional === 1;
-                  const isNew = record.id.toString().startsWith("1");
+  const fields = record.fields;
+  const isOptional = fields?.IsOptional === 1;
 
                   return (
                     <div
@@ -387,15 +392,7 @@ const EditPage: React.FC = () => {
                           type="text"
                           className="mt-1 w-full border rounded px-3 py-2"
                           value={fields["ItemName"] || ""}
-                          onChange={(e) =>
-                            isNew &&
-                            handleInputChange(
-                              idx - quoteData.length,
-                              "ItemName",
-                              e.target.value
-                            )
-                          }
-                          readOnly={!isNew}
+                          onChange={(e) => handleInputChange(idx, "ItemName", e.target.value)}
                         />
                       </div>
 
@@ -404,37 +401,21 @@ const EditPage: React.FC = () => {
                           Description
                         </label>
                         <input
-                          type="text"
-                          className="mt-1 w-full border rounded px-3 py-2"
-                          value={fields["Description"] || ""}
-                          onChange={(e) =>
-                            isNew &&
-                            handleInputChange(
-                              idx - quoteData.length,
-                              "Description",
-                              e.target.value
-                            )
-                          }
-                          readOnly={!isNew}
-                        />
+                            type="text"
+                            className="mt-1 w-full border rounded px-3 py-2"
+                            value={fields["Description"] || ""}
+                            onChange={(e) => handleInputChange(idx, "Description", e.target.value)}
+                          />
                       </div>
 
                       <div>
                         <label className="block text-sm font-bold ">Price</label>
                         <input
-                          type="number"
-                          className="mt-1 w-full border rounded px-3 py-2"
-                          value={fields["UnitPrice"] || 0}
-                          onChange={(e) =>
-                            isNew &&
-                            handleInputChange(
-                              idx - quoteData.length,
-                              "UnitPrice",
-                              e.target.value
-                            )
-                          }
-                          readOnly={!isNew}
-                        />
+                            type="number"
+                            className="mt-1 w-full border rounded px-3 py-2"
+                            value={fields["UnitPrice"] || 0}
+                            onChange={(e) => handleInputChange(idx, "UnitPrice", e.target.value)}
+                          />
                       </div>
 
                       <div>
