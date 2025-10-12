@@ -77,9 +77,12 @@ const QuotationList: React.FC = () => {
   
       if (response.ok) {
         toast.success("Sent successfully!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
         setSelectedIds([]); 
-        fetchQuotes();
-        fetchCustomers();
+        // fetchQuotes();
+        // fetchCustomers();
       } else {
         toast.error("Failed to send.");
       }
