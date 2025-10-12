@@ -551,18 +551,26 @@ const EditPage: React.FC = () => {
 
               <div className="text-left">
               <button
-              onClick={handleUpdate}
+              onClick={item?.status === "Pending" && !updating ? handleUpdate : undefined}
               disabled={updating || item?.status !== "Pending"}
               title={item?.status !== "Pending" ? `Your quote is ${item?.status}` : ""}
-              className={`px-2 py-1 text-white rounded text-sm 
-                  ${
-                    updating || item?.status !== "Pending"
-                      ? "bg-sky-400 cursor-not-allowed"
-                      : "bg-sky-500 hover:bg-sky-700"
-                  }`}
+              className={`px-2 py-1 text-white rounded text-sm transition
+                ${
+                  updating
+                    ? "bg-sky-400 cursor-wait"
+                    : item?.status !== "Pending"
+                    ? "bg-gray-300 text-gray-600 cursor-not-allowed opacity-70"
+                    : "bg-sky-500 hover:bg-sky-700"
+                }`}
+              style={item?.status !== "Pending" ? { pointerEvents: "none" } : {}}
             >
-              {updating ? "UPDATING..." : "UPDATE"}
+              {updating
+                ? "UPDATING..."
+                : item?.status !== "Pending"
+                ? `DISABLED (${item?.status})`
+                : "UPDATE"}
             </button>
+
               </div>
             </div>
           </div>
