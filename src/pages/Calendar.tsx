@@ -9,6 +9,9 @@ import { useModal } from "../hooks/useModal";
 import PageMeta from "../components/common/PageMeta";
 import { toast } from "react-toastify";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 interface CalendarEvent extends EventInput {
   extendedProps: {
     calendar?: string;
@@ -29,12 +32,15 @@ const Calendar: React.FC = () => {
   const [clientName, setClientName] = useState("");
   const [typeOfLights, setTypeOfLights] = useState("");
   const [lightsAmount, setLightsAmount] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  // const [eventDate, setEventDate] = useState("");
+  const [eventDate, setEventDate] = useState<Date | null>(null);
   const [imageBase64, setImageBase64] = useState("");
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const calendarRef = useRef<FullCalendar>(null);
   const { isOpen, openModal, closeModal } = useModal();
+
+  
 
   useEffect(() => {
     const fetchJobsFromAirtable = async () => {
@@ -85,7 +91,7 @@ const Calendar: React.FC = () => {
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     resetModalFields();
-    setEventDate(selectInfo.startStr);
+    setEventDate(selectInfo.start); 
     openModal();
   };
 
@@ -95,7 +101,7 @@ const Calendar: React.FC = () => {
   
     setSelectedEvent(event as unknown as CalendarEvent);
     setEventTitle(event.title);
-    setEventDate(event.start?.toISOString().split("T")[0] || "");
+    setEventDate(event.start ? new Date(event.start) : null);
     setHouseAddress(props.houseAddress || "");
     setClientName(props.clientName || "");
     setTypeOfLights(props.typeOfLights || "");
@@ -105,6 +111,7 @@ const Calendar: React.FC = () => {
   };
 
   const handleAddOrUpdateEvent = async () => {
+    alert("sdkfjjf")
     if (!eventTitle || !eventDate) {
       toast.warning("Please enter event name and date.");
       return;
@@ -116,56 +123,56 @@ const Calendar: React.FC = () => {
       clientName,
       typeOfLights,
       lightsAmount,
-      eventDate,
+      eventDate: eventDate ? eventDate.toISOString() : "",
       imageBase64,
     };
+      console.log("payload",payload);
+    // try {
+    //   const res = await fetch(
+    //     "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+    //       },
+    //       body: JSON.stringify(payload),
+    //     }
+    //   );
 
-    try {
-      const res = await fetch(
-        "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+    //   console.log("submitted", payload);
 
-      console.log("submitted", payload);
+    //   if (res.ok) toast.success("Submitted Successfully");
+    //   else toast.error("Webhook request failed.");
+    //   if (selectedEvent) {
+    //     setEvents((prev) =>
+    //       prev.map((e) =>
+    //         e.id === selectedEvent.id
+    //           ? { ...e, title: eventTitle, start: eventDate }
+    //           : e
+    //       )
+    //     );
+    //   } else {
+    //     const newEvent: CalendarEvent = {
+    //       id: Date.now().toString(),
+    //       title: eventTitle,
+    //       start: eventDate ? eventDate.toISOString() : "",
+    //       extendedProps: {
+    //         houseAddress,
+    //         clientName,
+    //         typeOfLights,
+    //         lightsAmount,
+    //       },
+    //     };
+    //     setEvents((prev) => [...prev, newEvent]);
+    //   }
 
-      if (res.ok) toast.success("Submitted Successfully");
-      else toast.error("Webhook request failed.");
-      if (selectedEvent) {
-        setEvents((prev) =>
-          prev.map((e) =>
-            e.id === selectedEvent.id
-              ? { ...e, title: eventTitle, start: eventDate }
-              : e
-          )
-        );
-      } else {
-        const newEvent: CalendarEvent = {
-          id: Date.now().toString(),
-          title: eventTitle,
-          start: eventDate,
-          extendedProps: {
-            houseAddress,
-            clientName,
-            typeOfLights,
-            lightsAmount,
-          },
-        };
-        setEvents((prev) => [...prev, newEvent]);
-      }
-
-      closeModal();
-      resetModalFields();
-    } catch (err) {
-      console.error(err);
-      toast.error("Network error while sending webhook.");
-    }
+    //   closeModal();
+    //   resetModalFields();
+    // } catch (err) {
+    //   console.error(err);
+    //   toast.error("Network error while sending webhook.");
+    // }
   };
 
   const resetModalFields = () => {
@@ -226,15 +233,19 @@ const Calendar: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Schedule</label>
-                <input
-                  type="date"
-                  value={eventDate}
-                  onChange={(e) => setEventDate(e.target.value)}
-                  className="w-full rounded-lg border px-4 py-2 text-sm"
-                />
-              </div>
+                          <div>
+              <label className="block text-sm font-medium mb-1">Schedule</label>
+              <DatePicker
+                selected={eventDate}
+                onChange={(date) => setEventDate(date)}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="MMMM d, yyyy h:mm aa"
+                placeholderText="Select date and time"
+                className="w-full rounded-lg border px-4 py-2 text-sm"
+              />
+            </div>
 
               <div>
                 <label className="block text-sm font-medium mb-1">House Address</label>
