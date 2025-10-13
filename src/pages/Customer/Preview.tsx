@@ -280,8 +280,6 @@ const Preview: React.FC = () => {
         title="ServicePros"
         description=""
       />
-     
-       
     <div className="min-h-screen  font-sans p-1 mt-4 md:p-6">
         {loading ? (
             <div className="flex items-center justify-center min-h-screen">
@@ -308,7 +306,7 @@ const Preview: React.FC = () => {
           </div>
             ) : (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
+        <div className="md:col-span-2  rounded-2xl shadow  flex flex-col space-y-6">
         <div className="flex justify-center md:justify-end">
         <img
             className="w-36 h-auto sm:w-20 md:w-36 lg:w-36 object-contain"
@@ -371,9 +369,9 @@ const Preview: React.FC = () => {
     <thead>
       <tr className=" dark:text-white">
         <th className="border px-1 py-2 text-center w-[20%] text-sm">Select</th>
-        <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
-        <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
-        <th className="border px-1 py-2 text-center w-[25%] text-sm">Price</th>
+        <th className="border px-1 py-2 text-center w-[40%] text-sm">Lighting Style</th>
+        <th className="border px-1 py-2 text-center w-[20%] text-sm">Images</th>
+        <th className="border px-1 py-2 text-center w-[20%] text-sm">Price</th>
       </tr>
     </thead>
     <tbody>

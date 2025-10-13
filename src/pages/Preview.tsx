@@ -277,7 +277,7 @@ const Preview: React.FC = () => {
         <div className="custom-calendars">
                 <div className="min-h-screen  font-sans">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2  rounded-2xl shadow p-2 flex flex-col space-y-6">
+        <div className="md:col-span-2  rounded-2xl shadow  flex flex-col space-y-6 md:p-1">
         <div className="flex justify-between items-center">
                 <button
                   className="flex items-center text-sm text-gray-700 hover:text-black dark:text-white"
@@ -349,9 +349,9 @@ const Preview: React.FC = () => {
           <thead>
             <tr className=" dark:text-white">
               <th className="border px-1 py-2 text-center w-[20%] text-sm">Select</th>
-              <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
-              <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
-              <th className="border px-1 py-2 text-center w-[25%] text-sm">Price</th>
+              <th className="border px-1 py-2 text-center w-[40%] text-sm">Lighting Style</th>
+              <th className="border px-1 py-2 text-center w-[20%] text-sm">Images</th>
+              <th className="border px-1 py-2 text-center w-[20%] text-sm">Price</th>
             </tr>
           </thead>
           <tbody>
