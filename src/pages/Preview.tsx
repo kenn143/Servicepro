@@ -348,7 +348,7 @@ const Preview: React.FC = () => {
         <table className="w-full table-fixed border-collapse border-b-4 text-md">
           <thead>
             <tr className=" dark:text-white">
-              <th className="border px-1 py-2 text-center w-[20%] text-sm">Selection</th>
+              <th className="border px-1 py-2 text-center w-[20%] text-sm">Select</th>
               <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
               <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
               <th className="border px-1 py-2 text-center w-[25%] text-sm">Price</th>

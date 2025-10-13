@@ -282,7 +282,7 @@ const Preview: React.FC = () => {
       />
      
        
-    <div className="min-h-screen  font-sans p-6 mt-4">
+    <div className="min-h-screen  font-sans p-1 mt-4 md:p-6">
         {loading ? (
             <div className="flex items-center justify-center min-h-screen">
             <div className="flex flex-col items-center gap-3">
@@ -370,7 +370,7 @@ const Preview: React.FC = () => {
   <table className="w-full table-fixed border-collapse border-b-4 text-md">
     <thead>
       <tr className=" dark:text-white">
-        <th className="border px-1 py-2 text-center w-[20%] text-sm">Selection</th>
+        <th className="border px-1 py-2 text-center w-[20%] text-sm">Select</th>
         <th className="border px-1 py-2 text-center w-[30%] text-sm">Lighting Style</th>
         <th className="border px-1 py-2 text-center w-[25%] text-sm">Images</th>
         <th className="border px-1 py-2 text-center w-[25%] text-sm">Price</th>
