@@ -308,7 +308,7 @@ const Preview: React.FC = () => {
                 />
                 </div>
               </div>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-2">
             <div>
               <p className="text-sm font-semibold dark:text-white">Quote # {initialData[0]?.quoteNumber}</p>
               <p className="font-sans text-2xl font-bold text-blue-600">{clientName}</p>
