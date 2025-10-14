@@ -305,7 +305,7 @@ useEffect(() => {
       <PageMeta title="ServicePros" description="" />
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="custom-calendars">
-          <div className="min-h-screen px-4 font-sans flex flex-col items-center">
+          <div className="min-h-screen px-1 font-sans flex flex-col items-center">
             {/* <div className="w-full max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-2 sm:space-y-0 text-center mt-[20px]">
               <img
                 src="/images/Lights-Installer-Logo.webp"
@@ -317,7 +317,7 @@ useEffect(() => {
               </h1>
             </div> */}
 
-            <div className="w-full max-w-6xl p-4 sm:p-6 md:p-10 rounded-2xl mt-6">
+            <div className="w-full max-w-6xl  sm:p-6 md:p-10 rounded-2xl mt-6">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 px-2 gap-2">
                 <input
                   type="text"

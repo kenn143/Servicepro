@@ -450,13 +450,13 @@ const Preview: React.FC = () => {
 )}
 </div>
           <div className="flex flex-col items-end space-y-2">
-            <div className="bg-gray-100 rounded-lg p-4 shadow w-full md:w-1/2">
+            <div className="bg-gray-100 p-4 shadow w-full md:w-1/2 md:rounded-lg">
               <div className="flex justify-between">
                 <p className="font-medium">Subtotal</p>
                 <p className="text-gray-700">$ {getTotal().toLocaleString()}</p>
               </div>
             </div>
-            <div className="bg-gray-200 rounded-lg p-4 shadow w-full md:w-1/2">
+            <div className="bg-gray-200  p-4 shadow w-full md:w-1/2 md:rounded-lg">
               <div className="flex justify-between">
                 <p className="font-semibold">Total</p>
                 <p className="text-gray-900 text-md">
@@ -465,7 +465,7 @@ const Preview: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="pt-4 text-sm  leading-8 dark:text-white">
+          <div className="pt-4 text-sm  leading-8 dark:text-white p-2">
             <p>Your <span className="font-semibold">{jobTitle}</span>. Please let me know if you have any questions.</p>
             <p>This quote is valid for the next 30 days, after which values may be subject to change.</p>
           </div>

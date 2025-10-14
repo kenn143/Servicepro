@@ -260,6 +260,42 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
       toast.error("Full Name is required");
       return;
     }
+    const fullname = newClient.fullname.trim();
+    const email = newClient.email.trim();
+    const address = newClient.address.trim();
+    const phone = newClient.phone.trim();
+  
+    if (!fullname) {
+      toast.error("Full Name is required");
+      return;
+    }
+  
+    if (!email) {
+      toast.error("Email is required");
+      return;
+    }
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+  
+    if (!address) {
+      toast.error("Address is required");
+      return;
+    }
+  
+    if (!phone) {
+      toast.error("Phone Number is required");
+      return;
+    }
+  
+    // const phoneRegex = /^\+?\d{7,15}$/;
+    // if (!phoneRegex.test(phone)) {
+    //   toast.error("Please enter a valid phone number");
+    //   return;
+    // }
   
     setLoadingClient(true);
   
@@ -285,7 +321,6 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
       if (response.ok) {
         toast.success("Client added successfully!");
         setShowModal(false);
-        // Reset fields
         setNewClient({ fullname: "", email: "", address: "", phone: "" });
       } else {
         toast.error("Failed to submit client data");
@@ -457,33 +492,34 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
     {lineItems.map((item) => (
       <div
         key={item.id}
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start border-b-[2px] pb-4 mt-6 rounded pt-5 ${
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start border-b-[2px] pb-4 mt-6 rounded pt-5 p-2 ${
           item.optional ? 'bg-gray-100 dark:bg-gray-500' : ''
         }`}
       >
-        <div>
-        {/* {item.optional && <p className="text-xs italic ">Optional</p>} */}
+<div>
+  {/* {item.optional && <p className="text-xs italic ">Optional</p>} */}
 
-          <label className="block text-sm font-bold ">Lighting Style</label>
-          <input
-            type="text"
-            className="mt-1 w-full border rounded px-3 py-2"
-            value={item.itemName}
-            onChange={(e) => updateLineItem(item.id, 'itemName', e.target.value)}
-            disabled = {!selected}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-bold ">Description</label>
-          <input
-            type="text"
-            className="mt-1 w-full border rounded px-3 py-2"
-            placeholder="Details"
-            onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
-            disabled = {!selected}
-          />
+  <label className="block text-sm font-bold">Lighting Style</label>
+  <input
+    type="text"
+    className="mt-1 w-full border rounded px-3 py-2"
+    value={item.itemName}
+    onChange={(e) => updateLineItem(item.id, "itemName", e.target.value)}
+    disabled={!selected}
+  />
+</div>
 
-        </div>
+<div>
+  <label className="block text-sm font-bold">Description</label>
+  <textarea
+    className="mt-1 w-full border rounded px-3 py-2 h-24 resize-none"
+    placeholder="Details"
+    onChange={(e) => updateLineItem(item.id, "description", e.target.value)}
+    disabled={!selected}
+  />
+</div>
+
+
         <div>
           <label className="block text-sm font-bold ">Price</label>
           <input
