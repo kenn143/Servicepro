@@ -126,7 +126,8 @@ const Preview: React.FC = () => {
           status: record.fields["Status"] || null,
           quoteNumber: record.fields["Quote Number"] || "",
           clientID: record.fields["ClientID"] || 0,
-          datecreated: record.fields["Date Created"] || "",
+          // datecreated: record.fields["Date Created"] || "",
+          datecreated:record.createdTime
         };
 
         QuotationInfoFetch(item.quoteId);
@@ -340,7 +341,16 @@ const Preview: React.FC = () => {
                 </button>
               <div className="flex justify-end space-x-2 items-baseline">
                 <p className="text-sm dark:text-white">Sent on: </p>
-                <p className="font-semibold text-lg dark:text-white">{datecreated || "N/A"}</p>
+                {/* <p className="font-semibold text-lg dark:text-white">{datecreated || "N/A"}</p>{new Date(record.createdTime).toLocaleDateString()} */}
+                <p className="font-semibold text-md dark:text-white">
+                  {datecreated
+                    ? new Date(datecreated).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : "Loading..."}
+                </p>
               </div>
             </div>
           </div>
