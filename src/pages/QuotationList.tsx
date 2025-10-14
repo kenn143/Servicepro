@@ -303,7 +303,7 @@ useEffect(() => {
   return (
     <>
       <PageMeta title="ServicePros" description="" />
-      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="md:rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="custom-calendars">
           <div className="min-h-screen px-1 font-sans flex flex-col items-center">
             {/* <div className="w-full max-w-6xl py-6 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-2 sm:space-y-0 text-center mt-[20px]">
