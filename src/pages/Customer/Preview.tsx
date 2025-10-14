@@ -399,7 +399,7 @@ const Preview: React.FC = () => {
           <td className="border px-1 py-2 break-words text-sm dark:text-white">
               <div>{item.fields["ItemName"]}</div>
               {item.fields["Description"] && (
-                <div className="text-xs dark:text-white">( {item.fields["Description"]} )</div>
+                <div className="text-xs dark:text-white whitespace-pre-line">( {item.fields["Description"]} )</div>
               )}
             </td>
             <td className="border px-1 py-2 text-center">
