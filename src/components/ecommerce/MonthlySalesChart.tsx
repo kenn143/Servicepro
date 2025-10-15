@@ -1,141 +1,122 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import { Dropdown } from "../ui/dropdown/Dropdown";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { MoreDotIcon } from "../../icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface AirtableRecord {
+  id: string;
+  createdTime: string;
+  fields: Record<string, any>;
+}
+
+interface AirtableResponse {
+  records: AirtableRecord[];
+}
 
 export default function MonthlySalesChart() {
+  const [quoteCounts, setQuoteCounts] = useState([0, 0, 0]); 
+  const [invoiceCounts, setInvoiceCounts] = useState([0, 0, 0]); 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch Quotes
+        const quoteRes = await fetch(
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
+          {
+            headers: {
+              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+            },
+          }
+        );
+        const quoteData: AirtableResponse = await quoteRes.json();
+        const quoteStatusCounts = [
+          quoteData.records.filter((r) => r.fields.Status === "Approved").length,
+          quoteData.records.filter((r) => r.fields.Status === "Waiting for Approval").length,
+          quoteData.records.filter((r) => r.fields.Status === "Pending").length,
+        ];
+        setQuoteCounts(quoteStatusCounts);
+
+        // Fetch Invoices
+        const invoiceRes = await fetch(
+          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblIl5Qvrlok2MF5V",
+          {
+            headers: {
+              Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+            },
+          }
+        );
+        const invoiceData: AirtableResponse = await invoiceRes.json();
+        const invoiceStatusCounts = [
+          invoiceData.records.filter((r) => r.fields.Status === "Active").length,
+          invoiceData.records.filter((r) => r.fields.Status === "Pending").length,
+          invoiceData.records.filter((r) => r.fields.Status === "Draft").length,
+        ];
+        setInvoiceCounts(invoiceStatusCounts);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const series = [
+    {
+      name: "Quote Status",
+      data: quoteCounts,
+    },
+    {
+      name: "Invoice Status",
+      data: invoiceCounts,
+    },
+  ];
+
   const options: ApexOptions = {
-    colors: ["#465fff"],
     chart: {
-      fontFamily: "Outfit, sans-serif",
       type: "bar",
-      height: 180,
-      toolbar: {
-        show: false,
-      },
+      stacked: false,
+      height: 250,
+      toolbar: { show: false },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "39%",
+        columnWidth: "45%",
         borderRadius: 5,
-        borderRadiusApplication: "end",
       },
     },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 4,
-      colors: ["transparent"],
-    },
+    colors: ["#4caf50", "#2196f3"],
+    dataLabels: { enabled: false },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
+      categories: ["Approved", "Waiting For Approval", "Pending"],
     },
     legend: {
-      show: true,
       position: "top",
       horizontalAlign: "left",
-      fontFamily: "Outfit",
-    },
-    yaxis: {
-      title: {
-        text: undefined,
-      },
     },
     grid: {
-      yaxis: {
-        lines: {
-          show: true,
-        },
-      },
+      yaxis: { lines: { show: true } },
     },
-    fill: {
-      opacity: 1,
-    },
-
     tooltip: {
-      x: {
-        show: false,
-      },
-      y: {
-        formatter: (val: number) => `${val}`,
-      },
+      y: { formatter: (val: number) => `${val}` },
     },
   };
-  const series = [
-    {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
-    },
-  ];
-  const [isOpen, setIsOpen] = useState(false);
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
-
-  function closeDropdown() {
-    setIsOpen(false);
-  }
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Monthly Sales
-        </h3>
-        <div className="relative inline-block">
-          <button className="dropdown-toggle" onClick={toggleDropdown}>
-            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 size-6" />
-          </button>
-          <Dropdown
-            isOpen={isOpen}
-            onClose={closeDropdown}
-            className="w-40 p-2"
-          >
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              View More
-            </DropdownItem>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-            >
-              Delete
-            </DropdownItem>
-          </Dropdown>
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+      <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
+        Quote & Invoice Status
+      </h3>
+      {loading ? (
+        <div className="flex items-center justify-center h-32">
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
         </div>
-      </div>
-
-      <div className="max-w-full overflow-x-auto custom-scrollbar">
-        <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-          <Chart options={options} series={series} type="bar" height={180} />
-        </div>
-      </div>
+      ) : (
+        <Chart options={options} series={series} type="bar" height={250} />
+      )}
     </div>
   );
 }
