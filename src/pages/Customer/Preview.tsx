@@ -328,31 +328,31 @@ const Preview: React.FC = () => {
 
 
             <div className="flex flex-col items-end space-y-2">
-            <button
-              disabled
-              className={`flex items-center gap-2 px-4 py-1 rounded-xl text-sm font-medium shadow cursor-default 
-                ${
-                  status === "Pending"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : status === "Approved"
-                    ? "bg-green-100 text-green-800"
-                    : status === "Waiting for Approval"
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-            >
-              {status === null ? (
-                "Loading..."
-              ) : status === "Pending" ? (
-                <>⭕ Awaiting Response</>
-              ) : status === "Approved" ? (
-                <>✔️ Approved</>
-              ) : status === "Waiting for Approval" ? (
-                <>🕒 Waiting for Approval</>
-              ) : (
-                <>❔ Unknown</>
-              )}
-            </button>
+                <button
+                  disabled
+                  className={`flex items-center gap-2 px-4 py-1 rounded-xl text-sm font-medium shadow cursor-default 
+                    ${
+                      status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : status === "Approved"
+                        ? "bg-green-100 text-green-800"
+                        : status === "Waiting for Approval"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                >
+                {status === null ? (
+                  "Loading..."
+                ) : status === "Pending" ? (
+                  <>⭕ Awaiting Response</>
+                ) : status === "Approved" ? (
+                  <>✔️ Approved</>
+                ) : status === "Waiting for Approval" ? (
+                  <>🕒 Waiting for Approval</>
+                ) : (
+                  <>❔ Unknown</>
+                )}
+              </button>
 
 
               <div className="flex justify-end space-x-2 items-baseline">
