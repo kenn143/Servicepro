@@ -798,3 +798,18 @@ span.flatpickr-weekday,
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+.fc-addEventButton-button {
+  width: 120px;          /* ⬅️ Adjust width here */
+  text-align: center;
+  background-color: #2563eb; /* Tailwind's blue-600 */
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.fc-addEventButton-button:hover {
+  background-color: #1d4ed8; /* Tailwind's blue-700 */
+}

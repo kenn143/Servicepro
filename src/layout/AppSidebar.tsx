@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
   {
     icon: <CalenderIcon />,
     name: "Calendar",
-    appKey: "Calendar",
+    appKey: "Job Calendar",
     path: "/calendar",
   },
   // {

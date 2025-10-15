@@ -116,7 +116,7 @@ function AnimatedRoutes() {
           <Route
             path="/calendar"
             element={
-              <ProtectedRoute requiredRight="Invoice">
+              <ProtectedRoute requiredRight="Job Calendar">
                 <PageWrapper><Calendar /></PageWrapper>
               </ProtectedRoute>
             }

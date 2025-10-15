@@ -203,6 +203,7 @@ const Calendar: React.FC = () => {
                 setPopupOpen(true);
               },
             },
+              
           }}
         />
 
@@ -348,5 +349,6 @@ const renderEventContent = (eventInfo: any) => (
     </span>
   </div>
 );
+
 
 export default Calendar;
