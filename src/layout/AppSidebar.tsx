@@ -26,11 +26,18 @@ const navItems: NavItem[] = [
     path: "/home",
   },
   {
+    icon: <GridIcon />,
+    name: "Customer Management",
+    appKey: "Customer Management",
+    path: "/customer-list",
+  },
+  {
     icon: <CalenderIcon />,
     name: "Calendar",
     appKey: "Job Calendar",
     path: "/calendar",
   },
+
   // {
   //   icon: <FlyerTracker />,
   //   name: "Flyer Tracker",
@@ -63,6 +70,7 @@ const navItems: NavItem[] = [
       { name: "Invoice List", path: "/invoice-list" },
     ],
   },
+  
 ];
 
 // const othersItems: NavItem[] = [];

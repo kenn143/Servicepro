@@ -130,7 +130,15 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
-            <Route path="/customer-list" element={<PageWrapper><CustomerList /></PageWrapper>} />
+            {/* <Route path="/customer-list" element={<PageWrapper><CustomerList /></PageWrapper>} /> */}
+            <Route
+            path="/customer-list"
+            element={
+              <ProtectedRoute requiredRight="Customer Management">
+                <PageWrapper><CustomerList /></PageWrapper>
+              </ProtectedRoute>
+            }
+          />
         </Route>
 
         {/* Auth pages */}
