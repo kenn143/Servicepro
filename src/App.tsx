@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import Captures from "./pages/Captures";
 import CustomerPreview from "./pages/Customer/Preview";
+import CustomerList from "./pages/Customer/CustomerList";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -129,11 +130,13 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
+            <Route path="/customer-list" element={<PageWrapper><CustomerList /></PageWrapper>} />
         </Route>
 
         {/* Auth pages */}
         <Route path="/signin" element={<PageWrapper><SignIn /></PageWrapper>} />
         <Route path="/signup" element={<PageWrapper><SignUp /></PageWrapper>} />
+      
 
         {/* <Route path="/calendar" element={<PageWrapper><Calendar /></PageWrapper>} /> */}
 

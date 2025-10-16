@@ -179,7 +179,7 @@ const Calendar: React.FC = () => {
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
+          initialView="timeGridDay"
           height="80%"
           contentHeight="auto"
           expandRows={true}
