@@ -35,6 +35,15 @@ const Calendar: React.FC = () => {
 
   const calendarRef = useRef<FullCalendar>(null);
 
+const [finishModalOpen, setFinishModalOpen] = useState(false);
+const [lightsUsed, setLightsUsed] = useState("");
+const [cordsUsed, setCordsUsed] = useState("");
+const [timersUsed, setTimersUsed] = useState("");
+const [completeImageBase64, setCompleteImageBase64] = useState("");
+const [jobNotes, setJobNotes] = useState("");
+const [clientComments, setClientComments] = useState("");
+
+
   useEffect(() => {
     const fetchJobsFromAirtable = async () => {
       try {
@@ -171,6 +180,51 @@ const Calendar: React.FC = () => {
     setImageBase64("");
     setSelectedEvent(null);
   };
+
+const handleSubmitCompletion = async () => {
+  if (!selectedEvent) return;
+
+  const completionPayload = {
+    jobId: selectedEvent.id,
+    jobTitle: selectedEvent.title,
+    lightsUsed,
+    cordsUsed,
+    timersUsed,
+    completeImageBase64,
+    jobNotes,
+    clientComments,
+  };
+
+  try {
+    const res = await fetch(
+      "https://hook.us2.make.com/your-completion-webhook", 
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+        },
+        body: JSON.stringify(completionPayload),
+      }
+    );
+
+    if (res.ok) toast.success("Completion submitted successfully!");
+    else toast.error("Failed to submit completion data.");
+
+    setFinishModalOpen(false);
+    setPopupOpen(false);
+    setLightsUsed("");
+    setCordsUsed("");
+    setTimersUsed("");
+    setJobNotes("");
+    setClientComments("");
+    setCompleteImageBase64("");
+  } catch (err) {
+    console.error(err);
+    toast.error("Network error while submitting completion data.");
+  }
+};
+
 
   return (
     <>
@@ -323,22 +377,22 @@ const Calendar: React.FC = () => {
 
             <div className="flex justify-end gap-2 mt-5">
             {selectedEvent && (
-                <button
-                  onClick={handleAddOrUpdateEvent}
-                  disabled={
-                    !eventDate ||
-                    new Date(eventDate).toDateString() !== new Date().toDateString()
-                  } 
-                  className={`text-xs px-3 py-1 rounded text-white ${
-                    !eventDate ||
-                    new Date(eventDate).toDateString() !== new Date().toDateString()
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-green-600 hover:bg-green-700" 
-                  }`}
-                >
-                  Job Finish
-                </button>
-              )}
+              <button
+                onClick={() => setFinishModalOpen(true)} 
+                disabled={
+                  !eventDate ||
+                  new Date(eventDate).toDateString() !== new Date().toDateString()
+                }
+                className={`text-xs px-3 py-1 rounded text-white ${
+                  !eventDate ||
+                  new Date(eventDate).toDateString() !== new Date().toDateString()
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
+              >
+                Job Finish
+              </button>
+            )}
 
               <button
                 onClick={() => setPopupOpen(false)}
@@ -355,6 +409,124 @@ const Calendar: React.FC = () => {
             </div>
           </div>
         )}
+
+  {finishModalOpen && (
+    <div
+      className="fixed bg-white border shadow-2xl rounded-xl p-5 w-[450px] z-50"
+      style={{
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+  >
+    <h5 className="text-base font-semibold mb-4 text-gray-800">
+      After House Completion
+    </h5>
+
+    <div className="space-y-3">
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+          How many lights were used
+        </label>
+        <input
+          type="text"
+          placeholder="Number of lights"
+          value={lightsUsed}
+          onChange={(e) => setLightsUsed(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+          How many cords were used
+        </label>
+        <input
+          type="text"
+          placeholder="Number of cords"
+          value={cordsUsed}
+          onChange={(e) => setCordsUsed(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+          How many timers were used
+        </label>
+        <input
+          type="text"
+          placeholder="Number of timers"
+          value={timersUsed}
+          onChange={(e) => setTimersUsed(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+          Picture of house with lights complete
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () =>
+                setCompleteImageBase64(reader.result as string);
+              reader.readAsDataURL(file);
+            }
+          }}
+          className="w-full border rounded px-2 py-1 text-sm"
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+          Notes (difficulties with job)
+        </label>
+        <textarea
+          placeholder="Describe any difficulties..."
+          value={jobNotes}
+          onChange={(e) => setJobNotes(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+          rows={3}
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+          Comments from client
+        </label>
+        <textarea
+          placeholder="Client feedback..."
+          value={clientComments}
+          onChange={(e) => setClientComments(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+          rows={2}
+        />
+      </div>
+    </div>
+
+    <div className="flex justify-end gap-2 mt-5">
+      <button
+        onClick={() => setFinishModalOpen(false)}
+        className="text-xs px-3 py-1 border rounded text-gray-500"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handleSubmitCompletion} 
+        className="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+)}
+
       </div>
     </>
   );
