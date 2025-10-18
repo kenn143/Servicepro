@@ -20,7 +20,7 @@ export default function Home() {
     <>
       <PageMeta title="ServicePros" description="" />
 
-      <div className="p-2 bg-gray-50 min-h-screen">
+      <div className="p-2 min-h-screen">
         {/* Header with toggle */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-semibold text-gray-800">
@@ -57,7 +57,7 @@ export default function Home() {
         >
           <div
             key="metrics"
-            className="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between"
+            className="rounded-2xl shadow p-5 relative flex flex-col justify-between"
           >
             {isEditable && (
               <div className="drag-handle cursor-move text-gray-400 text-sm mb-2 self-start">
@@ -69,7 +69,7 @@ export default function Home() {
 
           <div
             key="sales"
-            className="bg-white rounded-2xl shadow p-5 relative flex flex-col justify-between"
+            className=" rounded-2xl shadow p-5 relative flex flex-col justify-between"
           >
             {isEditable && (
               <div className="drag-handle cursor-move text-gray-400 text-sm mb-2 self-start">

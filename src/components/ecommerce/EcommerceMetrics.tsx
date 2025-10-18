@@ -101,7 +101,7 @@ export default function EcommerceMetrics() {
           {loading ? (
             <CardLoader />
           ) : (
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white ">
               {activeCustomers.toLocaleString()}
             </h4>
           )}
@@ -120,7 +120,7 @@ export default function EcommerceMetrics() {
           {loading ? (
             <CardLoader />
           ) : (
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white">
               {totalQuotes.toLocaleString()}
             </h4>
           )}
