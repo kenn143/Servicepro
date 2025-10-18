@@ -322,20 +322,23 @@ const Calendar: React.FC = () => {
             </div>
 
             <div className="flex justify-end gap-2 mt-5">
-            <button
-                onClick={handleAddOrUpdateEvent}
-                disabled={
-                  !eventDate || 
-                  new Date(eventDate).toDateString() !== new Date().toDateString()
-                } 
-                className={`text-xs px-3 py-1 rounded text-white ${
-                  !eventDate || new Date(eventDate).toDateString() !== new Date().toDateString()
-                    ? "bg-gray-400 cursor-not-allowed" 
-                    : "bg-green-600 hover:bg-green-700" 
-                }`}
-              >
-                Job Finish
-              </button>
+            {selectedEvent && (
+                <button
+                  onClick={handleAddOrUpdateEvent}
+                  disabled={
+                    !eventDate ||
+                    new Date(eventDate).toDateString() !== new Date().toDateString()
+                  } 
+                  className={`text-xs px-3 py-1 rounded text-white ${
+                    !eventDate ||
+                    new Date(eventDate).toDateString() !== new Date().toDateString()
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-green-600 hover:bg-green-700" 
+                  }`}
+                >
+                  Job Finish
+                </button>
+              )}
 
               <button
                 onClick={() => setPopupOpen(false)}
