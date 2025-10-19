@@ -70,23 +70,23 @@ export default function CustomerList() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-//   const updateCustomer = async (id: string) => {
-//     try {
-//       await fetch(WEBHOOK_URL, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
-//         },
-//         body: JSON.stringify({ action: "update", id, fields: form }),
-//       });
-//       toast.success("Updated Successfully");
-//       setEditingId(null);
-//       fetchCustomers();
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
+  const updateCustomer = async (id: string) => {
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-make-apikey": "d7f9f8bc-b1a3-45e4-b8a4-c5e0fae9da7d",
+        },
+        body: JSON.stringify({ action: "update", id, fields: form }),
+      });
+      toast.success("Updated Successfully");
+      setEditingId(null);
+      fetchCustomers();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -362,7 +362,20 @@ export default function CustomerList() {
                                 </option>
                             </select>
                             </td>
-
+                            <td className="px-6 py-3 flex gap-2">
+                                <button
+                                  onClick={() => updateCustomer(customer.id)} 
+                                  className="bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() => setEditingId(null)} 
+                                  className="bg-gray-400 hover:bg-gray-500 text-white text-sm px-3 py-1 rounded"
+                                >
+                                  Cancel
+                                </button>
+                              </td>
 
                         </>
                       ) : (
