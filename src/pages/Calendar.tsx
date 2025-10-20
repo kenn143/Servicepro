@@ -225,6 +225,29 @@ const handleSubmitCompletion = async () => {
   }
 };
 
+const getToken = () => {
+  
+  const storedData = localStorage.getItem("data");
+
+  if (!storedData) return null; 
+
+  try {
+    const parsed = JSON.parse(storedData);
+
+    return {
+      ID: parsed.ID,
+      UserName: parsed.UserName,
+      FullName: parsed.FullName,
+      UserType: parsed.UserType,
+      Status: parsed.Status,
+   
+    };
+  } catch (e) {
+    console.error("Invalid JSON in localStorage for data", e);
+    return null;
+  }
+};
+
 
   return (
     <>
@@ -259,7 +282,7 @@ const handleSubmitCompletion = async () => {
             },
               
           }}
-        />
+        />    
 
         {popupOpen && (
           <div
@@ -376,24 +399,24 @@ const handleSubmitCompletion = async () => {
             </div>
 
             <div className="flex justify-end gap-2 mt-5">
-            {selectedEvent && (
-              <button
-                onClick={() => setFinishModalOpen(true)} 
-                disabled={
-                  !eventDate ||
-                  new Date(eventDate).toDateString() !== new Date().toDateString()
-                }
-                className={`text-xs px-3 py-1 rounded text-white ${
-                  !eventDate ||
-                  new Date(eventDate).toDateString() !== new Date().toDateString()
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
-              >
-                Job Finish
-              </button>
-            )}
-
+            {selectedEvent && getToken()?.UserType === "LightInstaller" && (
+                <button
+                  onClick={() => setFinishModalOpen(true)} 
+                  disabled={
+                    !eventDate ||
+                    new Date(eventDate).toDateString() !== new Date().toDateString()
+                  }
+                  className={`text-xs px-3 py-1 rounded text-white ${
+                    !eventDate ||
+                    new Date(eventDate).toDateString() !== new Date().toDateString()
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
+                >
+                  Job Finish
+                </button>
+              )}
+ 
               <button
                 onClick={() => setPopupOpen(false)}
                 className="text-xs px-3 py-1 border rounded text-gray-500"
