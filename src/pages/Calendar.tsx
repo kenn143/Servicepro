@@ -42,6 +42,58 @@ const [timersUsed, setTimersUsed] = useState("");
 const [completeImageBase64, setCompleteImageBase64] = useState("");
 const [jobNotes, setJobNotes] = useState("");
 const [clientComments, setClientComments] = useState("");
+const [query, setQuery] = useState("");
+const [filtered, setFiltered] = useState<any[]>([]);
+const [loading, setLoading] = useState(false);
+const [customerId,setCustomerId] = useState("");
+
+const AIRTABLE_ENDPOINT =
+  "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0"; 
+const AIRTABLE_TOKEN =
+  "patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609";
+
+const handleCustomerSearch = async (value: string) => {
+  setQuery(value);
+  setFiltered([]);
+  if (value.trim() === "") {
+    setLoading(false);
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const response = await fetch(
+      `${AIRTABLE_ENDPOINT}?filterByFormula=SEARCH(LOWER("${value}"), LOWER({CustomerName}))`,
+      { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } }
+    );
+    if (!response.ok) throw new Error("Failed to fetch customers");
+
+    const data = await response.json();
+    const results = data.records.map((rec: any) => ({
+      CustomerId: rec.id,
+      CustomerName: rec.fields.CustomerName || "",
+      Address: rec.fields.Address || "",
+      Status: rec.fields.Status || "Unknown",
+      PhoneNumber: rec.fields.PhoneNumber || "",
+      EmailAddress: rec.fields.EmailAddress || "",
+      DateCreated: rec.createdTime,
+    }));
+    setFiltered(results);
+  } catch (err) {
+    console.error(err);
+    setFiltered([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleSelectCustomer = (cust: any) => {
+  setClientName(cust.CustomerName);
+setCustomerId(cust.CustomerId);
+  setQuery("");
+  setFiltered([]);
+  setLoading(false);
+};
 
 
   useEffect(() => {
@@ -121,9 +173,9 @@ const [clientComments, setClientComments] = useState("");
       typeOfLights,
       lightsAmount,
       dateSchedule: eventDate ? eventDate.toISOString() : "",
+      customerId: customerId,
       imageBase64,
     };
-
     try {
       const res = await fetch(
         "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
@@ -316,13 +368,78 @@ const getToken = () => {
                 <label className="text-xs font-medium text-gray-600">
                   Client Name
                 </label>
-                <input
-                  type="text"
-                  placeholder="Client Name"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
+                <div>
+
+                          {!clientName ? (
+                            <>
+                              <input
+                                type="text"
+                                placeholder="Search customer..."
+                                value={query}
+                                onChange={(e) => handleCustomerSearch(e.target.value)}
+                                className="w-full border rounded px-2 py-1 text-sm"
+                              />
+
+                        {loading && (
+                          <div className="flex justify-center items-center mt-2">
+                            <svg
+                              className="animate-spin h-6 w-6 text-blue-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                              ></path>
+                            </svg>
+                          </div>
+                        )}
+
+
+
+                      {!loading && query.trim() !== "" && (
+                        <ul className="mt-1 max-h-32 overflow-y-auto border rounded bg-white shadow text-sm">
+                          {filtered.length > 0 ? (
+                            filtered.map((cust) => (
+                              <li
+                                key={cust.CustomerId}
+                                onClick={() => handleSelectCustomer(cust)}
+                                className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                              >
+                                {cust.CustomerName}
+                              </li>
+                            ))
+                          ) : (
+                            <li className="px-2 py-1 text-gray-500 text-xs">
+                              No results found
+                            </li>
+                          )}
+                        </ul>
+                      )}
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-between border rounded px-2 py-1 text-sm bg-gray-50">
+                      <span>{clientName}</span>
+                      <button
+                        onClick={() => setClientName("")}
+                        className="text-xs text-red-500 hover:underline"
+                      >
+                        Change
+                      </button>
+                    </div>
+                  )}
+                </div>
+
               </div>
 
               <div>
