@@ -61,7 +61,7 @@ function AnimatedRoutes() {
             <Route
             path="/googlepin"
             element={
-              <ProtectedRoute requiredRight="FlyerTracker Captures">
+              <ProtectedRoute requiredRight="Captures Map">
                 <PageWrapper><GoogleMapExample /></PageWrapper>
               </ProtectedRoute>
             }
