@@ -193,11 +193,12 @@ const handleSubmitCompletion = async () => {
     completeImageBase64,
     jobNotes,
     clientComments,
+    action:"JobFinish"
   };
 
   try {
     const res = await fetch(
-      "https://hook.us2.make.com/your-completion-webhook", 
+      "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41", 
       {
         method: "POST",
         headers: {
