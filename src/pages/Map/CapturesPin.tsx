@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
-import { GoogleMap, LoadScript, Marker, InfoWindow } from "@react-google-maps/api";
-import PageMeta from "../components/common/PageMeta";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { LatLngExpression } from "leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import PageMeta from "../../components/common/PageMeta";
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 interface RecordFields {
   TrackId: number;
@@ -18,20 +29,11 @@ interface AirtableRecord {
   fields: RecordFields;
 }
 
-const containerStyle = {
-  width: "100%",
-  height: "600px",
-};
-
-const center = {
-  lat: 12.8797, // Philippines center (default)
-  lng: 121.774,
-};
+const defaultCenter: LatLngExpression = [12.8797, 121.774]; 
 
 const CapturesMap: React.FC = () => {
   const [records, setRecords] = useState<AirtableRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMarker, setSelectedMarker] = useState<AirtableRecord | null>(null);
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -44,7 +46,6 @@ const CapturesMap: React.FC = () => {
             },
           }
         );
-
         const data = await res.json();
         setRecords(data.records || []);
       } catch (error) {
@@ -57,7 +58,6 @@ const CapturesMap: React.FC = () => {
     fetchRecords();
   }, []);
 
-  // Filter out only those with coordinates
   const locationRecords = records.filter(
     (rec) => rec.fields.Lat && rec.fields.Long
   );
@@ -65,6 +65,7 @@ const CapturesMap: React.FC = () => {
   return (
     <>
       <PageMeta title="Captured Locations" description="Map View of Captures" />
+
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6 dark:text-white">
         <h2 className="text-lg font-semibold mb-4">Captured Locations</h2>
 
@@ -81,55 +82,49 @@ const CapturesMap: React.FC = () => {
             </div>
           </div>
         ) : (
-          <LoadScript googleMapsApiKey="AIzaSyAlZIkHA2MXiOsB42hQ0v68P0ro70r424E">
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={
-                locationRecords.length > 0
-                  ? { lat: locationRecords[0].fields.Lat!, lng: locationRecords[0].fields.Long! }
-                  : center
-              }
-              zoom={6}
-            >
-              {locationRecords.map((rec) => (
-                <Marker
-                  key={rec.id}
-                  position={{ lat: rec.fields.Lat!, lng: rec.fields.Long! }}
-                  onClick={() => setSelectedMarker(rec)}
-                />
-              ))}
+          <MapContainer
+            center={
+              locationRecords.length > 0
+                ? ([locationRecords[0].fields.Lat!, locationRecords[0].fields.Long!] as LatLngExpression)
+                : defaultCenter
+            }
+            zoom={6}
+            style={{ height: "600px", width: "100%", borderRadius: "12px" }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            />
 
-              {selectedMarker && (
-                <InfoWindow
-                  position={{
-                    lat: selectedMarker.fields.Lat!,
-                    lng: selectedMarker.fields.Long!,
-                  }}
-                  onCloseClick={() => setSelectedMarker(null)}
-                >
+            {locationRecords.map((rec) => (
+              <Marker
+                key={rec.id}
+                position={[rec.fields.Lat!, rec.fields.Long!] as LatLngExpression}
+              >
+                <Popup>
                   <div className="text-sm">
                     <h3 className="font-semibold">
-                      {selectedMarker.fields.UserName?.join(", ") || "Unknown User"}
+                      {rec.fields.UserName?.join(", ") || "Unknown User"}
                     </h3>
-                    <p>Type: {selectedMarker.fields.Type || "-"}</p>
+                    <p>Type: {rec.fields.Type || "-"}</p>
                     <p>
                       Date:{" "}
-                      {selectedMarker.fields.DateCreated
-                        ? new Date(selectedMarker.fields.DateCreated).toLocaleString()
+                      {rec.fields.DateCreated
+                        ? new Date(rec.fields.DateCreated).toLocaleString()
                         : "-"}
                     </p>
-                    {selectedMarker.fields.Image?.[0]?.url && (
+                    {rec.fields.Image?.[0]?.url && (
                       <img
-                        src={selectedMarker.fields.Image[0].url}
+                        src={rec.fields.Image[0].url}
                         alt="capture"
                         className="mt-2 w-40 h-28 object-cover rounded"
                       />
                     )}
                   </div>
-                </InfoWindow>
-              )}
-            </GoogleMap>
-          </LoadScript>
+                </Popup>
+              </Marker>
+            ))}
+          </MapContainer>
         )}
       </div>
     </>

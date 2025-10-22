@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import QuoteIcon from "../icons/quote";
 import FlyerTracker from "../icons/flyertracker";
+import CapturesMap from "../pages/Captures";
 import {
   CalenderIcon,
   ChevronDownIcon,
@@ -69,6 +70,12 @@ const navItems: NavItem[] = [
       { name: "Create Invoice", path: "/create-invoice" },
       { name: "Invoice List", path: "/invoice-list" },
     ],
+  },
+  {
+    icon: <GridIcon/>,
+    name: "Captures Map",
+    appKey: "Captures Map",
+    path: "/googlepin",
   },
   
 ];

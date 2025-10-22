@@ -23,6 +23,7 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import Captures from "./pages/Captures";
 import CustomerPreview from "./pages/Customer/Preview";
 import CustomerList from "./pages/Customer/CustomerList";
+import GoogleMapExample from "./pages/Map/CapturesPin";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -139,6 +140,14 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
+            <Route
+            path="/googlepin"
+            element={
+              <ProtectedRoute requiredRight="Captures Map">
+                <PageWrapper><GoogleMapExample /></PageWrapper>
+              </ProtectedRoute>
+            }
+          />
         </Route>
 
         {/* Auth pages */}
@@ -162,6 +171,7 @@ function AnimatedRoutes() {
         <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
 
         <Route path="/customerPreview" element={<PageWrapper><CustomerPreview/></PageWrapper>} />
+       
       </Routes>
 
       <ToastContainer className="!z-[100000]" />
