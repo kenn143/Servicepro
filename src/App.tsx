@@ -58,6 +58,14 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
+            <Route
+            path="/googlepin"
+            element={
+              <ProtectedRoute requiredRight="FlyerTracker Captures">
+                <PageWrapper><GoogleMapExample /></PageWrapper>
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/quotation-list"
@@ -140,14 +148,7 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             }
           />
-            <Route
-            path="/googlepin"
-            element={
-              <ProtectedRoute requiredRight="Captures Map">
-                <PageWrapper><GoogleMapExample /></PageWrapper>
-              </ProtectedRoute>
-            }
-          />
+           
         </Route>
 
         {/* Auth pages */}

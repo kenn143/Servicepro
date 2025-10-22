@@ -52,6 +52,7 @@ const navItems: NavItem[] = [
       { name: "Tracker", path: "/file-tracker" },
       
       { name: "Captures", path: "/captures" },
+      { name: "Maps", path: "/googlepin" },
     ],
   },
 
@@ -70,12 +71,12 @@ const navItems: NavItem[] = [
       { name: "Invoice List", path: "/invoice-list" },
     ],
   },
-  {
-    icon: <GridIcon/>,
-    name: "Captures Map",
-    appKey: "Captures Map",
-    path: "/googlepin",
-  },
+  // {
+  //   icon: <GridIcon/>,
+  //   name: "Captures Map",
+  //   appKey: "Captures Map",
+  //   path: "/googlepin",
+  // },
   
 ];
 
