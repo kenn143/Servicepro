@@ -400,7 +400,7 @@ const getToken = () => {
             </div>
 
             <div className="flex justify-end gap-2 mt-5">
-            {selectedEvent && getToken()?.UserType === "LightInstaller" && (
+            {selectedEvent && getToken()?.UserType === "LightsInstaller" && (
                 <button
                   onClick={() => setFinishModalOpen(true)} 
                   disabled={

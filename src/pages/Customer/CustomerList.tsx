@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"; // ✅ added useRef
+import { useEffect, useState, useRef } from "react"; 
 import { toast } from "react-toastify";
 
 interface Customer {
@@ -21,7 +21,7 @@ export default function CustomerList() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<any>({});
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null); // ✅ only one selection
+  const [selectedId, setSelectedId] = useState<string | null>(null); 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -34,7 +34,7 @@ export default function CustomerList() {
     address: "",
     phone: "",
   });
-  const editRef = useRef<HTMLTableRowElement | null>(null); // ✅ to detect outside click
+  const editRef = useRef<HTMLTableRowElement | null>(null); 
 
   const AIRTABLE_API = "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0/";
   const AIRTABLE_KEY = "patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609";
