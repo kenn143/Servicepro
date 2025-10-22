@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import QuoteIcon from "../icons/quote";
 import FlyerTracker from "../icons/flyertracker";
-import CapturesMap from "../pages/Captures";
 import {
   CalenderIcon,
   ChevronDownIcon,
