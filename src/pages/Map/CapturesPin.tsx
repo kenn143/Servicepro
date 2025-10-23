@@ -115,19 +115,19 @@ const CapturesMap: React.FC = () => {
         <div className="flex gap-2">
           <div className="flex items-center gap-1">
             <span className="w-4 h-4 bg-blue-500 rounded-sm"></span>
-            <span>1 week</span>
+            <span className="text-sm">1 week</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-4 h-4 bg-violet-500 rounded-sm"></span>
-            <span>2 weeks</span>
+            <span className="text-sm">2 weeks</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-4 h-4 bg-gray-400 rounded-sm"></span>
-            <span>3 weeks</span>
+            <span className="text-sm">3 weeks</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-4 h-4 bg-red-500 rounded-sm"></span>
-            <span>Month</span>
+            <span className="text-sm">Month</span>
           </div>
         </div>
       </div>
