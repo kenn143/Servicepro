@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import PageMeta from "../../components/common/PageMeta";
 
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -61,14 +62,75 @@ const CapturesMap: React.FC = () => {
   const locationRecords = records.filter(
     (rec) => rec.fields.Lat && rec.fields.Long
   );
+  const redIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+  const greenIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
 
+  const blueIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  const violetIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  const greyIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+  
   return (
     <>
       <PageMeta title="Captured Locations" description="Map View of Captures" />
-
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] p-6 dark:text-white">
-        <h2 className="text-lg font-semibold mb-4">Captured Locations</h2>
-
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Captured Locations</h2>
+        <div className="flex gap-2">
+          <div className="flex items-center gap-1">
+            <span className="w-4 h-4 bg-blue-500 rounded-sm"></span>
+            <span>1 week</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="w-4 h-4 bg-violet-500 rounded-sm"></span>
+            <span>2 weeks</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="w-4 h-4 bg-gray-400 rounded-sm"></span>
+            <span>3 weeks</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="w-4 h-4 bg-red-500 rounded-sm"></span>
+            <span>Month</span>
+          </div>
+        </div>
+      </div>
         {loading ? (
           <div className="flex justify-center items-center h-[600px]">
             <div className="flex flex-col items-center">
@@ -96,10 +158,24 @@ const CapturesMap: React.FC = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
             />
 
-            {locationRecords.map((rec) => (
+          {locationRecords.map((rec) => {
+            if (!rec.fields.Lat || !rec.fields.Long) return null;
+
+            let icon = greenIcon; 
+
+            if (rec.fields.DateCreated) {
+              const createdDate = new Date(rec.fields.DateCreated);
+              const now = new Date();
+              const diffInDays = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24); 
+
+              icon = diffInDays < 7 ? blueIcon : diffInDays < 14 ? violetIcon: diffInDays < 21 ? greyIcon: redIcon;
+            }
+
+            return (
               <Marker
                 key={rec.id}
-                position={[rec.fields.Lat!, rec.fields.Long!] as LatLngExpression}
+                position={[rec.fields.Lat, rec.fields.Long] as LatLngExpression}
+                icon={icon}
               >
                 <Popup>
                   <div className="text-sm">
@@ -123,7 +199,8 @@ const CapturesMap: React.FC = () => {
                   </div>
                 </Popup>
               </Marker>
-            ))}
+            );
+          })}
           </MapContainer>
         )}
       </div>

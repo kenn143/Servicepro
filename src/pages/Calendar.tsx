@@ -176,6 +176,8 @@ setCustomerId(cust.CustomerId);
       customerId: customerId,
       imageBase64,
     };
+
+
     try {
       const res = await fetch(
         "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
