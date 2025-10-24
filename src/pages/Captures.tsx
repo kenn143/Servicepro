@@ -28,30 +28,72 @@ const Captures: React.FC = () => {
 
   const [usernameSearch, setUsernameSearch] = useState<string>("");
 
+  // useEffect(() => {
+  //   const fetchRecords = async () => {
+  //     try {
+  //       const res = await fetch(
+  //         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?sort[0][field]=DateCreated&sort[0][direction]=desc",
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+  //           },
+  //         }
+  //       );
+    
+  //       const data = await res.json();
+  //       console.log("the data",data);
+  //       setRecords(data.records || []);
+  //     } catch (error) {
+  //       console.error("Error fetching Airtable records:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+    
+
+  //   fetchRecords();
+  // }, []);
   useEffect(() => {
     const fetchRecords = async () => {
+      setLoading(true);
+      let allRecords: AirtableRecord[] = [];
+      let offset: string | undefined = undefined;
+  
       try {
-        const res = await fetch(
-          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?sort[0][field]=DateCreated&sort[0][direction]=desc",
-          {
+        do {
+          const url = new URL(
+            "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u"
+          );
+          url.searchParams.append("sort[0][field]", "DateCreated");
+          url.searchParams.append("sort[0][direction]", "desc");
+          if (offset) url.searchParams.append("offset", offset);
+  
+          const res = await fetch(url.toString(), {
             headers: {
               Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
             },
+          });
+  
+          const data = await res.json();
+  
+          if (data.records) {
+            allRecords = [...allRecords, ...data.records];
           }
-        );
-    
-        const data = await res.json();
-        setRecords(data.records || []);
+  
+          offset = data.offset; 
+        } while (offset);
+  
+        setRecords(allRecords);
       } catch (error) {
         console.error("Error fetching Airtable records:", error);
       } finally {
         setLoading(false);
       }
     };
-    
-
+  
     fetchRecords();
   }, []);
+  
 
 
   const filteredRecords = records.filter((rec) =>
