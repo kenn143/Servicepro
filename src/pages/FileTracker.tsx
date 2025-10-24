@@ -1,9 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef,useEffect } from "react";
 import PageMeta from "../components/common/PageMeta";
 import { CiCamera, CiCircleCheck } from "react-icons/ci";
 import { FaRegCircle } from "react-icons/fa";
 
-
+const AIRTABLE_API_URL =
+  "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u";
+const AIRTABLE_API_KEY =
+  "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609";
 
 const getToken = () => {
  
@@ -27,6 +30,33 @@ const getToken = () => {
     return null;
   }
 };
+const fetchAllAirtableRecords = async () => {
+  let allRecords: any[] = [];
+  let offset: string | undefined = undefined;
+
+  try {
+    do {
+      const url = offset
+        ? `${AIRTABLE_API_URL}?offset=${offset}`
+        : AIRTABLE_API_URL;
+      const response = await fetch(url, {
+        headers: { Authorization: AIRTABLE_API_KEY },
+      });
+
+      if (!response.ok)
+        throw new Error(`Airtable fetch failed: ${response.statusText}`);
+
+      const data = await response.json();
+      allRecords = [...allRecords, ...data.records];
+      offset = data.offset;
+    } while (offset);
+
+    return allRecords;
+  } catch (err) {
+    console.error("Error fetching all Airtable records:", err);
+    return [];
+  }
+};
 
 
 
@@ -38,6 +68,48 @@ const FileTracker: React.FC = () => {
   const [flyerCount, setFlyerCount] = useState<number>(0);
   const [signsCount,setSignsCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(0);
+
+
+  const countAllRecords = async () => {
+    const allRecords = await fetchAllAirtableRecords();
+    setIsLoading(true);
+  
+    const todayPH = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Manila" });
+  
+    const getLocalDate = (dateStr: string | undefined): string => {
+      if (!dateStr) return "";
+      const utcDate = new Date(dateStr);
+
+      const phTime = new Date(utcDate.getTime() + 8 * 60 * 60 * 1000);
+      return phTime.toISOString().slice(0, 10); 
+    };
+  
+  
+  
+    const flyers = allRecords.filter(
+      (r) =>
+        r.fields.UserName?.includes(userName) &&
+        r.fields.Type === "Flyers" &&
+        getLocalDate(r.fields.DateCreated) === todayPH
+    );
+  
+    const signs = allRecords.filter(
+      (r) =>
+        r.fields.UserName?.includes(userName) &&
+        r.fields.Type === "Signs" &&
+        getLocalDate(r.fields.DateCreated) === todayPH
+    );
+  
+    setFlyerCount(flyers.length);
+    setSignsCount(signs.length);
+
+    setIsLoading(false);
+  
+  };
+  
+
+
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -53,7 +125,7 @@ const FileTracker: React.FC = () => {
     { value: "Flyers", label: "Flyers" },
     { value: "Signs", label: "Signs" },
   ];
-
+  const userName = getToken()?.UserName || "";
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [captureTime, setCaptureTime] = useState<Date | null>(null);
@@ -91,7 +163,6 @@ const FileTracker: React.FC = () => {
 
         const cloudinaryResult = await cloudinaryResponse.json();
         const uploadedImageUrl = cloudinaryResult.secure_url;
-        console.log("Image uploaded to Cloudinary:", uploadedImageUrl);
 
 
         const records = [
@@ -117,36 +188,49 @@ const FileTracker: React.FC = () => {
         if (!webhookResponse.ok) throw new Error("Webhook failed");
         console.log("Data sent to webhook successfully");
 
-        const userName = getToken()?.UserName || "";
-
-
-      const flyersFormula = `AND(FIND('${userName}', ARRAYJOIN({UserName}, ',')), {Type} = 'Flyers')`;
-      const flyersResponse = await fetch(
-        `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?filterByFormula=${encodeURIComponent(flyersFormula)}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
-          },
+        if (selected === "Flyers") {
+          setFlyerCount((prev) => prev + 1);
+        } else if (selected === "Signs") {
+          setSignsCount((prev) => prev + 1);
         }
-      );
+
+        setTimeout(() => {
+          console.log("🔄 Refreshing Airtable counts...");
+          setRefreshFlag((prev) => prev + 1);
+        }, 2000);
+
+        // const userName = getToken()?.UserName || "";
 
 
-    const signsFormula = `AND(FIND('${userName}', ARRAYJOIN({UserName}, ',')), {Type} = 'Signs')`;
-    const signsResponse = await fetch(
-      `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?filterByFormula=${encodeURIComponent(signsFormula)}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
-        },
-      }
-    );
+    //   const flyersFormula = `AND(FIND('${userName}', ARRAYJOIN({UserName}, ',')), {Type} = 'Flyers')`;
+    //   const flyersResponse = await fetch(
+    //     `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?filterByFormula=${encodeURIComponent(flyersFormula)}`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+    //       },
+    //     }
+    //   );
 
-    const flyersData = await flyersResponse.json();
-    const signsData = await signsResponse.json();
-    setFlyerCount(flyersData.records.length);
-    setSignsCount(signsData.records.length)
+
+    // const signsFormula = `AND(FIND('${userName}', ARRAYJOIN({UserName}, ',')), {Type} = 'Signs')`;
+    // const signsResponse = await fetch(
+    //   `https://api.airtable.com/v0/appxmoiNZa85I7nye/tblE4mC8DNhpQ1j3u?filterByFormula=${encodeURIComponent(signsFormula)}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       Authorization: `Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609`,
+    //     },
+    //   }
+    // );
+
+    // const flyersData = await flyersResponse.json();
+    // const signsData = await signsResponse.json();
+    // console.log("flyers",flyersData);
+    // console.log("signsData",signsData)
+    setFlyerCount(flyerCount);
+    setSignsCount(signsCount);
 
 
 
@@ -161,7 +245,7 @@ const FileTracker: React.FC = () => {
         console.error("Error:", error);
       } finally {
      
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     });
   
@@ -192,6 +276,9 @@ const FileTracker: React.FC = () => {
       <div className="bg-blue-200 rounded-md w-32 h-10"></div>
     </div>
   );
+  useEffect(() => {
+    countAllRecords();
+  }, [refreshFlag]);
 
   return (
     <>
