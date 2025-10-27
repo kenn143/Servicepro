@@ -176,8 +176,6 @@ setCustomerId(cust.CustomerId);
       customerId: customerId,
       imageBase64,
     };
-
-
     try {
       const res = await fetch(
         "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
@@ -339,219 +337,154 @@ const getToken = () => {
           }}
         />    
 
-        {popupOpen && (
-          <div
-            className="fixed bg-white border shadow-xl rounded-xl p-5 w-[420px] z-50"
-            style={{
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <h5 className="text-base font-semibold mb-4">
-              {selectedEvent ? "Edit Job" : "Add New Job"}
-            </h5>
+{popupOpen && (
+  <div
+    className="fixed z-50 w-96 p-4 bg-white rounded-lg shadow-lg border border-gray-300"
+    style={{
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      minWidth: "350px",
+    }}
+  >
+    {/* Close button like Leaflet X */}
+    <button
+      onClick={() => setPopupOpen(false)}
+      className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+    >
+      &#x2715;
+    </button>
 
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  Job Title
-                </label>
-                <input
-                  type="text"
-                  placeholder="Job Title"
-                  value={eventTitle}
-                  onChange={(e) => setEventTitle(e.target.value)}
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
-              </div>
+    <h5 className="text-sm font-semibold mb-3 text-gray-800">
+      {selectedEvent ? "Edit Job" : "Add New Job"}
+    </h5>
 
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  Client Name
-                </label>
-                <div>
+    <div className="space-y-2 text-sm">
+      <div>
+        <input
+          type="text"
+          placeholder="Job Title"
+          value={eventTitle}
+          onChange={(e) => setEventTitle(e.target.value)}
+          className="w-full border rounded px-2 py-1"
+        />
+      </div>
 
-                          {!clientName ? (
-                            <>
-                              <input
-                                type="text"
-                                placeholder="Search customer..."
-                                value={query}
-                                onChange={(e) => handleCustomerSearch(e.target.value)}
-                                className="w-full border rounded px-2 py-1 text-sm"
-                              />
-
-                        {loading && (
-                          <div className="flex justify-center items-center mt-2">
-                            <svg
-                              className="animate-spin h-6 w-6 text-blue-500"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                              ></path>
-                            </svg>
-                          </div>
-                        )}
-
-
-
-                      {!loading && query.trim() !== "" && (
-                        <ul className="mt-1 max-h-32 overflow-y-auto border rounded bg-white shadow text-sm">
-                          {filtered.length > 0 ? (
-                            filtered.map((cust) => (
-                              <li
-                                key={cust.CustomerId}
-                                onClick={() => handleSelectCustomer(cust)}
-                                className="px-2 py-1 cursor-pointer hover:bg-gray-100"
-                              >
-                                {cust.CustomerName}
-                              </li>
-                            ))
-                          ) : (
-                            <li className="px-2 py-1 text-gray-500 text-xs">
-                              No results found
-                            </li>
-                          )}
-                        </ul>
-                      )}
-                    </>
-                  ) : (
-                    <div className="flex items-center justify-between border rounded px-2 py-1 text-sm bg-gray-50">
-                      <span>{clientName}</span>
-                      <button
-                        onClick={() => setClientName("")}
-                        className="text-xs text-red-500 hover:underline"
-                      >
-                        Change
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  House Address
-                </label>
-                <input
-                  type="text"
-                  placeholder="House Address"
-                  value={houseAddress}
-                  onChange={(e) => setHouseAddress(e.target.value)}
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  Type of Lights
-                </label>
-                <input
-                  type="text"
-                  placeholder="Type of Lights"
-                  value={typeOfLights}
-                  onChange={(e) => setTypeOfLights(e.target.value)}
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  Amount of Lights
-                </label>
-                <input
-                  type="text"
-                  placeholder="Amount of Lights"
-                  value={lightsAmount}
-                  onChange={(e) => setLightsAmount(e.target.value)}
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  Schedule Date
-                </label>
-                <br />
-                <DatePicker
-                  selected={eventDate}
-                  onChange={(date) => setEventDate(date)}
-                  showTimeSelect
-                  dateFormat="MMM d, yyyy h:mm aa"
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-medium text-gray-600">
-                  Lights Design Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () =>
-                        setImageBase64(reader.result as string);
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                  className="w-full border rounded px-2 py-1 text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 mt-5">
-            {selectedEvent && getToken()?.UserType === "LightsInstaller" && (
-                <button
-                  onClick={() => setFinishModalOpen(true)} 
-                  disabled={
-                    !eventDate ||
-                    new Date(eventDate).toDateString() !== new Date().toDateString()
-                  }
-                  className={`text-xs px-3 py-1 rounded text-white ${
-                    !eventDate ||
-                    new Date(eventDate).toDateString() !== new Date().toDateString()
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-green-600 hover:bg-green-700"
-                  }`}
-                >
-                  Job Finish
-                </button>
-              )}
- 
-              <button
-                onClick={() => setPopupOpen(false)}
-                className="text-xs px-3 py-1 border rounded text-gray-500"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddOrUpdateEvent}
-                className="text-xs px-3 py-1 bg-sky-500 text-white rounded"
-              >
-                Save
-              </button>
-            </div>
+      <div>
+        {!clientName ? (
+          <input
+            type="text"
+            placeholder="Search customer..."
+            value={query}
+            onChange={(e) => handleCustomerSearch(e.target.value)}
+            className="w-full border rounded px-2 py-1"
+          />
+        ) : (
+          <div className="flex items-center justify-between bg-gray-50 border rounded px-2 py-1">
+            <span>{clientName}</span>
+            <button
+              onClick={() => setClientName("")}
+              className="text-xs text-red-500 hover:underline"
+            >
+              Change
+            </button>
           </div>
         )}
+      </div>
+
+      <div>
+        <input
+          type="text"
+          placeholder="House Address"
+          value={houseAddress}
+          onChange={(e) => setHouseAddress(e.target.value)}
+          className="w-full border rounded px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <input
+          type="text"
+          placeholder="Type of Lights"
+          value={typeOfLights}
+          onChange={(e) => setTypeOfLights(e.target.value)}
+          className="w-full border rounded px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <input
+          type="text"
+          placeholder="Amount of Lights"
+          value={lightsAmount}
+          onChange={(e) => setLightsAmount(e.target.value)}
+          className="w-full border rounded px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <DatePicker
+          selected={eventDate}
+          onChange={(date) => setEventDate(date)}
+          showTimeSelect
+          dateFormat="MMM d, yyyy h:mm aa"
+          className="w-full border rounded px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () =>
+                setImageBase64(reader.result as string);
+              reader.readAsDataURL(file);
+            }
+          }}
+          className="w-full border rounded px-2 py-1"
+        />
+      </div>
+    </div>
+
+    <div className="flex justify-end gap-2 mt-3">
+      {selectedEvent && getToken()?.UserType === "LightsInstaller" && (
+        <button
+          onClick={() => setFinishModalOpen(true)}
+          disabled={
+            !eventDate ||
+            new Date(eventDate).toDateString() !== new Date().toDateString()
+          }
+          className={`text-xs px-3 py-1 rounded text-white ${
+            !eventDate ||
+            new Date(eventDate).toDateString() !== new Date().toDateString()
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
+        >
+          Job Finish
+        </button>
+      )}
+
+      <button
+        onClick={() => setPopupOpen(false)}
+        className="text-xs px-3 py-1 border rounded text-gray-500"
+      >
+        Cancel
+      </button>
+
+      <button
+        onClick={handleAddOrUpdateEvent}
+        className="text-xs px-3 py-1 bg-sky-500 text-white rounded hover:bg-sky-600"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+)}
 
   {finishModalOpen && (
     <div
