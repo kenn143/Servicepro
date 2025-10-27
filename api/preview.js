@@ -3,8 +3,8 @@ export default async function handler(req, res) {
   
     // Replace with your actual record fetch if needed
     const image = `https://servicepro-omega.vercel.app/thumbnail.png`;
-    const title = `Customer Quote ${id}`;
-    const description = `View customer quote for ${id}`;
+    const title = 'Customer Quote';
+    const description = 'View customer quote ';
   
     res.setHeader("Content-Type", "text/html");
     res.status(200).send(`
