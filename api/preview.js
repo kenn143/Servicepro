@@ -21,9 +21,9 @@ export default async function handler(req, res) {
   
       const record = await response.json();
   
-      const clientName = record.fields?.ClientName || "Customer Profile";
+      const clientName = record.fields?.ClientName || "Customer Quote";
       const description =
-        record.fields?.Notes || "View this customer profile in ServicePro.";
+        record.fields?.Notes || "View this customer quote in ServicePro.";
       const image =
         record.fields?.Image?.[0]?.url ||
         "https://servicepro-omega.vercel.app/thumbnail.png";
