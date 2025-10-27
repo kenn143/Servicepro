@@ -43,8 +43,8 @@ const [completeImageBase64, setCompleteImageBase64] = useState("");
 const [jobNotes, setJobNotes] = useState("");
 const [clientComments, setClientComments] = useState("");
 const [query, setQuery] = useState("");
-const [filtered, setFiltered] = useState<any[]>([]);
-const [loading, setLoading] = useState(false);
+const [_filtered, setFiltered] = useState<any[]>([]);
+const [_loading, setLoading] = useState(false);
 const [customerId,setCustomerId] = useState("");
 
 const AIRTABLE_ENDPOINT =
@@ -79,6 +79,7 @@ const handleCustomerSearch = async (value: string) => {
       DateCreated: rec.createdTime,
     }));
     setFiltered(results);
+    setCustomerId(results.CustomerId)
   } catch (err) {
     console.error(err);
     setFiltered([]);
@@ -87,13 +88,13 @@ const handleCustomerSearch = async (value: string) => {
   }
 };
 
-const handleSelectCustomer = (cust: any) => {
-  setClientName(cust.CustomerName);
-setCustomerId(cust.CustomerId);
-  setQuery("");
-  setFiltered([]);
-  setLoading(false);
-};
+// const handleSelectCustomer = (cust: any) => {
+//   setClientName(cust.CustomerName);
+// setCustomerId(cust.CustomerId);
+//   setQuery("");
+//   setFiltered([]);
+//   setLoading(false);
+// };
 
 
   useEffect(() => {
