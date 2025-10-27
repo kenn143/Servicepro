@@ -70,7 +70,7 @@ const QuotationList: React.FC = () => {
             recordId, 
             clientId: selectedQuote.clientID, 
             customerRecordId: customer?.recordId || null, 
-            accessibleLink: `https://servicepro-omega.vercel.app/customerPreview?id=${recordId}`, 
+            accessibleLink: `https://servicepro-omega.vercel.app/api/preview?id=${recordId}`, 
           }),
         }
       );
