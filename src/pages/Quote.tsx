@@ -55,6 +55,21 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
     phone: "",
   });
   const [loadingClient, setLoadingClient] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+const [showDropdown, setShowDropdown] = useState(false);
+
+const filteredOptions = options.filter((item) =>
+  item.fields.CustomerName.toLowerCase().includes(searchTerm.toLowerCase())
+);
+useEffect(() => {
+  const handleClickOutside = () => {
+    setShowDropdown(false);
+  };
+  document.addEventListener("click", handleClickOutside);
+  return () => {
+    document.removeEventListener("click", handleClickOutside);
+  };
+}, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setJobTitle(e.target.value);
@@ -360,20 +375,45 @@ const [lineItems, setLineItems] = useState<LineItem[]>([]);
                   </h2>
 
                   <div className="flex items-center w-full sm:w-auto gap-2">
-                    <select
-                      id="dropdown"
-                      className="w-full sm:w-auto font-semibold text-base px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm font-sans dark:bg-black"
-                      value={selected}
-                      onChange={handleChangeForDropdown}
-                      required
-                    >
-                      <option value="">--Choose Client--</option>
-                      {options.map((item) => (
-                        <option key={item.id} value={item.fields.CustomerId}>
-                          {item.fields.CustomerName}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="relative w-full sm:w-72">
+                        <input
+                          type="text"
+                          placeholder="--Choose Client--"
+                          value={searchTerm}
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setShowDropdown(true);
+                          }}
+                          onFocus={() => setShowDropdown(true)}
+                          className="w-full font-semibold text-base px-2 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:bg-black dark:text-white"
+                        />
+
+                        {showDropdown && (
+                          <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-y-auto shadow-md dark:bg-gray-800 dark:border-gray-700">
+                            {filteredOptions.length > 0 ? (
+                              filteredOptions.map((item) => (
+                                <li
+                                  key={item.id}
+                                  className="px-3 py-2 hover:bg-blue-100 dark:hover:bg-gray-700 cursor-pointer text-sm dark:text-white"
+                                  onClick={() => {
+                                    setSelected(item.fields.CustomerId);
+                                    setSearchTerm(item.fields.CustomerName); 
+                                    setShowDropdown(false);
+                                  }}
+                                >
+                                  {item.fields.CustomerName}
+                                </li>
+                              ))
+                            ) : (
+                              <li className="px-3 py-2 text-gray-500 dark:text-gray-300 text-sm">
+                                No results found
+                              </li>
+                            )}
+                          </ul>
+                        )}
+                      </div>
+
+
 
                     <button
                       onClick={() => setShowModal(true)}
