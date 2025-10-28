@@ -298,7 +298,29 @@ useEffect(() => {
   const endIndex = Math.min(startIndex + recordsPerPage, totalRecords);
 
   const currentRecords = filteredData.slice(startIndex, endIndex);
+  const handleCopy = async () => {
+
+    if (selectedIds.length === 0) {
+      toast.warning("No quotes selected.");
+      return;
+    }
   
+    if (selectedIds.length > 1) {
+      toast.warning("You can only send one record at a time.");
+      return;
+    }
+    
+  
+    const recordId = selectedIds[0]; 
+    const link = `https://servicepro-omega.vercel.app/api/preview?id=${recordId}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success("Link copied to clipboard!");
+    } catch (error) {
+      toast.error("Failed to copy link.");
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -329,6 +351,17 @@ useEffect(() => {
                   className="border border-gray-300 rounded-md px-4 py-2 w-full sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:text-white"
                 />
                 <div className="flex gap-2 w-full sm:w-auto">
+                <button
+                    onClick={handleCopy}
+                    className={`px-2 py-1 rounded shadow sm:text-sm ${
+                      selectedIds.length === 1
+                        ? "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                    disabled={selectedIds.length !== 1}
+                  >
+                    Copy Link
+                  </button>
                   <button
                     className="bg-blue-500 text-white px-2 py-1 rounded shadow sm:text-sm" 
                     onClick={() => navigate("/quote-entry")}
@@ -349,6 +382,8 @@ useEffect(() => {
                   </button> */}
 
                  <div className="relative inline-block text-left">
+             
+
                   <button
                     type="button"
                     className={`inline-flex justify-center w-full rounded-md px-2 py-1 text-sm font-medium shadow-sm ${
@@ -362,6 +397,7 @@ useEffect(() => {
                     Actions
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </button>
+
 
                   {showDropdown && selectedIds.length === 1 && (
                     <div className="absolute right-0 z-20 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
