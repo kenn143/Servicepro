@@ -29,15 +29,17 @@
 //     `);
 //   }
 // pages/preview/[id].js
+// ✅ Server-side rendering so each share link can be unique
 export async function getServerSideProps({ params }) {
     const { id } = params;
+  
+    // You can fetch record data here if needed
+    const title = `Customer Quote `;
+    const description = `View your quote details for customer.`;
+    const image = `https://servicepro-omega.vercel.app/thumbnail.png`;
+  
     return {
-      props: {
-        id,
-        title: "Customer Quote",
-        description: "View customer quote",
-        image: "https://servicepro-omega.vercel.app/thumbnail.png",
-      },
+      props: { id, title, description, image },
     };
   }
   
@@ -54,15 +56,21 @@ export async function getServerSideProps({ params }) {
           <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:image" content={image} />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
         </head>
         <body>
-          <p>Redirecting...</p>
-          <script>
-            window.location.href = "https://servicepro-omega.vercel.app/customerPreview?id={id}";
-          </script>
+          <p>Redirecting to your quote...</p>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                setTimeout(() => {
+                  window.location.href = "https://servicepro-omega.vercel.app/customerPreview?id=${id}";
+                }, 1000);
+              `,
+            }}
+          />
         </body>
       </html>
     );
   }
-  
   
