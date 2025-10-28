@@ -236,9 +236,9 @@ useEffect(() => {
     fetchData();
   }, []);
 
-  const handleChangeForDropdown = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelected(e.target.value);
-  };
+  // const handleChangeForDropdown = (e: ChangeEvent<HTMLSelectElement>) => {
+  //   setSelected(e.target.value);
+  // };
 
   const handleClientMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setClientMessage(e.target.value);
