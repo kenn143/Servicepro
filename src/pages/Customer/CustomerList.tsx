@@ -42,20 +42,56 @@ export default function CustomerList() {
 
   const recordsPerPage = 10;
 
-  const fetchCustomers = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(AIRTABLE_API, {
+  // const fetchCustomers = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch(AIRTABLE_API, {
+  //       headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
+  //     });
+  //     const data = await res.json();
+  //     setCustomers(data.records || []);
+  //   } catch (err) {
+  //     console.error(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+const fetchCustomers = async () => {
+  setLoading(true);
+  try {
+    let allRecords: Customer[] = []; 
+    let offset = ""; 
+
+    do {
+      const url = offset
+        ? `${AIRTABLE_API}?offset=${offset}`
+        : AIRTABLE_API;
+
+      const res = await fetch(url, {
         headers: { Authorization: `Bearer ${AIRTABLE_KEY}` },
       });
+
       const data = await res.json();
-      setCustomers(data.records || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      allRecords = [...allRecords, ...(data.records || [])]; 
+      offset = data.offset || ""; 
+    } while (offset); 
+
+    allRecords.sort((a, b) => {
+      const dateA = new Date(a.fields.DateCreated).getTime();
+      const dateB = new Date(b.fields.DateCreated).getTime();
+      return dateB - dateA; 
+    });
+
+    setCustomers(allRecords); 
+  } catch (err) {
+    console.error("Error fetching customers:", err);
+    toast.error("Failed to load customers");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchCustomers();
