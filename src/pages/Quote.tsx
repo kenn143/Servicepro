@@ -75,6 +75,14 @@ useEffect(() => {
     setJobTitle(e.target.value);
   };
 
+  const toBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
   const addItem = async () => {
     const cloudName = "doj0vye62";
     const uploadPreset = "Qoute_FileName";
@@ -105,13 +113,20 @@ useEffect(() => {
                 );
 
                 const data = await res.json();
-                return data.secure_url as string;
+                const base64 = await toBase64(file);
+                // return data.secure_url as string;
+                return {
+                  fileName: file.name,
+                  cloudinaryUrl: data.secure_url as string,
+                  base64: base64,
+                };
               })
             );
 
             return {
               ...item,
               attachment: uploadedFiles,
+     
             };
           } catch (error) {
             console.error("Cloudinary Upload Error:", error);
@@ -132,6 +147,7 @@ useEffect(() => {
       ClientId: selected,
       ClientMessage: clientMessage,
     };
+
 
     const response = await fetch(
       "https://hook.us2.make.com/bv2ju7vw5t8ttf241hooe12z5qpueb8u",
