@@ -148,7 +148,7 @@ useEffect(() => {
       ClientMessage: clientMessage,
     };
 
-
+console.log("finalquote",finalQuote)
     const response = await fetch(
       "https://hook.us2.make.com/bv2ju7vw5t8ttf241hooe12z5qpueb8u",
       {
