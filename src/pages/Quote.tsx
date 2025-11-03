@@ -92,7 +92,7 @@ useEffect(() => {
       return;
     }
 
-    
+    const AttachmentBase64: string[] = [];
 
     const uploadedItems = await Promise.all(
       lineItems.map(async (item) => {
@@ -115,10 +115,11 @@ useEffect(() => {
                 const data = await res.json();
                 const base64 = await toBase64(file);
                 // return data.secure_url as string;
+                AttachmentBase64.push(base64 as string);
                 return {
                   fileName: file.name,
                   cloudinaryUrl: data.secure_url as string,
-                  base64: base64,
+                  // base64: base64,
                 };
               })
             );
@@ -146,7 +147,8 @@ useEffect(() => {
       jobTitle: jobTitle,
       ClientId: selected,
       ClientMessage: clientMessage,
-      userId: getToken()?.ID
+      userId: getToken()?.ID,
+      AttachmentBase64
     };
 
 console.log("finalquote",finalQuote)

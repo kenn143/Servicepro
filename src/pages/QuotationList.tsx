@@ -177,41 +177,93 @@ const QuotationList: React.FC = () => {
   //   fetchCustomers();
   // }, []);
 
+// const fetchQuotes = async () => {
+//   try {
+//     const response = await fetch(
+//       "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
+//       {
+//         method: "GET",
+//         headers: {
+//           Authorization:
+//             "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+
+//     const result = await response.json();
+//     const records: Quote[] = result.records.map((record: any) => ({
+//       id: record.id,
+//       quoteId: record.fields["Quote ID"],
+//       clientID: record.fields["ClientID"],
+//       jobTitle: record.fields["Job Title"],
+//       quoteLink: `/Preview?id=${record.id}`,
+//       status: record.fields["Status"],
+//       createdTime: record.createdTime,
+//     }));
+//     const sortedRecords = records.sort(
+//       (a: Quote, b: Quote) =>
+//         new Date(b.createdTime ?? "").getTime() -
+//         new Date(a.createdTime ?? "").getTime()
+//     );
+//     // setData(records);
+//        setData(sortedRecords);
+//   } catch (error) {
+//     console.error("Error fetching quotes:", error);
+//   }
+// };
+
 const fetchQuotes = async () => {
   try {
-    const response = await fetch(
-      "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW",
-      {
+    let allRecords: Quote[] = []; 
+    let offset: string | undefined = undefined; 
+
+    do { 
+      const url = new URL("https://api.airtable.com/v0/appxmoiNZa85I7nye/tblbF4N9Ixi3mRFKW");
+      if (offset) url.searchParams.append("offset", offset); 
+
+      const response = await fetch(url.toString(), {
         method: "GET",
         headers: {
           Authorization:
             "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
           "Content-Type": "application/json",
         },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+      const result = await response.json();
 
-    const result = await response.json();
-    const records: Quote[] = result.records.map((record: any) => ({
-      id: record.id,
-      quoteId: record.fields["Quote ID"],
-      clientID: record.fields["ClientID"],
-      jobTitle: record.fields["Job Title"],
-      quoteLink: `/Preview?id=${record.id}`,
-      status: record.fields["Status"],
-      createdTime: record.createdTime,
-    }));
-    const sortedRecords = records.sort(
+      // 🆕 Append the records from this page
+      const pageRecords: Quote[] = result.records.map((record: any) => ({
+        id: record.id,
+        quoteId: record.fields["Quote ID"],
+        clientID: record.fields["ClientID"],
+        jobTitle: record.fields["Job Title"],
+        quoteLink: `/Preview?id=${record.id}`,
+        status: record.fields["Status"],
+        createdTime: record.createdTime,
+      }));
+      allRecords = [...allRecords, ...pageRecords]; // 🆕 Add this page to total list
+
+      offset = result.offset; // 🆕 Get next page offset (if any)
+    } while (offset); // 🆕 Continue fetching until no more offset
+
+    // 🆕 Sort by creation time (newest first)
+    const sortedRecords = allRecords.sort(
       (a: Quote, b: Quote) =>
         new Date(b.createdTime ?? "").getTime() -
         new Date(a.createdTime ?? "").getTime()
     );
-    // setData(records);
-       setData(sortedRecords);
+
+    setData(sortedRecords);
   } catch (error) {
     console.error("Error fetching quotes:", error);
   }
