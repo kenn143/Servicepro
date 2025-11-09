@@ -46,6 +46,7 @@ const [query, setQuery] = useState("");
 const [filtered, setFiltered] = useState<any[]>([]);
 const [_loading, setLoading] = useState(false);
 const [customerId,setCustomerId] = useState("");
+const [address,setAddress] = useState("");
 
 const AIRTABLE_ENDPOINT =
   "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0"; 
@@ -56,7 +57,7 @@ const handleCustomerSearch = async (value: string) => {
   setQuery(value);
   setFiltered([]);
   if (value.trim() === "") {
-    setLoading(false);
+    // setLoading(false);
     return;
   }
 
@@ -78,7 +79,7 @@ const handleCustomerSearch = async (value: string) => {
       EmailAddress: rec.fields.EmailAddress || "",
       DateCreated: rec.createdTime,
     }));
-    console.log("results",results)
+    // setAddress(results.Address);
     setFiltered(results);
     setCustomerId(results.CustomerId)
    
@@ -409,13 +410,16 @@ const getToken = () => {
         )}
       </div> */}
 <div>
-  {selectedEvent && !query && clientName ? (
+  {clientName && !query ? (
+
     <div className="flex items-center justify-between bg-gray-50 border rounded px-2 py-1">
       <span>{clientName}</span>
       <button
         onClick={() => {
-          setQuery("");
           setClientName("");
+          setQuery("");
+          setFiltered([]);
+          setAddress("");
         }}
         className="text-xs text-blue-500 hover:underline"
       >
@@ -427,7 +431,7 @@ const getToken = () => {
       <input
         type="text"
         placeholder="Search customer..."
-        value={query || clientName || ""}
+        value={query}
         onChange={(e) => handleCustomerSearch(e.target.value)}
         className="w-full border rounded px-2 py-1"
       />
@@ -456,6 +460,7 @@ const getToken = () => {
           </svg>
         </div>
       )}
+
       {filtered.length > 0 && !_loading && (
         <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 max-h-48 overflow-auto shadow-md">
           {filtered.map((cust) => (
@@ -465,13 +470,12 @@ const getToken = () => {
               onClick={() => {
                 setClientName(cust.CustomerName);
                 setCustomerId(cust.CustomerId);
-                setQuery("");
+                setAddress(cust.Address);
+                setQuery(""); 
                 setFiltered([]);
               }}
             >
-              <div className="font-medium text-gray-700">
-                {cust.CustomerName}
-              </div>
+              <div className="font-medium text-gray-700">{cust.CustomerName}</div>
               <div className="text-xs text-gray-500">{cust.Address}</div>
             </li>
           ))}
@@ -488,12 +492,11 @@ const getToken = () => {
 </div>
 
 
-
       <div>
         <input
           type="text"
           placeholder="House Address"
-          value={houseAddress}
+          value={houseAddress || address}
           onChange={(e) => setHouseAddress(e.target.value)}
           className="w-full border rounded px-2 py-1"
         />
