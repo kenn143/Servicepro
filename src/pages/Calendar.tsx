@@ -43,7 +43,7 @@ const [completeImageBase64, setCompleteImageBase64] = useState("");
 const [jobNotes, setJobNotes] = useState("");
 const [clientComments, setClientComments] = useState("");
 const [query, setQuery] = useState("");
-const [_filtered, setFiltered] = useState<any[]>([]);
+const [filtered, setFiltered] = useState<any[]>([]);
 const [_loading, setLoading] = useState(false);
 const [customerId,setCustomerId] = useState("");
 
@@ -78,8 +78,10 @@ const handleCustomerSearch = async (value: string) => {
       EmailAddress: rec.fields.EmailAddress || "",
       DateCreated: rec.createdTime,
     }));
+    console.log("results",results)
     setFiltered(results);
     setCustomerId(results.CustomerId)
+   
   } catch (err) {
     console.error(err);
     setFiltered([]);
@@ -135,8 +137,12 @@ const handleCustomerSearch = async (value: string) => {
               installerStaff: record.fields.InstallerStaff,
             },
           }));
+        
+          // setClientName(formattedEvents[0]?.extendedProps.clientName || "");
+        
 
         setEvents(formattedEvents);
+        
       } catch (err) {
         console.error("Error fetching Airtable data:", err);
         toast.error("Network error while loading events.");
@@ -149,6 +155,17 @@ const handleCustomerSearch = async (value: string) => {
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
     const props = event.extendedProps as CalendarEvent["extendedProps"];
+   
+  //  console.log("the customer",event.extendedProps.clientName)
+
+  //   if (event.extendedProps?.clientName) {
+  //     setClientName(event.extendedProps.clientName);
+  //     setQuery(event.extendedProps.clientName); // 👈 show in "Search customer"
+  //   } else if (event.title) {
+  //     // fallback if title used as name
+  //     setClientName(event.title);
+  //     setQuery(event.title);
+  //   }
 
     setSelectedEvent(event as unknown as CalendarEvent);
     setEventTitle(event.title);
@@ -348,7 +365,6 @@ const getToken = () => {
       minWidth: "350px",
     }}
   >
-    {/* Close button like Leaflet X */}
     <button
       onClick={() => setPopupOpen(false)}
       className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
@@ -371,7 +387,7 @@ const getToken = () => {
         />
       </div>
 
-      <div>
+      {/* <div>
         {!clientName ? (
           <input
             type="text"
@@ -391,7 +407,87 @@ const getToken = () => {
             </button>
           </div>
         )}
-      </div>
+      </div> */}
+<div>
+  {selectedEvent && !query && clientName ? (
+    <div className="flex items-center justify-between bg-gray-50 border rounded px-2 py-1">
+      <span>{clientName}</span>
+      <button
+        onClick={() => {
+          setQuery("");
+          setClientName("");
+        }}
+        className="text-xs text-blue-500 hover:underline"
+      >
+        Change
+      </button>
+    </div>
+  ) : (
+    <div className="relative">
+      <input
+        type="text"
+        placeholder="Search customer..."
+        value={query || clientName || ""}
+        onChange={(e) => handleCustomerSearch(e.target.value)}
+        className="w-full border rounded px-2 py-1"
+      />
+
+      {_loading && (
+        <div className="flex justify-center py-2">
+          <svg
+            className="animate-spin h-5 w-5 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+        </div>
+      )}
+      {filtered.length > 0 && !_loading && (
+        <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 max-h-48 overflow-auto shadow-md">
+          {filtered.map((cust) => (
+            <li
+              key={cust.CustomerId}
+              className="px-2 py-1 hover:bg-blue-100 cursor-pointer text-sm"
+              onClick={() => {
+                setClientName(cust.CustomerName);
+                setCustomerId(cust.CustomerId);
+                setQuery("");
+                setFiltered([]);
+              }}
+            >
+              <div className="font-medium text-gray-700">
+                {cust.CustomerName}
+              </div>
+              <div className="text-xs text-gray-500">{cust.Address}</div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {!_loading && query && filtered.length === 0 && (
+        <div className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 p-2 text-xs text-gray-500">
+          No customers found
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
+
 
       <div>
         <input
