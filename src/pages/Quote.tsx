@@ -225,35 +225,70 @@ console.log("finalquote",finalQuote)
     setLineItems(updatedItems);
   };
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization:
+  //               "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+
+  //       const data = await response.json();
+  //       setOptions(data.records as AirtableRecord[]);
+  //       console.log("data",data.records as AirtableRecord[]);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0",
-          {
-            method: "GET",
-            headers: {
-              Authorization:
-                "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
-              "Content-Type": "application/json",
-            },
+        let allRecords: AirtableRecord[] = [];
+        let offset = "";
+        const baseUrl = "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0";
+        const headers = {
+          Authorization:
+            "Bearer patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609",
+          "Content-Type": "application/json",
+        };
+  
+        do {
+          const url = offset ? `${baseUrl}?offset=${offset}` : baseUrl;
+          const response = await fetch(url, { headers });
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setOptions(data.records as AirtableRecord[]);
-        console.log("data",data.records as AirtableRecord[]);
+  
+          const data = await response.json();
+          allRecords = [...allRecords, ...(data.records as AirtableRecord[])];
+          offset = data.offset || ""; 
+        } while (offset);
+  
+        setOptions(allRecords);
+        console.log("Loaded clients:", allRecords);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("❌ Error fetching Airtable clients:", error);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   // const handleChangeForDropdown = (e: ChangeEvent<HTMLSelectElement>) => {
   //   setSelected(e.target.value);
