@@ -354,6 +354,7 @@ console.log("finalquote",finalQuote)
   
       if (response.ok) {
         toast.success("Client added successfully!");
+        window.location.reload();
         setShowModal(false);
         setNewClient({ fullname: "", email: "", address: "", phone: "" });
       } else {
@@ -365,6 +366,8 @@ console.log("finalquote",finalQuote)
     }
   
     setLoadingClient(false);
+   
+
   };
 
   return (
