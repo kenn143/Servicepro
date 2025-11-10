@@ -134,6 +134,7 @@ useEffect(() => {
 
     const AttachmentBase64: string[] = [];
 
+    
     const uploadedItems = await Promise.all(
       lineItems.map(async (item) => {
         if (item.attachment && item.attachment.length > 0) {
@@ -153,21 +154,13 @@ useEffect(() => {
                 );
 
                 const data = await res.json();
-                const base64 = await toBase64(file);
-                // return data.secure_url as string;
-                AttachmentBase64.push(base64 as string);
-                return {
-                  fileName: file.name,
-                  cloudinaryUrl: data.secure_url as string,
-                  // base64: base64,
-                };
+                return data.secure_url as string;
               })
             );
 
             return {
               ...item,
               attachment: uploadedFiles,
-     
             };
           } catch (error) {
             console.error("Cloudinary Upload Error:", error);
@@ -179,6 +172,7 @@ useEffect(() => {
         }
       })
     );
+
 
     const finalQuote = {
       Items: uploadedItems,
