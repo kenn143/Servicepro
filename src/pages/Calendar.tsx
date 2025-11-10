@@ -458,7 +458,7 @@ const getToken = () => {
 
     <div className="space-y-2 text-sm">
       <div className="flex items-center gap-2">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Job Title</label>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Job Title:</label>
         <input
           type="text"
           placeholder="Job Title"
@@ -492,7 +492,7 @@ const getToken = () => {
 <div>
   {clientName && !query ? (
     <div className="flex items-center gap-2">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Customer Name</label>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Customer Name:</label>
     <div className="flex items-center justify-between bg-gray-50 border rounded px-2 py-1 min-w-[255px]">
  
       <span>{clientName}</span>
@@ -511,7 +511,7 @@ const getToken = () => {
     </div>
   ) : (
     <div className="relative flex items-center gap-2">
-        <label className="text-xs font-medium text-gray-600 min-w-[80px]">Customer Name</label>
+        <label className="text-xs font-medium text-gray-600 min-w-[80px]">Customer Name:</label>
       <input
         type="text"
         placeholder="Search customer..."
@@ -589,7 +589,7 @@ const getToken = () => {
     </div>
 
       <div className="flex items-center gap-2">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Type of Lights</label>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Type of Lights:</label>
         <input
           type="text"
           placeholder="Type of Lights"
@@ -599,7 +599,7 @@ const getToken = () => {
         />
       </div>
       <div className="flex items-center gap-2">
-        <label className="text-xs font-medium text-gray-600 min-w-[80px]">Amount of Lights</label>
+        <label className="text-xs font-medium text-gray-600 min-w-[80px]">Amount of Lights:</label>
         <input
           type="text"
           inputMode="numeric"
@@ -616,7 +616,7 @@ const getToken = () => {
         />
       </div>
       <div className="flex items-center gap-1">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Date Scheduled</label><br/>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Date Scheduled:</label><br/>
         <DatePicker
           selected={eventDate}
           onChange={(date) => setEventDate(date)}
@@ -626,7 +626,7 @@ const getToken = () => {
         />
       </div>
           <div className="flex items-center gap-2">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Light Installers</label>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Light Installers:</label>
       <select
         value={lightInstallerId}
         onChange={(e) => setLightInstallerId(e.target.value)}
@@ -641,7 +641,7 @@ const getToken = () => {
       </select>
     </div>
     <div className="flex items-center gap-2">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Sales Person</label>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Sales Person:</label>
         <input
           type="text"
           placeholder="Type of Lights"
@@ -652,7 +652,7 @@ const getToken = () => {
       </div>
     
       <div className="flex items-center gap-2">
-      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Attachment</label>
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Attachment:</label>
         <input
           type="file"
           accept="image/*"
