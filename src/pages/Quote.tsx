@@ -180,7 +180,6 @@ useEffect(() => {
       })
     );
 
-
     const finalQuote = {
       Items: uploadedItems,
       total: quoteTotal,
