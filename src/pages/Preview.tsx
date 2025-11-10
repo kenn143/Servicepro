@@ -164,7 +164,7 @@ const Preview: React.FC = () => {
       });
 
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
+      console.log("the id ",id);
       const data = await response.json();
       console.log("the data is",data)
       setCustomerList(data.records);
