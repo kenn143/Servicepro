@@ -47,11 +47,15 @@ const [filtered, setFiltered] = useState<any[]>([]);
 const [_loading, setLoading] = useState(false);
 const [customerId,setCustomerId] = useState("");
 const [address,setAddress] = useState("");
+const [installers, setInstallers] = useState<{ id: string; FullName: string }[]>([]);
+const [lightInstallerId, setLightInstallerId] = useState("");
 
 const AIRTABLE_ENDPOINT =
   "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0"; 
 const AIRTABLE_TOKEN =
   "patpiD7tGAqIjDtBc.2e94dc1d9c6b4dddd0e3d88371f7a123bf34dc9ccd05c8c2bc1219b370bfc609";
+
+  
 
 const handleCustomerSearch = async (value: string) => {
   setQuery(value);
@@ -150,6 +154,43 @@ const handleCustomerSearch = async (value: string) => {
       }
     };
 
+    const fetchInstallers = async () => {
+      try {
+        let allRecords: any[] = [];
+        let offset = "";
+        const baseUrl = "https://api.airtable.com/v0/appxmoiNZa85I7nye/tblqF9ZltF2qnHL7X";
+  
+        do {
+          const url = offset
+            ? `${baseUrl}?filterByFormula=({UserType}='LightsInstaller')&offset=${offset}`
+            : `${baseUrl}?filterByFormula=({UserType}='LightsInstaller')`;
+  
+          const res = await fetch(url, {
+            headers: {
+              Authorization: `Bearer ${AIRTABLE_TOKEN}`, 
+            },
+          });
+  
+          if (!res.ok) throw new Error("Failed to fetch installers");
+          const data = await res.json();
+  
+          allRecords = [...allRecords, ...data.records];
+          offset = data.offset || ""; 
+        } while (offset);
+  
+        const mapped = allRecords.map((rec: any) => ({
+          id: rec.id,
+          FullName: rec.fields.FullName,
+        }));
+  
+        setInstallers(mapped);
+      } catch (err) {
+        console.error("Error fetching installers:", err);
+      }
+    };
+    fetchInstallers();
+  
+
     fetchJobsFromAirtable();
   }, []);
 
@@ -227,6 +268,8 @@ const handleCustomerSearch = async (value: string) => {
       dateSchedule: eventDate ? eventDate.toISOString() : "",
       customerId: customerId,
       imageBase64,
+      lightInstallerId,
+      salesman: getToken()?.ID
     };
     try {
       const res = await fetch(
@@ -283,6 +326,8 @@ const handleCustomerSearch = async (value: string) => {
     setLightsAmount("");
     setImageBase64("");
     setSelectedEvent(null);
+    setLightInstallerId("");
+
   };
 
 const handleSubmitCompletion = async () => {
@@ -354,6 +399,7 @@ const getToken = () => {
 };
 
 
+
   return (
     <>
       <PageMeta title="Lighting Calendar" description="" />
@@ -412,6 +458,7 @@ const getToken = () => {
 
     <div className="space-y-2 text-sm">
       <div>
+      <label className="text-xs font-medium text-gray-600">Job Title</label>
         <input
           type="text"
           placeholder="Job Title"
@@ -461,6 +508,7 @@ const getToken = () => {
     </div>
   ) : (
     <div className="relative">
+        <label className="text-xs font-medium text-gray-600">Customer Name</label>
       <input
         type="text"
         placeholder="Search customer..."
@@ -526,6 +574,7 @@ const getToken = () => {
 
 
       <div>
+      <label className="text-xs font-medium text-gray-600">House Address</label>
         <input
           type="text"
           placeholder="House Address"
@@ -536,6 +585,7 @@ const getToken = () => {
       </div>
 
       <div>
+      <label className="text-xs font-medium text-gray-600">Type of Lights</label>
         <input
           type="text"
           placeholder="Type of Lights"
@@ -544,18 +594,25 @@ const getToken = () => {
           className="w-full border rounded px-2 py-1"
         />
       </div>
-
       <div>
+        <label className="text-xs font-medium text-gray-600">Amount of Lights</label>
         <input
           type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
           placeholder="Amount of Lights"
           value={lightsAmount}
-          onChange={(e) => setLightsAmount(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*$/.test(value)) {
+              setLightsAmount(value);
+            }
+          }}
           className="w-full border rounded px-2 py-1"
         />
       </div>
-
       <div>
+      <label className="text-xs font-medium text-gray-600">Date Secheduled</label><br/>
         <DatePicker
           selected={eventDate}
           onChange={(date) => setEventDate(date)}
@@ -564,8 +621,34 @@ const getToken = () => {
           className="w-full border rounded px-2 py-1"
         />
       </div>
-
+          <div>
+      <label className="text-xs font-medium text-gray-600">Light Installers</label>
+      <select
+        value={lightInstallerId}
+        onChange={(e) => setLightInstallerId(e.target.value)}
+        className="w-full border rounded px-2 py-1"
+      >
+        <option value="">Select installer</option>
+        {installers.map((inst) => (
+          <option key={inst.id} value={inst.id}>
+            {inst.FullName}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div>
+      <label className="text-xs font-medium text-gray-600">Sales Person</label>
+        <input
+          type="text"
+          placeholder="Type of Lights"
+          value={getToken()?.FullName}         
+          className="w-full border rounded px-2 py-1"
+          disabled
+        />
+      </div>
+    
       <div>
+      <label className="text-xs font-medium text-gray-600">Attachment</label>
         <input
           type="file"
           accept="image/*"
