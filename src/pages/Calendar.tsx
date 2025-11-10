@@ -180,10 +180,43 @@ const handleCustomerSearch = async (value: string) => {
   };
 
   const handleAddOrUpdateEvent = async () => {
-    if (!eventTitle || !eventDate) {
-      toast.warning("Please enter job title and date.");
+    if (!eventTitle.trim()) {
+      toast.warning("Job Title is required");
       return;
     }
+  
+    if (!clientName.trim()) {
+      toast.warning("Please select a customer");
+      return;
+    }
+  
+    if (!houseAddress.trim() && !address.trim()) {
+      toast.warning("House Address is required");
+      return;
+    }
+  
+    if (!typeOfLights.trim()) {
+      toast.warning("Type of Lights is required");
+      return;
+    }
+  
+    if (!lightsAmount.trim()) {
+      toast.warning("Amount of Lights is required");
+      return;
+    }
+  
+    if (!eventDate) {
+      toast.warning("Please select a job date and time");
+      return;
+    }
+  
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    if (eventDate < todayStart) {
+      toast.warning("Job date cannot be in the past");
+      return;
+    }
+  
 
     const payload = {
       jobTitle: eventTitle,

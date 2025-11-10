@@ -89,8 +89,48 @@ useEffect(() => {
     setLoading(true);
     if (!selected) {
       toast.error("Client selection is required");
+      setLoading(false);
       return;
     }
+    if (!jobTitle.trim()) {
+      toast.warning("Job Title is required!");
+      setLoading(false);
+      return;
+    }
+  
+    if (lineItems.length === 0) {
+      toast.error("Please add at least one line item.");
+      setLoading(false);
+      return;
+    }
+    for (const item of lineItems) {
+      if (!item.itemName) {
+        toast.error("Lighting Style is required!");
+        setLoading(false);
+        return; 
+      }
+      if (!item.description.trim()) {
+        toast.error("Description is required!");
+        setLoading(false);
+        return;
+      }
+      if (!item.qty) {
+        toast.error("Quantity is required!");
+        setLoading(false);
+        return;
+      }
+      if (!item.price) {
+        toast.error("Price is required!");
+        setLoading(false);
+        return;
+      }
+      if (!item.attachment || item.attachment.length === 0) {
+        toast.error("Attachment is required!");
+        setLoading(false);
+        return;
+      }
+    }
+    
 
     const AttachmentBase64: string[] = [];
 
@@ -282,7 +322,7 @@ console.log("finalquote",finalQuote)
         setOptions(allRecords);
         console.log("Loaded clients:", allRecords);
       } catch (error) {
-        console.error("❌ Error fetching Airtable clients:", error);
+        console.error(" Error fetching Airtable clients:", error);
       }
     };
   
