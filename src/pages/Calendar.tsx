@@ -457,14 +457,14 @@ const getToken = () => {
     </h5>
 
     <div className="space-y-2 text-sm">
-      <div>
-      <label className="text-xs font-medium text-gray-600">Job Title</label>
+      <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Job Title</label>
         <input
           type="text"
           placeholder="Job Title"
           value={eventTitle}
           onChange={(e) => setEventTitle(e.target.value)}
-          className="w-full border rounded px-2 py-1"
+          className="flex-1 border rounded px-2 py-1"
         />
       </div>
 
@@ -491,8 +491,10 @@ const getToken = () => {
       </div> */}
 <div>
   {clientName && !query ? (
-
-    <div className="flex items-center justify-between bg-gray-50 border rounded px-2 py-1">
+    <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Customer Name</label>
+    <div className="flex items-center justify-between bg-gray-50 border rounded px-2 py-1 min-w-[255px]">
+ 
       <span>{clientName}</span>
       <button
         onClick={() => {
@@ -506,9 +508,10 @@ const getToken = () => {
         Change
       </button>
     </div>
+    </div>
   ) : (
-    <div className="relative">
-        <label className="text-xs font-medium text-gray-600">Customer Name</label>
+    <div className="relative flex items-center gap-2">
+        <label className="text-xs font-medium text-gray-600 min-w-[80px]">Customer Name</label>
       <input
         type="text"
         placeholder="Search customer..."
@@ -543,7 +546,7 @@ const getToken = () => {
       )}
 
       {filtered.length > 0 && !_loading && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 max-h-48 overflow-auto shadow-md">
+        <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 max-h-48 overflow-auto shadow-md mt-[64%]">
           {filtered.map((cust) => (
             <li
               key={cust.CustomerId}
@@ -564,7 +567,7 @@ const getToken = () => {
       )}
 
       {!_loading && query && filtered.length === 0 && (
-        <div className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 p-2 text-xs text-gray-500">
+        <div className="absolute z-10 w-full bg-white border border-gray-200 rounded mt-1 p-2 text-xs text-gray-500 mt-[17%]">
           No customers found
         </div>
       )}
@@ -572,20 +575,21 @@ const getToken = () => {
   )}
 </div>
 
+    <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 whitespace-nowrap min-w-[80px]">
+        House Address:
+      </label>
+      <input
+        type="text"
+        placeholder="House Address"
+        value={houseAddress || address}
+        onChange={(e) => setHouseAddress(e.target.value)}
+        className="flex-1 border rounded px-2 py-1"
+      />
+    </div>
 
-      <div>
-      <label className="text-xs font-medium text-gray-600">House Address</label>
-        <input
-          type="text"
-          placeholder="House Address"
-          value={houseAddress || address}
-          onChange={(e) => setHouseAddress(e.target.value)}
-          className="w-full border rounded px-2 py-1"
-        />
-      </div>
-
-      <div>
-      <label className="text-xs font-medium text-gray-600">Type of Lights</label>
+      <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Type of Lights</label>
         <input
           type="text"
           placeholder="Type of Lights"
@@ -594,8 +598,8 @@ const getToken = () => {
           className="w-full border rounded px-2 py-1"
         />
       </div>
-      <div>
-        <label className="text-xs font-medium text-gray-600">Amount of Lights</label>
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-medium text-gray-600 min-w-[80px]">Amount of Lights</label>
         <input
           type="text"
           inputMode="numeric"
@@ -611,8 +615,8 @@ const getToken = () => {
           className="w-full border rounded px-2 py-1"
         />
       </div>
-      <div>
-      <label className="text-xs font-medium text-gray-600">Date Secheduled</label><br/>
+      <div className="flex items-center gap-1">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Date Scheduled</label><br/>
         <DatePicker
           selected={eventDate}
           onChange={(date) => setEventDate(date)}
@@ -621,8 +625,8 @@ const getToken = () => {
           className="w-full border rounded px-2 py-1"
         />
       </div>
-          <div>
-      <label className="text-xs font-medium text-gray-600">Light Installers</label>
+          <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Light Installers</label>
       <select
         value={lightInstallerId}
         onChange={(e) => setLightInstallerId(e.target.value)}
@@ -636,8 +640,8 @@ const getToken = () => {
         ))}
       </select>
     </div>
-    <div>
-      <label className="text-xs font-medium text-gray-600">Sales Person</label>
+    <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Sales Person</label>
         <input
           type="text"
           placeholder="Type of Lights"
@@ -647,8 +651,8 @@ const getToken = () => {
         />
       </div>
     
-      <div>
-      <label className="text-xs font-medium text-gray-600">Attachment</label>
+      <div className="flex items-center gap-2">
+      <label className="text-xs font-medium text-gray-600 min-w-[80px]">Attachment</label>
         <input
           type="file"
           accept="image/*"
