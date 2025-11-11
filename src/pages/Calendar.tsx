@@ -220,7 +220,25 @@ const handleCustomerSearch = async (value: string) => {
     setImageBase64("");
     setPopupOpen(true);
   };
-
+  function formatToPhilippineISO(date: Date) {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Manila",  
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+  
+    const parts = formatter.formatToParts(date);
+    const get = (type: string) => parts.find(p => p.type === type)?.value || "00";
+  
+    return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}:${get("second")}+08:00`;
+  }
+  
+  
   const handleAddOrUpdateEvent = async () => {
     if (!eventTitle.trim()) {
       toast.warning("Job Title is required");
@@ -258,10 +276,7 @@ const handleCustomerSearch = async (value: string) => {
       toast.warning("Job date cannot be in the past");
       return;
     }
-    const pacificDate = new Date(
-      eventDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
-    );
-    const formattedPacific = pacificDate.toISOString();
+
   
 
     const payload = {
@@ -271,7 +286,7 @@ const handleCustomerSearch = async (value: string) => {
       typeOfLights,
       lightsAmount,
       // dateSchedule: eventDate ? eventDate.toISOString() : "",
-      dateSchedule:formattedPacific,
+      dateSchedule: eventDate ? formatToPhilippineISO(eventDate) : "",
       customerId: customerId,
       imageBase64,
       lightInstallerId,
