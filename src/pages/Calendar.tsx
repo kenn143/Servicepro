@@ -212,7 +212,8 @@ const handleCustomerSearch = async (value: string) => {
     setSelectedEvent(event as unknown as CalendarEvent);
     setEventTitle(event.title);
     setEventDate(event.start ? new Date(event.start) : null);
-    setHouseAddress(props.houseAddress || "");
+    setHouseAddress(props.houseAddress ||"");
+    setAddress(props.houseAddress || "");
     setClientName(props.clientName || "");
     setTypeOfLights(props.typeOfLights || "");
     setLightsAmount(props.lightsAmount || "");
