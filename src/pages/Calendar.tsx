@@ -222,7 +222,7 @@ const handleCustomerSearch = async (value: string) => {
   };
   function formatToPhilippineISO(date: Date) {
     const formatter = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Manila",  
+      timeZone: "Asia/Manila",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -234,8 +234,9 @@ const handleCustomerSearch = async (value: string) => {
   
     const parts = formatter.formatToParts(date);
     const get = (type: string) => parts.find(p => p.type === type)?.value || "00";
+
+    return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}:${get("second")}`;
   
-    return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}:${get("second")}+08:00`;
   }
   
   
