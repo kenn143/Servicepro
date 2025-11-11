@@ -258,6 +258,10 @@ const handleCustomerSearch = async (value: string) => {
       toast.warning("Job date cannot be in the past");
       return;
     }
+    const pacificDate = new Date(
+      eventDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    );
+    const formattedPacific = pacificDate.toISOString();
   
 
     const payload = {
@@ -266,12 +270,15 @@ const handleCustomerSearch = async (value: string) => {
       clientName,
       typeOfLights,
       lightsAmount,
-      dateSchedule: eventDate ? eventDate.toISOString() : "",
+      // dateSchedule: eventDate ? eventDate.toISOString() : "",
+      dateSchedule:formattedPacific,
       customerId: customerId,
       imageBase64,
       lightInstallerId,
       salesman: getToken()?.ID
     };
+ 
+    
     try {
       const res = await fetch(
         "https://hook.us2.make.com/n7qy68jvwjjow10s2034jrdx9ld1yu41",
