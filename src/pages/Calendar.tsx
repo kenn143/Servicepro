@@ -221,21 +221,21 @@ const handleCustomerSearch = async (value: string) => {
     setPopupOpen(true);
   };
   function formatToPhilippineISO(date: Date) {
-    const phTimeString = date.toLocaleString("en-US", {
-      timeZone: "Asia/Manila",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false, 
-    });
+    const phTime = new Date(
+      date.toLocaleString("en-US", { timeZone: "Asia/Manila" })
+    );
+  
+    const year = phTime.getFullYear();
+    const month = String(phTime.getMonth() + 1).padStart(2, "0");
+    const day = String(phTime.getDate()).padStart(2, "0");
+    const hours = String(phTime.getHours()).padStart(2, "0");
+    const minutes = String(phTime.getMinutes()).padStart(2, "0");
+    const seconds = String(phTime.getSeconds()).padStart(2, "0");
   
 
-    const [monthDayYear, time] = phTimeString.split(", ");
-    const [month, day, year] = monthDayYear.split("/");
+    const timezoneOffset = "+08:00";
   
-    return `${month}-${day}-${year} ${time}`; 
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${timezoneOffset}`;
   
   }
   
