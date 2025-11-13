@@ -220,24 +220,22 @@ const handleCustomerSearch = async (value: string) => {
     setImageBase64("");
     setPopupOpen(true);
   };
-  function formatToPhilippineISO(date: Date) {
-    const phTime = new Date(
-      date.toLocaleString("en-US", { timeZone: "Asia/Manila" })
-    );
+  function formatToLocalISO(date: Date) {
+    const tzOffset = -date.getTimezoneOffset(); // in minutes
+    const diffHours = String(Math.floor(tzOffset / 60)).padStart(2, "0");
+    const diffMinutes = String(Math.abs(tzOffset % 60)).padStart(2, "0");
+    const sign = tzOffset >= 0 ? "+" : "-";
   
-    const year = phTime.getFullYear();
-    const month = String(phTime.getMonth() + 1).padStart(2, "0");
-    const day = String(phTime.getDate()).padStart(2, "0");
-    const hours = String(phTime.getHours()).padStart(2, "0");
-    const minutes = String(phTime.getMinutes()).padStart(2, "0");
-    const seconds = String(phTime.getSeconds()).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
   
-
-    const timezoneOffset = "+08:00";
-  
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${timezoneOffset}`;
-  
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${sign}${diffHours}:${diffMinutes}`;
   }
+  
   
   
   const handleAddOrUpdateEvent = async () => {
@@ -287,7 +285,7 @@ const handleCustomerSearch = async (value: string) => {
       typeOfLights,
       lightsAmount,
       // dateSchedule: eventDate ? eventDate.toISOString() : "",
-      dateSchedule: eventDate ? formatToPhilippineISO(eventDate) : "",
+      dateSchedule: eventDate ? formatToLocalISO(eventDate) : "",
       customerId: customerId,
       imageBase64,
       lightInstallerId,
