@@ -49,6 +49,9 @@ const [customerId,setCustomerId] = useState("");
 const [address,setAddress] = useState("");
 const [installers, setInstallers] = useState<{ id: string; FullName: string }[]>([]);
 const [lightInstallerId, setLightInstallerId] = useState("");
+const [installersCount, setInstallersCount] = useState("");
+const [completionTime, setCompletionTime] = useState("");
+const [attachmentFile, setAttachmentFile] = useState<File | null>(null); 
 
 const AIRTABLE_ENDPOINT =
   "https://api.airtable.com/v0/appxmoiNZa85I7nye/tbl5zFFDDF4N3hYv0"; 
@@ -239,6 +242,8 @@ const handleCustomerSearch = async (value: string) => {
   
   
   const handleAddOrUpdateEvent = async () => {
+    const cloudName = "doj0vye62"; // Cloudinary cloud name
+const uploadPreset = "Qoute_FileName";
     if (!eventTitle.trim()) {
       toast.warning("Job Title is required");
       return;
@@ -276,6 +281,32 @@ const handleCustomerSearch = async (value: string) => {
       return;
     }
 
+    let uploadedUrl = imageBase64; // fallback to previous value
+    if (attachmentFile) {
+      const formData = new FormData();
+      formData.append("file", attachmentFile);
+      formData.append("upload_preset", uploadPreset);
+  
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (data.secure_url) {
+          uploadedUrl = data.secure_url; 
+          toast.success("Attachment uploaded to Cloudinary!");
+        } else {
+          toast.error("Cloudinary upload failed.");
+          return;
+        }
+      } catch (err) {
+        console.error("Cloudinary upload error:", err);
+        toast.error("Error uploading file to Cloudinary.");
+        return;
+      }
+    }
+
   
 
     const payload = {
@@ -287,11 +318,10 @@ const handleCustomerSearch = async (value: string) => {
       // dateSchedule: eventDate ? eventDate.toISOString() : "",
       dateSchedule: eventDate ? formatToLocalISO(eventDate) : "",
       customerId: customerId,
-      imageBase64,
+      imageUrl : uploadedUrl,
       lightInstallerId,
       salesman: getToken()?.ID
     };
- 
     
     try {
       const res = await fetch(
@@ -355,6 +385,35 @@ const handleCustomerSearch = async (value: string) => {
 const handleSubmitCompletion = async () => {
   if (!selectedEvent) return;
 
+  if (!lightsUsed) {
+    toast.error("Please enter how many lights were used.");
+    return;
+  }
+  if (!cordsUsed) {
+    toast.error("Please enter how many cords were used.");
+    return;
+  }
+  if (!timersUsed) {
+    toast.error("Please enter how many timers were used.");
+    return;
+  }
+  if (!installersCount) { 
+    toast.error("Please enter how many installers were on the job.");
+    return;
+  }
+  if (!completionTime) { 
+    toast.error("Please enter how long it took to complete the job.");
+    return;
+  }
+  if (!completeImageBase64) {
+    toast.error("Please upload the completed house picture.");
+    return;
+  }
+  if (!jobNotes) {
+    toast.error("Please enter notes about difficulties with the job.");
+    return;
+  }
+
   const completionPayload = {
     jobId: selectedEvent.id,
     jobTitle: selectedEvent.title,
@@ -364,6 +423,8 @@ const handleSubmitCompletion = async () => {
     completeImageBase64,
     jobNotes,
     clientComments,
+    installersCount,
+    completionTime,
     action:"JobFinish"
   };
 
@@ -447,12 +508,20 @@ const getToken = () => {
             addEventButton: {
               text: "Add Job +",
               click: () => {
+                if (getToken()?.UserType === "LightsInstaller") {
+                  toast.error("You are not allowed to add a job."); 
+                  return; 
+                }
+
                 resetModalFields();
                 setEventDate(new Date());
                 setSelectedEvent(null);
                 setPopupOpen(true);
               },
+          
+            
             },
+       
               
           }}
         />    
@@ -675,20 +744,15 @@ const getToken = () => {
     
       <div className="flex items-center gap-2">
       <label className="text-xs font-medium text-gray-600 min-w-[80px]">Attachment:</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onloadend = () =>
-                setImageBase64(reader.result as string);
-              reader.readAsDataURL(file);
-            }
-          }}
-          className="w-full border rounded px-2 py-1"
-        />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) setAttachmentFile(file); 
+        }}
+        className="w-full border rounded px-2 py-1"
+      />
       </div>
     </div>
 
@@ -709,8 +773,26 @@ const getToken = () => {
         >
           Job Finish
         </button>
+        
+        
       )}
+{/* {selectedEvent && getToken()?.UserType !== "LightsInstaller" && (
+  <>
+    <button
+      onClick={() => setPopupOpen(false)}
+      className="text-xs px-3 py-1 border rounded text-gray-500"
+    >
+      Cancel
+    </button>
 
+    <button
+      onClick={handleAddOrUpdateEvent}
+      className="text-xs px-3 py-1 bg-sky-500 text-white rounded hover:bg-sky-600"
+    >
+      Save
+    </button>
+  </>
+)} */}
       <button
         onClick={() => setPopupOpen(false)}
         className="text-xs px-3 py-1 border rounded text-gray-500"
@@ -752,6 +834,7 @@ const getToken = () => {
           value={lightsUsed}
           onChange={(e) => setLightsUsed(e.target.value)}
           className="w-full border rounded px-2 py-1 text-sm"
+          required
         />
       </div>
 
@@ -765,6 +848,7 @@ const getToken = () => {
           value={cordsUsed}
           onChange={(e) => setCordsUsed(e.target.value)}
           className="w-full border rounded px-2 py-1 text-sm"
+          required
         />
       </div>
 
@@ -778,8 +862,39 @@ const getToken = () => {
           value={timersUsed}
           onChange={(e) => setTimersUsed(e.target.value)}
           className="w-full border rounded px-2 py-1 text-sm"
+          required
         />
       </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+         How many installers on job?
+        </label>
+        <input
+          type="text"
+          placeholder=""
+          value={installersCount}
+          onChange={(e) => setInstallersCount(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="text-xs font-medium text-gray-600">
+        How long did it take to complete?
+        </label>
+        <input
+          type="text"
+          placeholder=""
+          value={completionTime}
+          onChange={(e) => setCompletionTime(e.target.value)}
+          className="w-full border rounded px-2 py-1 text-sm"
+          required
+        />
+      </div>
+
+      
 
       <div>
         <label className="text-xs font-medium text-gray-600">
@@ -798,6 +913,7 @@ const getToken = () => {
             }
           }}
           className="w-full border rounded px-2 py-1 text-sm"
+          required
         />
       </div>
 
@@ -811,6 +927,7 @@ const getToken = () => {
           onChange={(e) => setJobNotes(e.target.value)}
           className="w-full border rounded px-2 py-1 text-sm"
           rows={3}
+          required
         />
       </div>
 
