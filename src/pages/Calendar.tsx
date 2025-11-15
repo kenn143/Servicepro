@@ -294,8 +294,7 @@ const uploadPreset = "Qoute_FileName";
         });
         const data = await res.json();
         if (data.secure_url) {
-          uploadedUrl = data.secure_url; 
-          toast.success("Attachment uploaded to Cloudinary!");
+          uploadedUrl = data.secure_url;     
         } else {
           toast.error("Cloudinary upload failed.");
           return;
