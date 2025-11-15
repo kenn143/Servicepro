@@ -481,7 +481,8 @@ const getToken = () => {
   }
 };
 
-
+const userType = getToken()?.UserType;
+const isInstaller = userType === "LightsInstaller";
 
   return (
     <>
@@ -495,7 +496,8 @@ const getToken = () => {
           contentHeight="auto"
           expandRows={true}
           headerToolbar={{
-            left: "prev,next addEventButton",
+            // left: "prev,next addEventButton",
+            left: !isInstaller ? "prev,next addEventButton" : "prev,next",
             center: "title",
             right: "timeGridDay,timeGridWeek,dayGridMonth",
           }}
@@ -508,10 +510,10 @@ const getToken = () => {
             addEventButton: {
               text: "Add Job +",
               click: () => {
-                if (getToken()?.UserType === "LightsInstaller") {
-                  toast.error("You are not allowed to add a job."); 
-                  return; 
-                }
+                // if (getToken()?.UserType === "LightsInstaller") {
+                //   toast.error("You are not allowed to add a job."); 
+                //   return; 
+                // }
 
                 resetModalFields();
                 setEventDate(new Date());
@@ -524,6 +526,21 @@ const getToken = () => {
        
               
           }}
+
+          // customButtons={{
+          //   ...(getToken()?.UserType !== "LightsInstaller" && {
+          //     addEventButton: {
+          //       text: "Add Job +",
+          //       click: () => {
+          //         resetModalFields();
+          //         setEventDate(new Date());
+          //         setSelectedEvent(null);
+          //         setPopupOpen(true);
+          //       }
+          //     }
+          //   })
+          // }}
+          
         />    
 
 {popupOpen && (
@@ -776,7 +793,7 @@ const getToken = () => {
         
         
       )}
-{/* {selectedEvent && getToken()?.UserType !== "LightsInstaller" && (
+{ getToken()?.UserType !== "LightsInstaller" && (
   <>
     <button
       onClick={() => setPopupOpen(false)}
@@ -792,8 +809,8 @@ const getToken = () => {
       Save
     </button>
   </>
-)} */}
-      <button
+)}
+      {/* <button
         onClick={() => setPopupOpen(false)}
         className="text-xs px-3 py-1 border rounded text-gray-500"
       >
@@ -805,7 +822,7 @@ const getToken = () => {
         className="text-xs px-3 py-1 bg-sky-500 text-white rounded hover:bg-sky-600"
       >
         Save
-      </button>
+      </button> */}
     </div>
   </div>
 )}
