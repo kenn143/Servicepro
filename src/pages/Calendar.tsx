@@ -88,6 +88,7 @@ const handleCustomerSearch = async (value: string) => {
     }));
     // setAddress(results.Address);
     setFiltered(results);
+    setHouseAddress(results.Address);
     setCustomerId(results.CustomerId)
    
   } catch (err) {
@@ -145,7 +146,7 @@ const handleCustomerSearch = async (value: string) => {
               installerStaff: record.fields.InstallerStaff,
             },
           }));
-        
+        console.log("formattedEvents",formattedEvents);
           // setClientName(formattedEvents[0]?.extendedProps.clientName || "");
         
 
@@ -211,7 +212,6 @@ const handleCustomerSearch = async (value: string) => {
   //     setClientName(event.title);
   //     setQuery(event.title);
   //   }
-
     setSelectedEvent(event as unknown as CalendarEvent);
     setEventTitle(event.title);
     setEventDate(event.start ? new Date(event.start) : null);
@@ -221,6 +221,8 @@ const handleCustomerSearch = async (value: string) => {
     setTypeOfLights(props.typeOfLights || "");
     setLightsAmount(props.lightsAmount || "");
     setImageBase64("");
+    // setQuery(props.houseAddress || ""); 
+
     setPopupOpen(true);
   };
   function formatToLocalISO(date: Date) {
