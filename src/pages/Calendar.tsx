@@ -281,7 +281,7 @@ const uploadPreset = "Qoute_FileName";
       return;
     }
 
-    let uploadedUrl = imageBase64; // fallback to previous value
+    let uploadedUrl = imageBase64; 
     if (attachmentFile) {
       const formData = new FormData();
       formData.append("file", attachmentFile);
@@ -319,7 +319,8 @@ const uploadPreset = "Qoute_FileName";
       customerId: customerId,
       imageUrl : uploadedUrl,
       lightInstallerId,
-      salesman: getToken()?.ID
+      salesman: getToken()?.ID,
+      action: "AddNewJob"
     };
     
     try {
