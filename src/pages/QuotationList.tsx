@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import PageMeta from "../components/common/PageMeta";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -23,7 +23,7 @@ interface Customer {
 const QuotationList: React.FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<Quote[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // const [searchTerm, setSearchTerm] = useState<string>("");
   const [customerList, setCustomerList] = useState<Customer[]>([]);
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,6 +32,28 @@ const QuotationList: React.FC = () => {
   const recordsPerPage = 10;
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]); 
+const [selectedCustomer, setSelectedCustomer] = useState<string>(""); 
+const [statusFilter, setStatusFilter] = useState<string>(""); 
+const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
+  const customerDropdownRef = useRef<HTMLDivElement>(null); 
+
+   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        customerDropdownRef.current &&
+        !customerDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowCustomerSuggestions(false); 
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside); 
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside); 
+    };
+  }, []);
+
 
   const handleSend = async () => {
     if (selectedIds.length === 0) {
@@ -349,6 +371,8 @@ useEffect(() => {
   fetchQuotes();
   fetchCustomers();
 }, []);
+
+
   
 
   const handleDelete = async (id: string) => {
@@ -380,11 +404,31 @@ useEffect(() => {
     setShowConfirm(null); 
   };
 
+  const handleCustomerSearch = (value: string) => {
+setSelectedCustomer(value);
+const filtered = customerList.filter((c) =>
+c.CustomerName?.toLowerCase().includes(value.toLowerCase())
+);
+setFilteredCustomers(filtered);
+setShowCustomerSuggestions(true); // NEW CODE
+};
 
 
-  const filteredData = data.filter((item) =>
-    item.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredData = data.filter((item) =>
+  //   item.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  const filteredData = data.filter((item) => {
+const matchesCustomer = selectedCustomer
+? customerList.find((c) => c.CustomerId === item.clientID)?.CustomerName ===
+selectedCustomer
+: true;
+
+
+const matchesStatus = statusFilter ? item.status === statusFilter : true;
+
+
+return matchesCustomer && matchesStatus;
+});
 
   const totalRecords = filteredData.length;
   const totalPages = Math.ceil(totalRecords / recordsPerPage);
@@ -436,7 +480,7 @@ useEffect(() => {
 
             <div className="w-full max-w-6xl  sm:p-6 md:p-10 rounded-2xl mt-6">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 px-2 gap-2">
-                <input
+                {/* <input
                   type="text"
                   placeholder="Search by Job Title"
                   value={searchTerm}
@@ -444,7 +488,51 @@ useEffect(() => {
                     setSearchTerm(e.target.value)
                   }
                   className="border border-gray-300 rounded-md px-4 py-2 w-full sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:text-white"
-                />
+                /> */}
+                <div className="mb-4 relative text-sm" ref={customerDropdownRef}>
+                    <label className="font-semibold">Customer Name</label>
+                      <input
+                      type="text"
+                      className="border p-2 w-full"
+                      placeholder="Search customer..."
+                      value={selectedCustomer}
+                      onChange={(e) => handleCustomerSearch(e.target.value)} 
+                      onFocus={() => setShowCustomerSuggestions(true)} 
+                      />
+
+                    {showCustomerSuggestions && (
+                    <div className="border bg-white shadow max-h-40 overflow-y-auto">
+                      {filteredCustomers.map((c) => (
+                      <div
+                      key={c.CustomerId}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => {
+                      setSelectedCustomer(c.CustomerName || "");
+                      setShowCustomerSuggestions(false);
+                      }}
+                      >
+                         {c.CustomerName}
+                    </div>
+                    ))}
+                    </div>
+                    )}
+                    </div>
+
+                  <div className="mb-4 text-sm">
+                      <label className="font-semibold">Status</label>
+                      <select
+                      className="border p-2 w-full"
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)} 
+                      >
+                      <option value="">All</option>
+                      <option value="Waiting For Approval">Waiting For Approval</option> 
+                      <option value="Pending">Pending</option> 
+                      <option value="Approved">Approved</option> 
+                      </select>
+                  </div>
+
+
                 <div className="flex gap-2 w-full sm:w-auto">
                 <button
                     onClick={handleCopy}
