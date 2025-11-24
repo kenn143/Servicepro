@@ -526,7 +526,7 @@ return matchesCustomer && matchesStatus;
                       onChange={(e) => setStatusFilter(e.target.value)} 
                       >
                       <option value="">All</option>
-                      <option value="Waiting For Approval">Waiting For Approval</option> 
+                      <option value="Waiting for Approval">Waiting For Approval</option> 
                       <option value="Pending">Pending</option> 
                       <option value="Approved">Approved</option> 
                       </select>
