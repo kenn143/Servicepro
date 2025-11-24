@@ -489,48 +489,51 @@ return matchesCustomer && matchesStatus;
                   }
                   className="border border-gray-300 rounded-md px-4 py-2 w-full sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm dark:text-white"
                 /> */}
-                <div className="mb-4 relative text-sm" ref={customerDropdownRef}>
-                    <label className="font-semibold">Customer Name</label>
-                      <input
-                      type="text"
-                      className="border p-2 w-full"
-                      placeholder="Search customer..."
-                      value={selectedCustomer}
-                      onChange={(e) => handleCustomerSearch(e.target.value)} 
-                      onFocus={() => setShowCustomerSuggestions(true)} 
-                      />
+              <div className="mb-4 flex items-start"> 
+        {/* Customer Name */}
+        <div className="relative w-1/2 pr-1 text-sm" ref={customerDropdownRef}> 
+          <label className="font-semibold">Customer Name</label>
+          <input
+            type="text"
+            className="border p-2 w-full"
+            placeholder="Search customer..."
+            value={selectedCustomer}
+            onChange={(e) => handleCustomerSearch(e.target.value)} 
+            onFocus={() => setShowCustomerSuggestions(true)} 
+          />
 
-                    {showCustomerSuggestions && (
-                    <div className="border bg-white shadow max-h-40 overflow-y-auto">
-                      {filteredCustomers.map((c) => (
-                      <div
-                      key={c.CustomerId}
-                      className="p-2 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => {
-                      setSelectedCustomer(c.CustomerName || "");
-                      setShowCustomerSuggestions(false);
-                      }}
-                      >
-                         {c.CustomerName}
-                    </div>
-                    ))}
-                    </div>
-                    )}
-                    </div>
+          {showCustomerSuggestions && (
+            <div className="border bg-white shadow max-h-40 overflow-y-auto absolute w-full z-20">
+              {filteredCustomers.map((c) => (
+                <div
+                  key={c.CustomerId}
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={() => {
+                    setSelectedCustomer(c.CustomerName || "");
+                    setShowCustomerSuggestions(false);
+                  }}
+                >
+                  {c.CustomerName}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-                  <div className="mb-4 text-sm">
-                      <label className="font-semibold">Status</label>
-                      <select
-                      className="border p-2 w-full"
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)} 
-                      >
-                      <option value="">All</option>
-                      <option value="Waiting for Approval">Waiting For Approval</option> 
-                      <option value="Pending">Pending</option> 
-                      <option value="Approved">Approved</option> 
-                      </select>
-                  </div>
+        <div className="w-1/2 pl-1 text-sm"> 
+          <label className="font-semibold">Status</label>
+          <select
+            className="border p-2 w-full"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)} 
+          >
+            <option value="">All</option>
+            <option value="Waiting for Approval">Waiting For Approval</option> 
+            <option value="Pending">Pending</option> 
+            <option value="Approved">Approved</option> 
+          </select>
+        </div>
+      </div>
 
 
                 <div className="flex gap-2 w-full sm:w-auto">
